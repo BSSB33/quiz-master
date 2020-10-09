@@ -1,0 +1,49 @@
+<div class="fullscreen">
+  <div class="flex-column" style="height: 100%">
+    <div style="flex: 5 5 0"></div>
+    <!--    row1-->
+    <div class="flex-row" style="flex: 0 1 0;">
+      <div style="flex: 5 9 200px;"></div>
+      <div style="flex: 1 1 200px;">
+        <img src="assets/vectors/logo.svg" style="max-width: 100%;" alt="Logo of Quiz Master"></div>
+      <div style="flex: 5 9 200px;"></div>
+    </div>
+    <div style="flex: 1 1 0"></div>
+    <!--    row2-->
+    <div class="flex-row" style="flex: 0 1 0;">
+      <div style="flex: 0 9 50px;"></div>
+      <div style="flex: 1 1 200px; text-align: center; font-size: 1.5em; line-height: 1.2em;">
+        Please provide a Quiz ID in order to join one.
+      </div>
+      <div style="flex: 0 9 50px;"></div>
+    </div>
+    <div style="flex: 1 1 0"></div>
+<!--    row3-->
+    <div class="flex-row" style="flex: 0 1 0;">
+      <div style="flex: 5 9 200px;"></div>
+      <div style="flex: 0 1 50px">
+        <mat-form-field class="outline-no-floating" style="width: 100%;" appearance="outline" floatLabel="never">
+          <input matInput type="text" placeholder="Quiz ID" autocomplete="off">
+          <span matPrefix style="font-size: 1.5em"># &nbsp;</span>
+        </mat-form-field>
+      </div>
+      <div style="flex: 5 9 200px;"></div>
+    </div>
+
+<!--    row4-->
+    <div style="flex: 0 1 0; text-align: center;">
+        <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+    </div>
+
+    <div class="flex-column" style="flex: 5 5 0;">
+      <div style="flex: 1 1 0;"></div>
+      <div style="flex: 0 0 0;text-align: right;">
+        <button mat-raised-button style="margin: 20px" color="accent">Create Quiz</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
