@@ -1,0 +1,23 @@
+<div cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+  <div>
+    <img *ngIf="user" src="{{user.photoUrl}}" style="border-radius: 50%; width: 3em; cursor: pointer; margin: 5px"  (click)="isOpen = !isOpen">
+  </div>
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOffsetX]="20"
+    [cdkConnectedOverlayOffsetY]="-20"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayOpen]="isOpen"
+    (backdropClick)="isOpen = ! isOpen"
+  >
+    <div class="user-overlay">
+      <h2>{{user.name}}</h2>
+      <h3>{{user.email}}</h3>
+      <button mat-stroked-button color="warn" (click)="logout()">Log out</button>
+    </div>
+  </ng-template>
+</div>
+
+
+

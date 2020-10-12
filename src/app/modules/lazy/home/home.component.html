@@ -22,10 +22,7 @@
     <div class="flex-row" style="flex: 0 1 0;">
       <div style="flex: 5 9 200px;"></div>
       <div style="flex: 0 1 50px">
-        <mat-form-field class="outline-no-floating" style="width: 100%;" appearance="outline" floatLabel="never">
-          <input matInput type="text" placeholder="Quiz ID" autocomplete="off">
-          <span matPrefix style="font-size: 1.5em"># &nbsp;</span>
-        </mat-form-field>
+        <app-quiz-id-input style="width: 100%"></app-quiz-id-input>
       </div>
       <div style="flex: 5 9 200px;"></div>
     </div>
@@ -40,7 +37,7 @@
     <div class="flex-column" style="flex: 5 5 0;">
       <div style="flex: 1 1 0;"></div>
       <div style="flex: 0 0 0;text-align: right;">
-        <button mat-raised-button style="margin: 20px" color="accent">Create Quiz</button>
+        <button mat-raised-button style="margin: 20px" color="accent" (click)="createQuiz()">Create Quiz</button>
       </div>
     </div>
   </div>

@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {ConfigService} from "./modules/shared/services/config.service";
+import {AuthService} from "./modules/shared/services/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -7,6 +9,9 @@ import {Component, OnInit} from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'quiz-master-frontend';
+
+  constructor(private authService: AuthService) {
+  }
 
   ngOnInit(): void {
     let vh = window.innerHeight * 0.01;
@@ -17,4 +22,10 @@ export class AppComponent implements OnInit {
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     });
   }
+
+  get isLoggedIn() {
+    return this.authService.user;
+  }
+
+
 }
