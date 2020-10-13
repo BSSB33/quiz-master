@@ -15,11 +15,8 @@ export class AuthService {
   signIn() {
     this.sauthService.signIn(GoogleLoginProvider.PROVIDER_ID).then((user: SocialUser) => {
       this.setuser(user);
-      this.router.navigateByUrl('/questions');
     }).catch((e) => {
-      console.log(e);
       this.setuser(null)
-      this.router.navigateByUrl('');
     });
   }
 
