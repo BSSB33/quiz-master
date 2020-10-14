@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   CanActivate,
-  CanLoad,
-  Route,
-  UrlSegment,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   UrlTree,
@@ -27,7 +24,7 @@ export class LogoutGuard implements CanActivate {
     if (!this.authService.isLoggedIn) {
       return true;
     }
-    this.router.navigateByUrl('/questions');
+    this.router.navigateByUrl('/quizzes');
     return false;
   }
 }

@@ -14,9 +14,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  googleLogin() {
+  async googleLogin() {
     this.authService.signIn();
-    this.router.navigateByUrl('/questions');
   }
 
   backToHome() {

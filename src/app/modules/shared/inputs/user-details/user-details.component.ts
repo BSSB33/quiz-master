@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from "../../services/auth.service";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-user-details',
@@ -44,6 +44,7 @@ export class UserDetailsComponent implements OnInit {
   showHeaderRow = false;
 
   constructor(private authService: AuthService) {
+
     this.lastScroll = window.pageYOffset;
     if (this.lastScroll === 0) {
       this.showHeaderRow = true;

@@ -5,14 +5,14 @@
     <div class="flex-row" style="flex: 0 1 0;">
       <div style="flex: 5 9 200px;"></div>
       <div style="flex: 1 1 200px;">
-        <img src="assets/vectors/logo.svg" style="max-width: 100%;" alt="Logo of Quiz Master"></div>
+        <img [src]="'assets/vectors/logo.svg' | imgCache | async | sanitize:'resourceUrl'" style="max-width: 100%;" alt="Logo of Quiz Master"></div>
       <div style="flex: 5 9 200px;"></div>
     </div>
     <div style="flex: 1 1 0"></div>
     <!--    row2-->
     <div class="flex-row" style="flex: 0 1 0;">
       <div style="flex: 0 9 50px;"></div>
-      <div style="flex: 1 1 200px; text-align: center; font-size: 1.5em; line-height: 1.2em;">
+      <div style="flex: 1 1 200px; text-align: center; font-size: 1.5em; line-height: 1.2em;" class="title-font">
         Please provide a Quiz ID in order to join one.
       </div>
       <div style="flex: 0 9 50px;"></div>

@@ -15,8 +15,8 @@ const routes: Routes = [
     canActivate: [LogoutGuard],
   },
   {
-    path: 'questions',
-    loadChildren: () => import('./modules/lazy/questions/questions.module').then(m => m.QuestionsModule),
+    path: 'quizzes',
+    loadChildren: () => import('./modules/lazy/quizzes/quizzes.module').then(m => m.QuizzesModule),
     canActivate: [AuthGuard],
   }
 ];

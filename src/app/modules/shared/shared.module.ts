@@ -7,9 +7,11 @@ import { UserDetailsComponent } from './inputs/user-details/user-details.compone
 import {MatCardModule} from "@angular/material/card";
 import {OverlayModule} from "@angular/cdk/overlay";
 import {MatButtonModule} from "@angular/material/button";
+import { ImgCachePipe } from './pipes/img-cache.pipe';
+import { SanitizePipe } from './pipes/sanitize.pipe';
 
 @NgModule({
-  declarations: [QuizIdInputComponent, UserDetailsComponent],
+  declarations: [QuizIdInputComponent, UserDetailsComponent, ImgCachePipe, SanitizePipe],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -18,9 +20,11 @@ import {MatButtonModule} from "@angular/material/button";
     OverlayModule,
     MatButtonModule
   ],
-    exports: [
-        QuizIdInputComponent,
-        UserDetailsComponent
-    ]
+  exports: [
+    QuizIdInputComponent,
+    UserDetailsComponent,
+    ImgCachePipe,
+    SanitizePipe
+  ]
 })
 export class SharedModule { }
