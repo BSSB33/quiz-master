@@ -1,4 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {CommonService} from "../../shared/services/common.service";
+import {QuizService} from "../../shared/services/quiz.service";
+
+interface QuizDetail {
+  created: number,
+  title: string,
+  description: string
+}
 
 @Component({
   selector: 'app-quizzes',
@@ -7,9 +15,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class QuizzesComponent implements OnInit {
 
-  constructor() { }
+  myQuizzes: QuizDetail[] = undefined;
 
-  ngOnInit(): void {
+  constructor(public common: CommonService, private quizService: QuizService) {
+    console.log(quizService)
   }
 
+  ngOnInit(): void {
+    this.loadQuizzes();
+  }
+
+
+  private async loadQuizzes() {
+    try {
+      this.myQuizzes = await this.quizService.getQuizzes() as QuizDetail[];
+    } catch (e){
+      // TODO!
+      console.log(e);
+      this.myQuizzes = [];
+    }
+  }
 }

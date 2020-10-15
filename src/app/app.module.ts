@@ -13,8 +13,8 @@ import {
   GoogleLoginProvider,
 } from "angularx-social-login";
 import {ConfigService} from "./modules/shared/services/config.service";
-import {environment} from "../environments/environment";
 import {SharedModule} from "./modules/shared/shared.module";
+import {QuizService} from "./modules/shared/services/quiz.service";
 
 @NgModule({
   declarations: [
@@ -32,18 +32,24 @@ import {SharedModule} from "./modules/shared/shared.module";
   ],
   providers: [
     {
-      provide: ConfigService,
-      deps: [HttpClient],
-      useFactory: async (httpClient) => {
-        const config = await httpClient.get('assets/' + environment.configFile).toPromise();
-        return new ConfigService(httpClient, config);
+      provide: APP_INITIALIZER,
+      deps: [ConfigService, HttpClient],
+      useFactory: (configService: ConfigService) => {
+        return () => configService.init()
+      },
+      multi: true,
+    },
+    {
+      provide: QuizService,
+      deps: [HttpClient, ConfigService],
+      useFactory: (httpClient: HttpClient, configService: ConfigService) => {
+        return new QuizService(httpClient, configService.getApiUrl())
       }
     },
     {
       provide: 'SocialAuthServiceConfig',
       deps: [ ConfigService ],
-      useFactory: async (configService: ConfigService) => {
-        configService = await configService;
+      useFactory: (configService: ConfigService) => {
         const client_id = configService.getGoogleClientId()
         return {
           autoLogin: true,
