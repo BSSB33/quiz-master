@@ -15,7 +15,6 @@ public class QuestionDeserializer extends JsonDeserializer<Question> {
 
     @Override
     public Question deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        //System.out.println("ASD");
         ObjectCodec oc = jsonParser.getCodec();
         JsonNode node = oc.readTree(jsonParser);
         String type = node.get("type").asText();
@@ -23,12 +22,9 @@ public class QuestionDeserializer extends JsonDeserializer<Question> {
         ObjectMapper objectMapper = new ObjectMapper();
         Model model = null;
 
-        if(type.equals("multiple")) {
-            model = objectMapper.readValue(node.get("model").textValue(), MultipleChoicesModel.class);
-            System.out.println("MODELL: " + model.toString());
+        if(type.equals("qm.multiple_choices")) { //TODO Add different types
+            model = objectMapper.readValue(node.get("model").toString(), MultipleChoicesModel.class);
         }
-
-        //if(type.equals("image") && model instanceof ImageQuestionModell) this.model = model;
 
 
         return new Question(type, model);

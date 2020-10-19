@@ -1,8 +1,7 @@
 package com.quizmaster.backend.entities;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.quizmaster.backend.services.QuestionDeserializer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import nonapi.io.github.classgraph.json.Id;
 
