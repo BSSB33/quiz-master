@@ -13,5 +13,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity security) throws Exception
     {
         security.httpBasic().disable();
+        //security.authorizeRequests().anyRequest().authenticated();
+        //security.authorizeRequests().antMatchers("/", "/**").permitAll();
     }
 }

@@ -1,7 +1,16 @@
 package com.quizmaster.backend.entities;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.quizmaster.backend.services.QuestionDeserializer;
+import com.quizmaster.backend.services.QuestionSerializer;
+import lombok.Data;
+
 import java.util.List;
 
+@JsonDeserialize(using = QuestionDeserializer.class)
+@JsonSerialize(using = QuestionSerializer.class)
+@Data
 public class Question {
 
     private String type;
@@ -9,9 +18,6 @@ public class Question {
 
     public Question(String type, Model model) {
         this.type = type;
-
-        if(type.equals("multiple") && model instanceof MultipleChoicesModel) this.model = model;
-        if(type.equals("image") && model instanceof ImageQuestionModell) this.model = model;
-
+        this.model = model;
     }
 }

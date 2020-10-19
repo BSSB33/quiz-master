@@ -44,9 +44,9 @@ public class BackendApplication implements CommandLineRunner {
 
 		Question q1 = new Question("multiple", m1);
 		Question q2 = new Question("multiple", m2);
-		Quiz quiz = new Quiz("Quiz 1", random, "Random Note", List.of(q1, q2));
+		Quiz quiz = new Quiz("Quiz 3", random, "Random Note", List.of(q1, q2));
 
-		//quizMongoRepository.save(quiz);
+		quizMongoRepository.save(quiz);
 
 		//quizMongoRepository.findAll().forEach(qu -> System.out.println(qu.getTitle() + " -> " + qu.getId()));
 		//System.out.println(quizMongoRepository.getById("5f8dc1c5c0f21a25764dc0e7"));

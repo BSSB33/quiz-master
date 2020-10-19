@@ -1,6 +1,8 @@
 package com.quizmaster.backend.entities;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.quizmaster.backend.services.QuestionDeserializer;
 import lombok.Data;
 import nonapi.io.github.classgraph.json.Id;
 
@@ -26,17 +28,5 @@ public class Quiz {
         this.startingTime = startingTime;
         this.notes = notes;
         this.questions = questions;
-    }
-
-    @Override
-    public String toString() {
-        return "Quiz{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", createdAt=" + createdAt +
-                ", startingTime=" + startingTime +
-                ", notes='" + notes + '\'' +
-                ", questions=" + questions +
-                '}';
     }
 }
