@@ -5,7 +5,6 @@ import com.quizmaster.backend.services.QuestionDeserializer;
 import lombok.Data;
 
 @JsonDeserialize(using = QuestionDeserializer.class)
-//@JsonSerialize(using = QuestionSerializer.class)
 @Data
 public class Question {
 
