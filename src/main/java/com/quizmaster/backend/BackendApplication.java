@@ -34,7 +34,7 @@ public class BackendApplication implements CommandLineRunner {
 		//userMongoRepository.save(a);
 
 		System.out.println("============== Users: ==============");
-		userMongoRepository.findAll().stream().forEach(user -> System.out.println(user.getName() + " -> " + user.getId()));
+		userMongoRepository.findAll().forEach(user -> System.out.println(user.getName() + " -> " + user.getId()));
 
 		System.out.println("============== Quizzes: ==============");
 
@@ -45,7 +45,7 @@ public class BackendApplication implements CommandLineRunner {
 
 		//quizMongoRepository.save(q1);
 
-		quizMongoRepository.findAll().stream().forEach(quiz -> System.out.println(quiz.getTitle() + " -> " + quiz.getId()));
+		quizMongoRepository.findAll().forEach(quiz -> System.out.println(quiz.getTitle() + " -> " + quiz.getId()));
 		quizMongoRepository.getById("5f8dacd12e37ae6c1086829f");
 	}
 }
