@@ -1,4 +1,4 @@
-package com.quizmaster.entities;
+package com.quizmaster.backend.entities;
 
 import java.util.ArrayList;
 

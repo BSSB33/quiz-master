@@ -1,6 +1,6 @@
-package com.quizmaster.controllers;
+package com.quizmaster.backend.controllers;
 
-import com.quizmaster.entities.*;
+import com.quizmaster.backend.entities.*;
 import com.quizmaster.services.GameIdGenerator;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -26,14 +26,13 @@ public class GroupController {
         if (!usedCodes.contains(gameID)) {
             usedCodes.add(gameID);
             return new Ok(200, 0, gameID);
-        }else{
-            while (usedCodes.contains(gameID)){
+        } else {
+            while (usedCodes.contains(gameID)) {
                 gameID = generator.nextString();
             }
             if (!usedCodes.contains(gameID)) {
                 return new Ok(200, 0, gameID);
-            }
-            else return new Fail(000); //TODO replace 000 to preoper error code
+            } else return new Fail(000); //TODO replace 000 to preoper error code
         }
     }
 

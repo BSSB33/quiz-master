@@ -1,4 +1,4 @@
-package com.quizmaster.entities;
+package com.quizmaster.backend.entities;
 
 public class Fail extends Response {
     public Fail(int code) {

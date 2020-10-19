@@ -1,4 +1,4 @@
-package com.quizmaster.web;
+package com.quizmaster.backend.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
