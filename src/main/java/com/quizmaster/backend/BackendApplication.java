@@ -46,6 +46,6 @@ public class BackendApplication implements CommandLineRunner {
 		//quizMongoRepository.save(q1);
 
 		quizMongoRepository.findAll().forEach(quiz -> System.out.println(quiz.getTitle() + " -> " + quiz.getId()));
-		quizMongoRepository.getById("5f8dacd12e37ae6c1086829f");
+		System.out.println(quizMongoRepository.getById("5f8dacd12e37ae6c1086829f"));
 	}
 }
