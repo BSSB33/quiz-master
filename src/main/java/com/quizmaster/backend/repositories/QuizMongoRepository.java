@@ -6,4 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface QuizMongoRepository extends MongoRepository<Quiz, String> {
     public User getById(String id);
+
+
 }

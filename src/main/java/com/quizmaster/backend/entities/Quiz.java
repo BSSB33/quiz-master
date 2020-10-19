@@ -5,7 +5,6 @@ import lombok.Data;
 import nonapi.io.github.classgraph.json.Id;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,13 +18,25 @@ public class Quiz {
     private LocalDateTime startingTime;
     private String notes;
 
-    private List<Model> model;
+    private List<Question> questions;
 
-    public Quiz(String title, LocalDateTime startingTime, String notes, List<Model> model) {
+    public Quiz(String title, LocalDateTime startingTime, String notes, List<Question> questions) {
         this.title = title;
         this.createdAt = LocalDateTime.now();
         this.startingTime = startingTime;
         this.notes = notes;
-        this.model = model;
+        this.questions = questions;
+    }
+
+    @Override
+    public String toString() {
+        return "Quiz{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", createdAt=" + createdAt +
+                ", startingTime=" + startingTime +
+                ", notes='" + notes + '\'' +
+                ", questions=" + questions +
+                '}';
     }
 }

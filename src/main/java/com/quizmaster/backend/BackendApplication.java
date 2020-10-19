@@ -1,8 +1,9 @@
 package com.quizmaster.backend;
 
 import com.quizmaster.backend.entities.Model;
+import com.quizmaster.backend.entities.MultipleChoicesModel;
+import com.quizmaster.backend.entities.Question;
 import com.quizmaster.backend.entities.Quiz;
-import com.quizmaster.backend.entities.User;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +35,20 @@ public class BackendApplication implements CommandLineRunner {
 		//userMongoRepository.save(a);
 
 		System.out.println("============== Users: ==============");
-		userMongoRepository.findAll().forEach(user -> System.out.println(user.getName() + " -> " + user.getId()));
+		//userMongoRepository.findAll().forEach(user -> System.out.println(user.getName() + " -> " + user.getId()));
 
 		System.out.println("============== Quizzes: ==============");
+		LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+		Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
 
-		//LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
-		//Model m1 = new Model("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-		//Model m2 = new Model("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
-		//Quiz q1 = new Quiz("Quiz 1", random, "Random Note", List.of(m1, m2));
+		Question q1 = new Question("multiple", m1);
+		Question q2 = new Question("multiple", m2);
+		Quiz quiz = new Quiz("Quiz 1", random, "Random Note", List.of(q1, q2));
 
-		//quizMongoRepository.save(q1);
+		//quizMongoRepository.save(quiz);
 
-		quizMongoRepository.findAll().forEach(quiz -> System.out.println(quiz.getTitle() + " -> " + quiz.getId()));
-		System.out.println(quizMongoRepository.getById("5f8dacd12e37ae6c1086829f"));
+		//quizMongoRepository.findAll().forEach(qu -> System.out.println(qu.getTitle() + " -> " + qu.getId()));
+		//System.out.println(quizMongoRepository.getById("5f8dc1c5c0f21a25764dc0e7"));
 	}
 }
