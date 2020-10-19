@@ -1,13 +1,31 @@
 package com.quizmaster.backend.entities;
 
 
-import java.util.ArrayList;
+import lombok.Data;
+import nonapi.io.github.classgraph.json.Id;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
 public class Quiz {
-    private String question;
-    private String answer1;
-    private String answer2;
-    private String answer3;
-    private String answer4;
-    private ArrayList<String> correctAnswers;
+
+    @Id
+    private String id;
+
+    private String title;
+    private LocalDateTime createdAt;
+    private LocalDateTime startingTime;
+    private String notes;
+
+    private List<Model> model;
+
+    public Quiz(String title, LocalDateTime startingTime, String notes, List<Model> model) {
+        this.title = title;
+        this.createdAt = LocalDateTime.now();
+        this.startingTime = startingTime;
+        this.notes = notes;
+        this.model = model;
+    }
 }
