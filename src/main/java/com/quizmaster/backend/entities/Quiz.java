@@ -1,7 +1,6 @@
 package com.quizmaster.backend.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import nonapi.io.github.classgraph.json.Id;
 
@@ -15,14 +14,17 @@ public class Quiz {
     private String id;
 
     private String title;
+    private String description;
+
     private LocalDateTime createdAt;
     private LocalDateTime startingTime;
     private String notes;
 
     private List<Question> questions;
 
-    public Quiz(String title, LocalDateTime startingTime, String notes, List<Question> questions) {
+    public Quiz(String title, String description, LocalDateTime startingTime, String notes, List<Question> questions) {
         this.title = title;
+        this.description = description;
         this.createdAt = LocalDateTime.now();
         this.startingTime = startingTime;
         this.notes = notes;

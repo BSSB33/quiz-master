@@ -1,10 +1,11 @@
 package com.quizmaster.backend.services;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.databind.*;
-import com.quizmaster.backend.entities.ImageQuestionModell;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quizmaster.backend.entities.Model;
 import com.quizmaster.backend.entities.MultipleChoicesModel;
 import com.quizmaster.backend.entities.Question;
@@ -22,7 +23,7 @@ public class QuestionDeserializer extends JsonDeserializer<Question> {
         ObjectMapper objectMapper = new ObjectMapper();
         Model model = null;
 
-        if(type.equals("qm.multiple_choices")) { //TODO Add different types
+        if(type.equals("qm.multiple_choice")) { //TODO Add different types
             model = objectMapper.readValue(node.get("model").toString(), MultipleChoicesModel.class);
         }
 

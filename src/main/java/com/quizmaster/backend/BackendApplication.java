@@ -42,9 +42,9 @@ public class BackendApplication implements CommandLineRunner {
 		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
 		Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
 
-		Question q1 = new Question("qm.multiple_choices", m1);
-		Question q2 = new Question("qm.multiple_choices", m2);
-		Quiz quiz = new Quiz("Quiz 1", random, "Random Note", List.of(q1, q2));
+		Question q1 = new Question("qm.multiple_choice", m1);
+		Question q2 = new Question("qm.multiple_choice", m2);
+		Quiz quiz = new Quiz("Quiz 1", "d",random, "Random Note", List.of(q1, q2));
 
 		//quizMongoRepository.save(quiz);
 
