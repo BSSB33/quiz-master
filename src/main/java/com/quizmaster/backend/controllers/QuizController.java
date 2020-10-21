@@ -29,7 +29,8 @@ public class QuizController {
 
     @PostMapping("")
     public ResponseEntity postById(@RequestBody Quiz quiz){
-        if(quizMongoRepository.existsById(quiz.getId())){
+        String providedId = quiz.getId();
+        if(providedId != null && quizMongoRepository.existsById(providedId)){ // ERROR: getId should not be called before save!
             return ResponseEntity.badRequest().body("ID Taken!");
         }
         return ResponseEntity.ok(quizMongoRepository.save(quiz));
