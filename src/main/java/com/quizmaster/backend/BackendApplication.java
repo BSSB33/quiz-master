@@ -28,7 +28,6 @@ public class BackendApplication implements CommandLineRunner {
 		SpringApplication.run(BackendApplication.class, args);
 	}
 
-
 	@Override
 	public void run(String... args) throws Exception {
 		//User a = new User("User1");
