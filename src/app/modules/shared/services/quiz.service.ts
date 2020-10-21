@@ -1,38 +1,36 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuizService {
-
-  constructor(private httpClient, private apiUrl: string) {
-    console.log('QUIZSERVICE DONE')
+  private static endPoints = {
+    quizzes: '/quizzes'
   }
 
-  async getQuizzes() {
-    return await new Promise((resolve =>
-    {
-      setTimeout( () => {
-        resolve(
-          [{
-            created: 1602692292,
-            title: 'Test Quiz for presentation with a long, long title',
-            description: 'A well detailed description about what questions the quiz has, for whom was it created for, and other useful informations'
-          },
-            {
-              created: 1602622243,
-              title: 'Test Quiz 2 to show that the colors are changing',
-              description: 'A well detailed description about what questions the quiz has, for whom was it created for, and other useful informations'
-            },
-            {
-              created: 1602122243,
-              title: 'Test Quiz 3 so you get the point :D',
-              description: 'A well detailed description about what questions the quiz has, for whom was it created for, and other useful informations'
-            }
-          ]
-        )
-      }, 2000);
+
+  constructor(private httpClient: HttpClient, private apiUrl: string) {
+  }
+
+  getQuizzes(): any {
+    return this.httpClient.get(this.apiUrl + QuizService.endPoints.quizzes).toPromise().catch(e => console.error(e));
+  }
+
+  getDetailedQuiz(id: any) {
+    return this.httpClient.get(this.apiUrl + QuizService.endPoints.quizzes + '/' + id).toPromise().catch(e => console.error(e));
+  }
+
+  saveQuiz(id: string, quizBody) {
+    const baseUrl = this.apiUrl + QuizService.endPoints.quizzes;
+    if (id === 'new') {
+      return this.httpClient.post(baseUrl, quizBody).toPromise().catch(e => console.error(e));
+    } else {
+      return this.httpClient.put(baseUrl + '/' + id, quizBody).toPromise().catch(e => console.error(e));
     }
-    ))
+  }
+
+  async deleteQuiz(id: string) {
+    return this.httpClient.delete(this.apiUrl + QuizService.endPoints.quizzes + '/' + id).toPromise();
   }
 }

@@ -1,0 +1,67 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title [ngStyle]="{color: fc.valid ? 'black' : 'red'}">
+      Question {{visibleIndex !== undefined ? '#' + visibleIndex : ''}}</mat-card-title>
+    <div style="flex: 0 0; height: 24px;" mat-card-avatar>
+      <mat-icon color="warn" style="cursor: pointer" (click)="delete.emit(index)">
+        clear
+      </mat-icon>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Question</mat-label>
+      <textarea rows="3" matInput type="text" placeholder="Type here the question" autocomplete="off"
+                style="resize: none" [(ngModel)]="fc.value.model.question"
+                (input)="updateValidity()"></textarea>
+    </mat-form-field>
+
+    <div *ngIf="fc.value.model.answers.length>0">
+      <div *ngFor="let answer of fc.value.model.answers; let i = index;" class="flex-row row-separate"
+           style="width: 100%; align-items: center; text-align: left; padding: 10px;"
+           [ngClass]="{'red-highlight': !isCorrectAnswer(i), 'green-highlight': isCorrectAnswer(i)}">
+        <div style="flex: 1 1; word-break: break-word;">
+          {{answer}}
+        </div>
+        <div style="flex: 0 0; height: 24px;">
+          <mat-icon color="warn" style="cursor: pointer" (click)="removeAnswer(i); updateValidity()">
+            clear
+          </mat-icon>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="flex-row" style="margin-top: 15px;">
+      <div style="flex: 1 1">
+        <mat-form-field style="width: 100%; margin-top: 7px;" appearance="outline">
+          <mat-label>Add answer</mat-label>
+          <input #ans matInput type="text" placeholder="Add answer" autocomplete="off">
+        </mat-form-field>
+      </div>
+
+      <div style="flex: 0 1 10px"></div>
+      <div style="flex: 0 0">
+        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="primary"
+                (click)="addCorrectAnswer(ans.value); ans.value = ''; updateValidity()">
+          correct
+        </button>
+        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="warn"
+                (click)="addWrongAnswer(ans.value); ans.value = ''; updateValidity()">
+          wrong
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-footer *ngIf="fc.errors" style="margin-bottom: 10px;">
+    <div class="mat-error" *ngIf="fc.errors.emptyQuestion">
+      Question cannot be empty
+    </div>
+    <div class="mat-error" *ngIf="fc.errors.fewAnswers">
+      There should be at least 2 answer
+    </div>
+    <div class="mat-error" *ngIf="fc.errors.noGoodAnswers">
+      There should be at least a good answer
+    </div>
+  </mat-card-footer>
+</mat-card>

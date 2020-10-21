@@ -11,9 +11,14 @@ import { ImgCachePipe } from './pipes/img-cache.pipe';
 import { SanitizePipe } from './pipes/sanitize.pipe';
 import { QuizOverviewComponent } from './components/quiz-overview/quiz-overview.component';
 import {MatIconModule} from "@angular/material/icon";
+import {RouterModule} from "@angular/router";
+import { MultipleChoicesComponent } from './components/questions/multiple-choices/multiple-choices.component';
+import {FormsModule} from "@angular/forms";
+import {QuestionBaseComponent} from "./components/questions/question.base.component";
+import {MatList, MatListModule} from "@angular/material/list";
 
 @NgModule({
-  declarations: [QuizIdInputComponent, UserDetailsComponent, ImgCachePipe, SanitizePipe, QuizOverviewComponent],
+  declarations: [QuizIdInputComponent, UserDetailsComponent, ImgCachePipe, SanitizePipe, QuizOverviewComponent, MultipleChoicesComponent, QuestionBaseComponent],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -21,14 +26,18 @@ import {MatIconModule} from "@angular/material/icon";
     MatCardModule,
     OverlayModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    RouterModule,
+    FormsModule,
+    MatListModule
   ],
   exports: [
     QuizIdInputComponent,
     UserDetailsComponent,
     ImgCachePipe,
     SanitizePipe,
-    QuizOverviewComponent
+    QuizOverviewComponent,
+    MultipleChoicesComponent
   ]
 })
 export class SharedModule { }

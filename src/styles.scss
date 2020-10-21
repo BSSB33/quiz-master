@@ -124,3 +124,23 @@ body {
     transform: rotate(359deg);
   }
 }
+
+.red-highlight {
+  background-color: rgba(255,0,0,0.1);
+  &:hover {
+    background-color: rgba(255,0,0,0.2);
+  }
+}
+.green-highlight {
+  background-color: rgba(55,255,0,0.1);
+  &:hover {
+    background-color: rgba(55,255,0,0.2);
+  }
+}
+
+.row-separate {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  &:last-of-type {
+    border-bottom: none;
+  }
+}

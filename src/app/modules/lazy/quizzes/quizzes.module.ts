@@ -8,10 +8,14 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatCardModule} from "@angular/material/card";
 import {SharedModule} from "../../shared/shared.module";
+import { EditComponent } from './edit/edit.component';
+import {MatInputModule} from "@angular/material/input";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatSelectModule} from "@angular/material/select";
 
 
 @NgModule({
-  declarations: [QuizzesComponent],
+  declarations: [QuizzesComponent, EditComponent],
   imports: [
     CommonModule,
     QuizzesRoutingModule,
@@ -19,7 +23,11 @@ import {SharedModule} from "../../shared/shared.module";
     MatIconModule,
     MatDividerModule,
     MatCardModule,
-    SharedModule
+    SharedModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSelectModule
   ]
 })
 export class QuizzesModule {

@@ -1,3 +1,4 @@
 {
-  "google_client_id": "% Your google client id - used for safe google auth %"
+  "google_client_id": "% Your google client id - used for safe google auth %",
+  "api_url": "% The base url of the api (without / at the end) %"
 }

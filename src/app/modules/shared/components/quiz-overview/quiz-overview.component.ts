@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-quiz-overview',
@@ -26,7 +26,7 @@ export class QuizOverviewComponent implements OnInit {
     '#fa9bf0',
   ];
   quizColor = undefined;
-
+  @Output() delete = new EventEmitter<string>();
   @Input() model;
   @Input() index;
 
@@ -37,7 +37,7 @@ export class QuizOverviewComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getDate(timestamp: number) {
-    return new Date(timestamp * 1000).toLocaleString();
+  getDate(date: string) {
+    return new Date(date).toLocaleString();
   }
 }

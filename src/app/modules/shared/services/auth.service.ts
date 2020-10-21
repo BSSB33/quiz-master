@@ -9,7 +9,10 @@ export class AuthService {
   user: SocialUser = null;
 
   constructor(private sauthService: SocialAuthService, private router: Router) {
-    this.user = JSON.parse(localStorage.getItem('gooogle_auth_user'));
+
+    this.sauthService.authState.subscribe((user) => {
+      this.setuser(user);
+    });
   }
 
   signIn() {
@@ -29,11 +32,11 @@ export class AuthService {
   }
 
   get isLoggedIn() {
-    return this.user !== null;
+    return this.user !== null || JSON.parse(localStorage.getItem('qm_auth_user'));
   }
 
   private setuser(user: SocialUser) {
     this.user = user;
-    localStorage.setItem('gooogle_auth_user', JSON.stringify(user));
+    localStorage.setItem('qm_auth_user', JSON.stringify(this.user));
   }
 }

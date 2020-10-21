@@ -6,7 +6,7 @@
     <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
     <div style="flex: 3 1; text-align: center;" [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
          class="flex-column">
-      <ng-container *ngIf="myQuizzes === undefined">
+      <ng-container *ngIf="isLoading">
         <div>
           Loading quizzes...
         </div>
@@ -23,13 +23,13 @@
         </div>
 
         <div *ngFor="let quiz of myQuizzes; let i = index;" style="margin: 0 10px 20px 10px">
-          <app-quiz-overview [model]="quiz" [index]="i + 1">
+          <app-quiz-overview [model]="quiz" [index]="i + 1" (delete)="deleteQuiz($event)">
           </app-quiz-overview>
         </div>
 
         <!--      plus-->
         <div style="text-align: center; width: 100%; margin-bottom: 25px">
-          <button mat-fab color="accent">
+          <button mat-fab color="accent" [routerLink]="['edit', 'new']">
             <mat-icon>
               add
             </mat-icon>
