@@ -1,13 +1,30 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title [ngStyle]="{color: fc.valid ? 'black' : 'red'}">
-      Question {{visibleIndex !== undefined ? '#' + visibleIndex : ''}}</mat-card-title>
-    <div style="flex: 0 0; height: 24px;" mat-card-avatar>
-      <mat-icon color="warn" style="cursor: pointer" (click)="delete.emit(index)">
-        clear
-      </mat-icon>
+  <span>
+    <div class="flex-row" style="width: 100%; padding: 15px 5px; font-size: 1.5em;">
+<!--      status of question-->
+      <div style="flex: 0 0; margin-right: 8px;">
+        <mat-icon *ngIf="fc.valid" style="color: limegreen" matTooltip="The question is valid. ">
+          check
+        </mat-icon>
+        <mat-icon *ngIf="fc.invalid" style="color: orangered" matTooltip="The question is invalid.">
+          priority_high
+        </mat-icon>
+      </div>
+<!--      the question-->
+      <span>
+        Question {{visibleIndex !== undefined ? '#' + visibleIndex : ''}}
+      </span>
+<!--      growing space-->
+      <div style="flex: 1 1"></div>
+<!--      delete question icon-->
+      <div style="flex: 0 0; height: 24px;">
+        <mat-icon color="warn" style="cursor: pointer" (click)="delete.emit(index)" matTooltip="Remove question">
+          clear
+        </mat-icon>
+      </div>
     </div>
-  </mat-card-header>
+
+  </span>
   <mat-card-content>
     <mat-form-field style="width: 100%;" appearance="outline">
       <mat-label>Question</mat-label>
@@ -24,7 +41,7 @@
           {{answer}}
         </div>
         <div style="flex: 0 0; height: 24px;">
-          <mat-icon color="warn" style="cursor: pointer" (click)="removeAnswer(i); updateValidity()">
+          <mat-icon color="warn" style="cursor: pointer" (click)="removeAnswer(i); updateValidity()" matTooltip="Remove option">
             clear
           </mat-icon>
         </div>
@@ -42,11 +59,11 @@
 
       <div style="flex: 0 1 10px"></div>
       <div style="flex: 0 0">
-        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="primary"
+        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="primary" matTooltip="Add as correct answer. "
                 (click)="addCorrectAnswer(ans.value); ans.value = ''; updateValidity()">
           correct
         </button>
-        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="warn"
+        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="warn" matTooltip="Add as wrong answer. "
                 (click)="addWrongAnswer(ans.value); ans.value = ''; updateValidity()">
           wrong
         </button>
@@ -60,7 +77,7 @@
     <div class="mat-error" *ngIf="fc.errors.fewAnswers">
       There should be at least 2 answer
     </div>
-    <div class="mat-error" *ngIf="fc.errors.noGoodAnswers">
+    <div class="mat-error" *ngIf="fc.errors.noCorrectAnswers">
       There should be at least a good answer
     </div>
   </mat-card-footer>

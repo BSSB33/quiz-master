@@ -15,7 +15,11 @@ import {RouterModule} from "@angular/router";
 import { MultipleChoicesComponent } from './components/questions/multiple-choices/multiple-choices.component';
 import {FormsModule} from "@angular/forms";
 import {QuestionBaseComponent} from "./components/questions/question.base.component";
-import {MatList, MatListModule} from "@angular/material/list";
+import {MatListModule} from "@angular/material/list";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {HTTP_INTERCEPTORS} from "@angular/common/http";
+import {GoogleTokenInterceptor} from "./interceptors/google-token.interceptor";
 
 @NgModule({
   declarations: [QuizIdInputComponent, UserDetailsComponent, ImgCachePipe, SanitizePipe, QuizOverviewComponent, MultipleChoicesComponent, QuestionBaseComponent],
@@ -29,7 +33,8 @@ import {MatList, MatListModule} from "@angular/material/list";
     MatIconModule,
     RouterModule,
     FormsModule,
-    MatListModule
+    MatListModule,
+    MatTooltipModule
   ],
   exports: [
     QuizIdInputComponent,
@@ -38,6 +43,6 @@ import {MatList, MatListModule} from "@angular/material/list";
     SanitizePipe,
     QuizOverviewComponent,
     MultipleChoicesComponent
-  ]
+  ],
 })
 export class SharedModule { }

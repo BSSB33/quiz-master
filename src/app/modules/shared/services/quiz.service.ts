@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 
+
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class QuizService {
   private static endPoints = {

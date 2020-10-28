@@ -6,13 +6,13 @@ import {environment} from "../../../../environments/environment";
   providedIn: 'root'
 })
 export class ConfigService {
-  config;
+  private config;
 
-  constructor(private httpClient: HttpClient) {
+  constructor() {
   }
 
-  async init() {
-    this.config = await this.httpClient.get('assets/' + environment.configFile).toPromise()
+  provideConfig(config) {
+    this.config = config;
   }
 
   getGoogleClientId(): string {

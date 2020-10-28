@@ -36,7 +36,7 @@ export class MultipleChoicesComponent extends QuestionBaseComponent implements O
           return {fewAnswers: true}
         }
         if (control.value.model.correctAnswers.length < 1) {
-          return {nocorrectAnswers: true}
+          return {noCorrectAnswers: true}
         }
       }
     );

@@ -10,7 +10,7 @@ import {AuthService} from "./modules/shared/services/auth.service";
 export class AppComponent implements OnInit {
   title = 'quiz-master-frontend';
 
-  constructor(private authService: AuthService) {
+  constructor(public auth: AuthService) {
   }
 
   ngOnInit(): void {
@@ -23,9 +23,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  get isLoggedIn() {
-    return this.authService.user;
-  }
 
 
 }

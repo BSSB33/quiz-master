@@ -11,16 +11,22 @@
   <mat-card-footer>
     <mat-card-actions class="flex-row" style="display: flex; margin: 0 10px">
       <!--      delete quiz -->
-      <button mat-mini-fab color="warn" (click)="delete.emit(model.id)">
+      <button mat-mini-fab color="warn" (click)="delete.emit(model.id)" matTooltip="Delete Quiz. ">
         <mat-icon>
           delete
         </mat-icon>
       </button>
       <div style="flex: 1 1"></div>
       <!--      edit button -->
-      <button mat-mini-fab color="primary" [routerLink]="['edit', model.id]">
+      <button mat-mini-fab color="primary" style="margin-right: 8px;" [routerLink]="['edit', model.id]" matTooltip="Edit Quiz. ">
         <mat-icon>
-          create
+          edit
+        </mat-icon>
+      </button>
+<!--      preview button-->
+      <button mat-mini-fab color="primary" [routerLink]="['edit', model.id]" matTooltip="Preview Quiz. " disabled>
+        <mat-icon>
+          remove_red_eye
         </mat-icon>
       </button>
     </mat-card-actions>

@@ -93,7 +93,7 @@
               <div style="flex: 1 1;"></div>
               <!--        plus button-->
               <span style="flex: 0 0">
-              <button mat-mini-fab color="primary" style="margin-top: 12px; margin-right: 10px;"
+              <button mat-mini-fab color="primary" style="margin-top: 12px; margin-right: 10px;" matTooltip="Add new question to the quiz."
                       [disabled]="!questionSelect.value"
                       (click)="addNewQuestion(questionSelect.value); questionSelect.value = undefined">
                 <mat-icon>
@@ -110,11 +110,11 @@
 
         <!--        <div style="margin: 0 10px 20px 10px"> </div>-->
         <div class="flex-row" style="margin: 20px 10px;">
-          <button mat-raised-button color="warn" routerLink="../../">
+          <button mat-raised-button color="warn" routerLink="../../" matTooltip="Close without saving. ">
             Cancel
           </button>
           <div style="flex: 1 1"></div>
-          <button mat-raised-button color="primary"
+          <button mat-raised-button color="primary" matTooltip="Save current state of the quiz. "
                   [disabled]="questionFormArray.controls.length === 0 || baseGroup.invalid" (click)="saveQuiz()">
             Save
           </button>
