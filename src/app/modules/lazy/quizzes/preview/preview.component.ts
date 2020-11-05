@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommonService} from "../../../shared/services/common.service";
 import {QuizService} from "../../../shared/services/quiz.service";
@@ -10,7 +10,7 @@ import {EditComponent} from "../edit/edit.component";
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss']
 })
-export class PreviewComponent implements OnInit {
+export class PreviewComponent implements OnInit, OnDestroy {
   isLoading = false;
   id = '';
   quizModel: {
@@ -39,9 +39,25 @@ export class PreviewComponent implements OnInit {
         this.isLoading = false;
       }
     });
+
+    window.onkeyup = (ev: KeyboardEvent) => {
+      console.log(ev);
+      switch (ev.key) {
+        case 'ArrowLeft':
+          this.pageChange(-1);
+          break;
+        case 'ArrowRight':
+          this.pageChange(1);
+          break;
+      }
+    }
   }
 
   pageChange(inc: number) {
     this.currentIndex = Math.max(0, Math.min(inc + this.currentIndex, this.quizModel.questions.length))
+  }
+
+  ngOnDestroy(): void {
+    window.onkeyup = () => {};
   }
 }
