@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {AbstractControl, FormControl} from "@angular/forms";
 
 @Component({
@@ -6,9 +6,11 @@ import {AbstractControl, FormControl} from "@angular/forms";
   template: '',
   styles: []
 })
-export class QuestionBaseComponent implements OnInit{
+export class QuestionBaseComponent implements OnInit, OnChanges{
   modelDefinition;
 
+  @Input() type: 'edit' | 'game';
+  @Input() gameModel: any;
   @Input() index: number;
   @Input() fc: AbstractControl;
   @Output() delete = new EventEmitter<number>();
@@ -17,14 +19,23 @@ export class QuestionBaseComponent implements OnInit{
   public visibleIndex;
   constructor() { }
 
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.hasOwnProperty('index')) {
+      this.ngOnInit();
+    }
+  }
+
   ngOnInit(): void {
-    if (this.fc === undefined) {
+    if (this.type === 'edit' && this.fc === undefined) {
       throw new Error('Question has no formControl!');
     }
     if (this.index !== undefined) {
       this.visibleIndex = this.index + 1;
     }
-    this.checkAndCreateModel();
+    if (this.type === 'edit') {
+      this.checkAndCreateModel();
+    }
   }
 
 
@@ -66,4 +77,5 @@ export class QuestionBaseComponent implements OnInit{
   public updateValidity() {
     this.fc.updateValueAndValidity();
   }
+
 }

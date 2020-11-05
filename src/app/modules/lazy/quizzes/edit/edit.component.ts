@@ -57,7 +57,7 @@ export class EditComponent implements OnInit {
     });
   }
 
-  private static fillQuizData(base: any) {
+  public static fillQuizData(base: any) {
     const tmpObj = {
       title: '',
       description: '',

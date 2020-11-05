@@ -13,10 +13,11 @@ import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatSelectModule} from "@angular/material/select";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { PreviewComponent } from './preview/preview.component';
 
 
 @NgModule({
-  declarations: [QuizzesComponent, EditComponent],
+  declarations: [QuizzesComponent, EditComponent, PreviewComponent],
   imports: [
     CommonModule,
     QuizzesRoutingModule,

@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="type === 'edit'">
   <span>
     <div class="flex-row" style="width: 100%; padding: 15px 5px; font-size: 1.5em;">
 <!--      status of question-->
@@ -81,4 +81,22 @@
       There should be at least a good answer
     </div>
   </mat-card-footer>
+</mat-card>
+
+<mat-card *ngIf="type === 'game'">
+  <mat-card-header style="text-align: left;">
+    <mat-card-title>
+      {{gameModel.question}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      Question #{{visibleIndex}}
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let ans of gameModel?.answers; let ind = index;" (click)="answerClicked(ind)" style="cursor: pointer" class="row-selectable" [ngClass]="{'row-selected': selected.indexOf(ind) !== -1}">
+        {{ans}}
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
 </mat-card>

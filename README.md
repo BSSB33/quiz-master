@@ -33,11 +33,3 @@ Navigate your browser to *localhost:4200* and you will see the application.
 
 The main source of the app takes place in the *src/app/* folder. 
 
-### What's inside? 
-
-| Path | Description |
-| --- | --- |
-| *services/* | Communications with the server |
-| *inputs/* | Quiz Master own inputs |
-| *modules/* | Lazy modules and modules |
-| *components/* | Other reusable components |

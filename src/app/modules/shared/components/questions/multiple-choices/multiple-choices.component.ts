@@ -9,14 +9,13 @@ import {QuestionBaseComponent} from "../question.base.component";
   styleUrls: ['./multiple-choices.component.scss']
 })
 export class MultipleChoicesComponent extends QuestionBaseComponent implements OnInit {
-  @Input() index: number;
-  @Input() fc: AbstractControl;
-
   modelDefinition = {
     question: 'string',
     answers: 'string[]',
     correctAnswers: 'number[]'
   }
+
+  selected: number[];
   /**
    * This component is very simple.
    * It can have >0 number of bad answers and >0 answers
@@ -27,20 +26,25 @@ export class MultipleChoicesComponent extends QuestionBaseComponent implements O
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.fc.setValidators(
-      (control: AbstractControl): ValidationErrors | null => {
-        if (control.value.model.question === '') {
-          return {emptyQuestion: true}
+    if (this.type === 'edit') {
+      this.fc.setValidators(
+        (control: AbstractControl): ValidationErrors | null => {
+          if (control.value.model.question === '') {
+            return {emptyQuestion: true}
+          }
+          if (control.value.model.answers.length < 2) {
+            return {fewAnswers: true}
+          }
+          if (control.value.model.correctAnswers.length < 1) {
+            return {noCorrectAnswers: true}
+          }
         }
-        if (control.value.model.answers.length < 2) {
-          return {fewAnswers: true}
-        }
-        if (control.value.model.correctAnswers.length < 1) {
-          return {noCorrectAnswers: true}
-        }
-      }
-    );
-    this.updateValidity();
+      );
+      this.updateValidity();
+    }
+    if (this.type === "game") {
+      this.selected = [];
+    }
   }
 
   addWrongAnswer(ans: string) {
@@ -68,5 +72,16 @@ export class MultipleChoicesComponent extends QuestionBaseComponent implements O
         arr[index]--;
       }
     });
+  }
+
+  answerClicked(ind: number) {
+    if (ind >= 0 && ind < this.gameModel.answers.length) {
+      const indexOf = this.selected.indexOf(ind);
+      if (indexOf !== -1) {
+        this.selected.splice(indexOf, 1);
+      } else {
+        this.selected.push(ind);
+      }
+    }
   }
 }

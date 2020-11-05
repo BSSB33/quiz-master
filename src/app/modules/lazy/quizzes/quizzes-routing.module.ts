@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { QuizzesComponent } from './quizzes.component';
 import {EditComponent} from "./edit/edit.component";
+import {PreviewComponent} from "./preview/preview.component";
 
 const routes: Routes = [
   {
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path: 'edit/:id',
     component: EditComponent
+  },
+  {
+    path: 'preview/:id',
+    component: PreviewComponent
   }
   ];
 

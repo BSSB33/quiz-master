@@ -68,7 +68,7 @@
                           [ngSwitch]="questionControl.value.type">
               <ng-container *ngSwitchCase="'qm.multiple_choice'">
                 <app-multiple-choices [fc]="questionControl" [index]="i"
-                                      (delete)="removeQuestion($event)"></app-multiple-choices>
+                                      (delete)="removeQuestion($event)" type="edit"></app-multiple-choices>
               </ng-container>
             </ng-container>
           </div>
