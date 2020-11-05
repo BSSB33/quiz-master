@@ -46,7 +46,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity putById(@PathVariable String id){
+    public ResponseEntity deleteById(@PathVariable String id){
         if (quizMongoRepository.existsById(id)) {
             quizMongoRepository.deleteById(id);
             return ResponseEntity.ok().build();
