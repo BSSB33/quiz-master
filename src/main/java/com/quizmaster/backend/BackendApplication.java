@@ -73,11 +73,11 @@ public class BackendApplication implements CommandLineRunner {
 		//System.out.println(quizMongoRepository.getById("5f8dc1c5c0f21a25764dc0e7"));
 
 
-		try{
-			connect(); //Very simple STOMPClient test
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+//		try{
+//			connect(); //Very simple STOMPClient test
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
 
 	}
 
