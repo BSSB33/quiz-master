@@ -40,9 +40,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String tokenPrefix = "Bearer ";
 
 
-        String path = request.getRequestURI();
+        String path = '/' + request.getRequestURI().split("/")[1];
         //Path where the filter shouldn't apply on
-        if ("/newid".equals(path)) {
+
+        System.out.println(path);
+        if ("/ws".equals(path) || "/newid".equals(path) || "/results".equals(path) || "/create".equals(path)) {
             chain.doFilter(request, response);
             return;
         }

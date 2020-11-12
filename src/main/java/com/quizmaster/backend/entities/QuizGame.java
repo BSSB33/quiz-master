@@ -1,7 +1,11 @@
 package com.quizmaster.backend.entities;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 
+
+@Data
 public class QuizGame {
     private ArrayList<Quiz> quizzes = new ArrayList<>();
     private ArrayList<User> players = new ArrayList<>();
