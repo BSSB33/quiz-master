@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
+import java.util.*;
 
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
@@ -34,7 +34,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private boolean isExcludedPath(String path) {
-        return "/ws".equals(path) || "/newid".equals(path) || "/results".equals(path) || "/create".equals(path);
+        List<String> allowedPath = Arrays.asList( "/ws", "/newid", "/results");
+        for(String currentPath : allowedPath){
+            if(currentPath.equals(path)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
