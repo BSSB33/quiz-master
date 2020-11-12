@@ -7,13 +7,19 @@ import java.util.ArrayList;
 
 @Data
 public class QuizGame {
-    private ArrayList<Quiz> quizzes = new ArrayList<>();
-    private ArrayList<User> players = new ArrayList<>();
+    private ArrayList<Quiz> quizzes;
+    private ArrayList<User> players;
     private User owner;
+    private String gameID;
 
-    public QuizGame(User owner) {
-        this.quizzes = new ArrayList<>(); //TODO Load from DB
-        this.players = new ArrayList<>(); //TODO Load from DB
+    public QuizGame(User owner, String gameID) {
+        this.quizzes = new ArrayList<>();
+        this.players = new ArrayList<>();
         this.owner = owner;
+        this.gameID = gameID;
+    }
+
+    public void addPlayer(User newUser){
+        players.add(newUser);
     }
 }

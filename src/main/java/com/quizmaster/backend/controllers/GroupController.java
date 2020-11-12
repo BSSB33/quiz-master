@@ -5,9 +5,11 @@ import com.quizmaster.backend.repositories.UserMongoRepository;
 import com.quizmaster.services.GameIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class GroupController {
     public ResponseEntity createGame(String teacherUserName) { //This might be changed to User object
         GameIdGenerator generator = new GameIdGenerator(6);
         String gameID = generator.nextString();
-        QuizGame newGame = createQuizGame(teacherUserName);
+        QuizGame newGame = createQuizGame(teacherUserName, gameID);
         if (!usedCodes.contains(gameID)) {
             usedCodes.add(gameID);
             return ResponseEntity.ok(newGame); //TODO Add date of start
@@ -45,8 +47,8 @@ public class GroupController {
         }
     }
 
-    private QuizGame createQuizGame(String teacherUserName) {
-        QuizGame newGame = new QuizGame(userMongoRepository.getByName(teacherUserName));
+    private QuizGame createQuizGame(String teacherUserName, String gameID) {
+        QuizGame newGame = new QuizGame(userMongoRepository.getByName(teacherUserName), gameID);
         activeGames.add(newGame);
         //TODO create socket with id
         return newGame;
@@ -54,10 +56,18 @@ public class GroupController {
 
     @MessageMapping("/join/{gameId}") //if a message is sent to the /hello destination, the greeting() method is called.
     @SendTo("/results/joined")
-    public ResponseEntity join(GameID gameID) {
+    public ResponseEntity join(@DestinationVariable String gameId, User user) { //If object not string: (GameID gameId)
         //If key valid, game exists:
-        if (usedCodes.contains(gameID.getID())) {
-            System.out.println("Successfully connected to game ID:" + gameID.getID());
+        System.out.println("GameID: " + gameId);
+        if (usedCodes.contains(gameId)) {
+            System.out.println("Successfully connected to game ID:" + gameId);
+
+            int i = 0;
+            while (!gameId.equals(activeGames.get(i).getGameID()) && i < activeGames.size()){
+                i++;
+            }
+            activeGames.get(i).addPlayer(user);
+
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();

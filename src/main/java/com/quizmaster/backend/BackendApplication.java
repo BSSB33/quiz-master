@@ -1,5 +1,6 @@
 package com.quizmaster.backend;
 
+import com.quizmaster.backend.entities.User;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,10 @@ public class BackendApplication implements CommandLineRunner {
             if (line == null) break;
             if (line.length() == 0) continue;
             stompSession.send("/api/create", "Victor");
+
+//            System.out.println("Enter GameID:");
+//            line = in.readLine();
+//            stompSession.send("/api/join" + line, new User("Mark"));
         }
 
     }

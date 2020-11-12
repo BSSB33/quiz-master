@@ -26,12 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     {
         security.httpBasic().disable();
         getHttp().cors().and().csrf().disable();
-//                .authorizeRequests()
-//                .antMatchers("/quizzes/**")
-//                .authenticated()
-//                .and()
         security.addFilter(jwtAuthFilter()).antMatcher("/quizzes/**");
-         //security.authorizeRequests().antMatchers("/", "/**").permitAll();
+        //security.authorizeRequests().antMatchers("/", "/**").permitAll();
     }
 
     @Bean
