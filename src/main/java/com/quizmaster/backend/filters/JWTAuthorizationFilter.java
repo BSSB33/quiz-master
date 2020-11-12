@@ -33,18 +33,20 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 .build();
     }
 
+    private boolean isExcludedPath(String path) {
+        return "/ws".equals(path) || "/newid".equals(path) || "/results".equals(path) || "/create".equals(path);
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // super.doFilterInternal(request, response, chain);
         String headerName = "Authorization";
         String tokenPrefix = "Bearer ";
 
-
         String path = '/' + request.getRequestURI().split("/")[1];
         //Path where the filter shouldn't apply on
 
-        System.out.println(path);
-        if ("/ws".equals(path) || "/newid".equals(path) || "/results".equals(path) || "/create".equals(path)) {
+        if (isExcludedPath(path)) {
             chain.doFilter(request, response);
             return;
         }
