@@ -56,6 +56,7 @@ public class GroupController {
 
     @MessageMapping("/join/{gameId}") //if a message is sent to the /hello destination, the greeting() method is called.
     @SendTo("/results/joined")
+    //TODO : Might be an issue for the gameid binding
     public ResponseEntity join(@DestinationVariable String gameId, User user) { //If object not string: (GameID gameId)
         //If key valid, game exists:
         System.out.println("GameID: " + gameId);
