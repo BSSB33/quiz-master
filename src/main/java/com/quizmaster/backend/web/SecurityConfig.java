@@ -30,8 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/quizzes/**")
 //                .authenticated()
 //                .and()
-                //.addFilter(jwtAuthFilter()).antMatcher("/quizzes/**");
-         security.authorizeRequests().antMatchers("/", "/**").permitAll();
+        security.addFilter(jwtAuthFilter()).antMatcher("/quizzes/**");
+         //security.authorizeRequests().antMatchers("/", "/**").permitAll();
     }
 
     @Bean
