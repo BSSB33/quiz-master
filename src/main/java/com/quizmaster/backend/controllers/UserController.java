@@ -8,10 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     UserMongoRepository userMongoRepository;
+
+    @GetMapping("")
+    public ResponseEntity getAll(){
+        System.out.println(userMongoRepository.findAll());
+        return ResponseEntity.ok(userMongoRepository.findAll());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable String id){
