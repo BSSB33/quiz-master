@@ -40,6 +40,10 @@ public class QuizController {
     public ResponseEntity putById(@PathVariable String id, @RequestBody Quiz quizToSave){
         if (quizMongoRepository.existsById(id)) {
             quizToSave.setId(id);
+
+            Quiz oldquiz = quizMongoRepository.getById(id);
+            quizToSave.setcreatedAt(oldquiz.getcreatedAt());
+
             return ResponseEntity.ok(quizMongoRepository.save(quizToSave));
         }
         return ResponseEntity.notFound().build();
