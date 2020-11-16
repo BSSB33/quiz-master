@@ -8,10 +8,11 @@ public class User {
 
     @Id
     private String id;
+    private String email;
+    private String googleId;
 
-    private String name;
-
-    public User(String name) {
-        this.name = name;
+    public User(String email, String googleId) {
+        this.email = email;
+        this.googleId = googleId;
     }
 }

@@ -5,6 +5,10 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.quizmaster.backend.entities.User;
+import com.quizmaster.backend.repositories.QuizMongoRepository;
+import com.quizmaster.backend.repositories.UserMongoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -20,7 +24,6 @@ import java.util.*;
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private GoogleIdTokenVerifier verifier = null;
-
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -63,9 +66,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 GoogleIdToken idToken = verifier.verify(token);
                 if (idToken != null) {
                     Payload payload = idToken.getPayload();
-                    String userId = payload.getSubject();
-//                    System.out.println(userId);
-                    // TODO: userId should be stored somewhere.
+                    saveUserIfNew(payload);
+                    //TODO: userId should be stored somewhere.
                     chain.doFilter(request, response);
                 } else {
                     response.sendError(401, "Token is not valid. ");
@@ -76,5 +78,21 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         response.sendError(401, "Authorization token not defined as expected. ");
+    }
+
+
+    @Autowired
+    private UserMongoRepository userMongoRepository;
+
+    void saveUserIfNew(Payload payload){
+        String userId = payload.getSubject();
+        System.out.println("Email :" + payload.getEmail());
+        System.out.println("UserID :" + userId);
+
+        if(!userMongoRepository.existsUserByEmail(payload.getEmail())){
+            System.out.println("New user registered: " + payload.getEmail() + " - " + userId);
+            userMongoRepository.save(new User(payload.getEmail(), userId));
+        }
+        else System.out.println("Already known user: " + payload.getEmail() + " - " + userId);
     }
 }

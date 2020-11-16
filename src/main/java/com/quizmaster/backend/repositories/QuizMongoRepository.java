@@ -7,5 +7,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface QuizMongoRepository extends MongoRepository<Quiz, String> {
     public Quiz getById(String id);
 
-
 }
