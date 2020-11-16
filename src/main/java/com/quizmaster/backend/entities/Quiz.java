@@ -32,11 +32,11 @@ public class Quiz {
         this.questions = questions;
     }
 
-    public void setcreatedAt(LocalDateTime creatingTime){
+    public void setCreatedAt(LocalDateTime creatingTime){
         this.createdAt = creatingTime;
     }
 
-    public LocalDateTime getcreatedAt(){
+    public LocalDateTime getCreatedAt(){
         return this.createdAt;
     }
 

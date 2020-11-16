@@ -8,6 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.SimpleMessageConverter;
+import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -67,16 +69,15 @@ public class BackendApplication implements CommandLineRunner {
 //		userMongoRepository.save(u2);
 
 
-        /*try {
+        try {
             connect(); //Very simple STOMPClient test
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
     }
 
     public void connect() throws InterruptedException, ExecutionException, TimeoutException, IOException {
-
 
         List<Transport> transports = new ArrayList<>(1);
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
@@ -86,22 +87,22 @@ public class BackendApplication implements CommandLineRunner {
 
         String url = "ws://localhost:8080/ws";
         StompSessionHandler sessionHandler = new MyStompSessionHandler();
-        System.out.println("trying to connect");
+        System.out.println("Trying to connect");
         StompSession stompSession = stompClient.connect(url, sessionHandler).get(10, TimeUnit.SECONDS);
         System.out.println("Connection was successful");
 
+        stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //Demo quiz
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        for (; ; ) {
-            String line = in.readLine();
-            if (line == null) break;
-            if (line.length() == 0) continue;
-            stompSession.send("/game/join/{}", "Victor");
+//        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+//        for (; ; ) {
+//            String line = in.readLine();
+//            if (line == null) break;
+//            if (line.length() == 0) continue;
 
 //            System.out.println("Enter GameID:");
 //            line = in.readLine();
 //            stompSession.send("/api/join" + line, new User("Mark"));
-        }
+//        }
 
     }
 }
@@ -112,7 +113,7 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Executed after successful connection...");
 
-        session.subscribe("/results/created", this);
+        session.subscribe("/results/joined", this);
 
         System.out.println("New session opened: " + session.getSessionId());
     }
@@ -125,7 +126,7 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public Type getPayloadType(StompHeaders headers) {
         System.out.println("Received Header by STOMPClient " + headers.toString());
-        return String.class;
+        return byte[].class;
     }
 
     @Override

@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
 @RestController
+@CrossOrigin
 public class GroupController {
 
     @Autowired
@@ -35,16 +37,16 @@ public class GroupController {
     }
 
 
-//    @MessageMapping("/join/{gameId}")
-//    @SendTo("/results/joined")
-//    public ResponseEntity join(@DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
-//        //If key valid, game exists:
-//        if () {
-//            return ResponseEntity.ok().build();
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    @MessageMapping("/join/{gameId}")
+    @SendTo("/results/joined")
+    public ResponseEntity join(@DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
+        //If key valid, game exists:
+        if (gameId != null) {
+            return ResponseEntity.ok().body(gameId);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/newid")
     public String test() {

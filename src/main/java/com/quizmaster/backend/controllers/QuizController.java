@@ -41,8 +41,8 @@ public class QuizController {
         if (quizMongoRepository.existsById(id)) {
             quizToSave.setId(id);
 
-            Quiz oldquiz = quizMongoRepository.getById(id);
-            quizToSave.setcreatedAt(oldquiz.getcreatedAt());
+            Quiz oldQuiz = quizMongoRepository.getById(id);
+            quizToSave.setCreatedAt(oldQuiz.getCreatedAt());
 
             return ResponseEntity.ok(quizMongoRepository.save(quizToSave));
         }
