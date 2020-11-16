@@ -3,14 +3,22 @@ package com.quizmaster.backend;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quizmaster.backend.entities.Quiz;
+import com.quizmaster.backend.repositories.QuizMongoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,6 +29,9 @@ public class QuizTests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private QuizMongoRepository quizMongoRepository;
+
     private String jsonToString(final Object obj) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -30,6 +41,8 @@ public class QuizTests {
             throw new RuntimeException(e);
         }
     }
+
+
 //    These test need to be run without security
 //    @Test
 //    public void shouldGetQuizById() throws Exception {
@@ -51,4 +64,24 @@ public class QuizTests {
                 .get("/quizzes/9999"))
                 .andExpect(status().isUnauthorized());
     }
+
+    /* Test for createdAt date change should look like this
+    @Test
+    public void shouldGetQuizById() throws Exception {
+        Quiz oldQuiz = quizMongoRepository.getById("5f918f6b894d6016707a019f");
+        LocalDateTime initialcreatedAt = oldQuiz.getcreatedAt();
+
+        oldQuiz.setcreatedAt(LocalDateTime.now());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/quizzes/5f918f6b894d6016707a019f", "5f918f6b894d6016707a019f")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonToString(oldQuiz))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        assertThat(quizMongoRepository.getById("5f918f6b894d6016707a019f").getcreatedAt()).isEqualTo(initialcreatedAt);
+    }*/
+
+
 }

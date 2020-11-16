@@ -31,4 +31,13 @@ public class Quiz {
         this.notes = notes;
         this.questions = questions;
     }
+
+    public void setcreatedAt(LocalDateTime creatingTime){
+        this.createdAt = creatingTime;
+    }
+
+    public LocalDateTime getcreatedAt(){
+        return this.createdAt;
+    }
+
 }
