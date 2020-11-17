@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
@@ -60,17 +61,14 @@ public class BackendApplication implements CommandLineRunner {
 		Question q1 = new Question("qm.multiple_choice", m1);
 		Question q2 = new Question("qm.multiple_choice", m2);
 
-
+        for (Quiz Act : quizMongoRepository.findAll()){
+            if (Act.getTitle().equals("Testquiz")){
+                quizMongoRepository.deleteById(Act.getId());
+            }
+        }
 
         Quiz quiz = new Quiz("Testquiz", "d",LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
         quizMongoRepository.save(quiz);
-
-        //User u1 = new User("Victor");
-        //User u2 = new User("Gabor");
-
-//		userMongoRepository.save(u1);
-//		userMongoRepository.save(u2);
-
 
         try {
             connect(quiz.getId()); //Very simple STOMPClient test

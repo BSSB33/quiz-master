@@ -49,10 +49,6 @@ public class GroupController {
         System.out.println("Time + 1: " + fiveMinutesLater.toString());
 
         for (Quiz Act : quizMongoRepository.findAll()){
-            //System.out.println("Quiz Title" + Act.getTitle());
-            //System.out.println("Quiz starting Time" + Act.getStartingTime().truncatedTo(ChronoUnit.MINUTES));
-            //System.out.println("compareTime" + fiveMinutesLater);
-
             if (Act.getStartingTime().truncatedTo(ChronoUnit.MINUTES).isEqual(fiveMinutesLater)){
                 System.out.println("Quiz added " + Act.getId());
                 activeGames.add(new QuizGame(Act));
@@ -61,26 +57,28 @@ public class GroupController {
 
         System.out.println("Length activegames: " + activeGames.size());
 
+        sendNextQuestion();
     }
 
-    @Scheduled(fixedRate = 60000)
     public void sendNextQuestion(){
         //TODO assigned to: Pascal
         //TODO with all the students joined to the game, at the point of the given timestamp, the game can be started -> this is the point wehere we send the first question to everyone
 
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        List<QuizGame> itemsToRemove = new ArrayList<QuizGame>();
 
         for (QuizGame Act : activeGames){
 
             LocalDateTime quizTime = Act.getQuiz().getStartingTime().truncatedTo(ChronoUnit.MINUTES);
             long diff = Duration.between(quizTime, now).toMinutes();
-            System.out.println("Differnce in Time for active game: " + diff);
+            System.out.println("Difference in Time for active game: " + diff);
 
             if (diff < 0){ //is about to start
 
             }else{ //is starting or has already started
-                if (diff > Act.getQuiz().getQuestions().size()){ //game is over
-                    activeGames.remove(Act);
+
+                if (diff > Act.getQuiz().getQuestions().size()-1){ //game is over
+                    itemsToRemove.add(Act);
                     template.convertAndSend("/results/room/" + Act.getQuiz().getId(), "Quiz ended");
                 }else{ //game still has more questions
                     System.out.println("Sending out question");
@@ -90,6 +88,7 @@ public class GroupController {
                 }
             }
         }
+        activeGames.removeAll(itemsToRemove);
     }
 
 
