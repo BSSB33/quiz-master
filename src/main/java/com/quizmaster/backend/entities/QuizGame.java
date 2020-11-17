@@ -8,17 +8,27 @@ import java.util.ArrayList;
 @Data
 public class QuizGame {
     private Quiz quiz;
-    private ArrayList<String> nicknames;
-    private boolean isStarted;
-    //private String gameID;
+    private ArrayList<PlayerScore> Player;
 
     public QuizGame(Quiz quiz) {
         this.quiz = quiz;
-        this.nicknames = new ArrayList<>();
+        this.Player = new ArrayList<PlayerScore>();
     }
 
-    public void addPlayer(String newNickname){
-        nicknames.add(newNickname);
+    public void addPlayer(PlayerScore newUser){ Player.add(newUser); }
+
+    public ArrayList<PlayerScore> getPlayer(){ return this.Player; }
+
+
+    public PlayerScore getPlayer(String sessionID){
+
+        for (PlayerScore user : this.Player){
+            if (user.getSessionID().equals(sessionID)){
+                return user;
+            }
+        }
+
+        return null;
     }
 
     public Quiz getQuiz() { return this.quiz;}

@@ -7,9 +7,11 @@ import com.quizmaster.services.GameIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -93,15 +95,27 @@ public class GroupController {
 
 
     @MessageMapping("/join/{gameId}")
-    @SendTo("/results/joined")
-    public String join(@DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
-        //If key valid, game exists:
-        if (gameId != null) {
-            return "Yup, you joined";
-        } else {
-            return "Nope Error while joining";
+    @SendToUser("/queue/reply")
+    public String join(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
+
+        System.out.println("Join Request Received");
+
+        for (QuizGame Act : activeGames){
+            if (Act.getQuiz().getId().equals(gameId)){ //quiz found
+                PlayerScore userInfo = Act.getPlayer(sessionId);
+                if (userInfo != null){ //already joined
+                    return "Already joined";
+                }else{
+                    PlayerScore addUser = new PlayerScore(sessionId, LocalDateTime.now());
+                    addUser.setNickname(nickname);
+                    Act.addPlayer(addUser);
+                    return "You were added";
+                }
+            }
         }
+        return "GameID not found";
     }
+
 
     @GetMapping("/newid")
     public String test() {
@@ -122,4 +136,5 @@ public class GroupController {
 //            return ResponseEntity.badRequest().body("Game ID generation was not successful. (You should never see this error)");
 //        }
 //    }
+
 }
