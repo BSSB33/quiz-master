@@ -3,7 +3,6 @@ package com.quizmaster.backend.entities;
 
 import lombok.Data;
 import nonapi.io.github.classgraph.json.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,4 +39,10 @@ public class Quiz {
         return this.createdAt;
     }
 
+    public LocalDateTime getStartingTime() { return this.startingTime; }
+
+    public String getId() { return this.id;}
+
+
+    public List<Question> getQuestions() { return this.questions;}
 }

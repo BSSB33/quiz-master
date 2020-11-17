@@ -44,14 +44,22 @@ public class GroupController {
         //TODO: every minute a loop should check whether the quiz can be started or not, if the date comes the quizGame should be started -> add it to activeGames array before 5 minutes
         //TODO create socket connection for ID -> like in webSocketConfig
 
-        LocalDateTime fiveMinutesLater = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(5);
-        System.out.println("Time + 5: " + fiveMinutesLater.toString());
+        LocalDateTime fiveMinutesLater = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1);
+        System.out.println("############################################## New Iteration");
+        System.out.println("Time + 1: " + fiveMinutesLater.toString());
 
         for (Quiz Act : quizMongoRepository.findAll()){
+            //System.out.println("Quiz Title" + Act.getTitle());
+            //System.out.println("Quiz starting Time" + Act.getStartingTime().truncatedTo(ChronoUnit.MINUTES));
+            //System.out.println("compareTime" + fiveMinutesLater);
+
             if (Act.getStartingTime().truncatedTo(ChronoUnit.MINUTES).isEqual(fiveMinutesLater)){
+                System.out.println("Quiz added " + Act.getId());
                 activeGames.add(new QuizGame(Act));
             }
         }
+
+        System.out.println("Length activegames: " + activeGames.size());
 
     }
 
@@ -60,20 +68,25 @@ public class GroupController {
         //TODO assigned to: Pascal
         //TODO with all the students joined to the game, at the point of the given timestamp, the game can be started -> this is the point wehere we send the first question to everyone
 
-        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(5);
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
         for (QuizGame Act : activeGames){
 
             LocalDateTime quizTime = Act.getQuiz().getStartingTime().truncatedTo(ChronoUnit.MINUTES);
             long diff = Duration.between(quizTime, now).toMinutes();
+            System.out.println("Differnce in Time for active game: " + diff);
+
             if (diff < 0){ //is about to start
 
             }else{ //is starting or has already started
                 if (diff > Act.getQuiz().getQuestions().size()){ //game is over
                     activeGames.remove(Act);
-                    template.convertAndSend("game/room/" + Act.getQuiz().getid(), "Quiz ended");
+                    template.convertAndSend("/results/room/" + Act.getQuiz().getId(), "Quiz ended");
                 }else{ //game still has more questions
-                    template.convertAndSend("game/room/" + Act.getQuiz().getid(), Act.getQuiz().getQuestions().get((int) diff));
+                    System.out.println("Sending out question");
+                    System.out.println("Sending out to room: results/room/" + Act.getQuiz().getId());
+                    System.out.println("Content of Questions is: " +  Act.getQuiz().getQuestions().get((int) diff).toString());
+                    template.convertAndSend("/results/room/" + Act.getQuiz().getId(), Act.getQuiz().getQuestions().get((int) diff).toString());
                 }
             }
         }
@@ -82,12 +95,12 @@ public class GroupController {
 
     @MessageMapping("/join/{gameId}")
     @SendTo("/results/joined")
-    public Ok join(@DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
+    public String join(@DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
         //If key valid, game exists:
         if (gameId != null) {
-            return new Ok(1, 1, "1");
+            return "Yup, you joined";
         } else {
-            return null;
+            return "Nope Error while joining";
         }
     }
 

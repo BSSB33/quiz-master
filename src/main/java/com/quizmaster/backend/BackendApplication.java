@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -58,9 +59,11 @@ public class BackendApplication implements CommandLineRunner {
 		Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
 		Question q1 = new Question("qm.multiple_choice", m1);
 		Question q2 = new Question("qm.multiple_choice", m2);
-        Quiz quiz = new Quiz("Quiz 1", "d",random, "Random Note", List.of(q1, q2));
 
-        //quizMongoRepository.save(quiz);
+
+
+        Quiz quiz = new Quiz("Testquiz", "d",LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
+        quizMongoRepository.save(quiz);
 
         //User u1 = new User("Victor");
         //User u2 = new User("Gabor");
@@ -70,51 +73,47 @@ public class BackendApplication implements CommandLineRunner {
 
 
         try {
-            connect(); //Very simple STOMPClient test
+            connect(quiz.getId()); //Very simple STOMPClient test
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void connect() throws InterruptedException, ExecutionException, TimeoutException, IOException {
+    public void connect(String quizID) throws InterruptedException, ExecutionException, TimeoutException, IOException {
 
         List<Transport> transports = new ArrayList<>(1);
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         WebSocketClient transport = new SockJsClient(transports);
         WebSocketStompClient stompClient = new WebSocketStompClient(transport);
-        stompClient.setMessageConverter(new MappingJackson2MessageConverter()); //later if we want to use other classes than plaintext we should switch to MappingJackson2MessageConverter
+        //stompClient.setMessageConverter(new MappingJackson2MessageConverter()); //later if we want to use other classes than plaintext we should switch to MappingJackson2MessageConverter
+        stompClient.setMessageConverter(new StringMessageConverter());
+
 
         String url = "ws://localhost:8080/ws";
-        StompSessionHandler sessionHandler = new MyStompSessionHandler();
+        StompSessionHandler sessionHandler = new MyStompSessionHandler(quizID);
         System.out.println("Trying to connect");
         StompSession stompSession = stompClient.connect(url, sessionHandler).get(10, TimeUnit.SECONDS);
         System.out.println("Connection was successful");
 
-        stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //Demo quiz
-
-//        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-//        for (; ; ) {
-//            String line = in.readLine();
-//            if (line == null) break;
-//            if (line.length() == 0) continue;
-
-//            System.out.println("Enter GameID:");
-//            line = in.readLine();
-//            stompSession.send("/api/join" + line, new User("Mark"));
-//        }
-
+        //stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //Demo quiz
     }
 }
 
 class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
+    private String id;
+
+    public MyStompSessionHandler(String quizID) {
+        this.id = quizID;
+    }
+
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         System.out.println("Executed after successful connection...");
 
-        session.subscribe("/results/joined", this);
-
+        session.subscribe("/results/room/" + this.id, this);
+        System.out.println("Join room id: /results/room/" + this.id);
         System.out.println("New session opened: " + session.getSessionId());
     }
 
@@ -126,7 +125,7 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public Type getPayloadType(StompHeaders headers) {
         System.out.println("Received Header by STOMPClient " + headers.toString());
-        return byte[].class;
+        return String.class;
     }
 
     @Override

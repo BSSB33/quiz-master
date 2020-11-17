@@ -20,4 +20,6 @@ public class QuizGame {
     public void addPlayer(String newNickname){
         nicknames.add(newNickname);
     }
+
+    public Quiz getQuiz() { return this.quiz;}
 }
