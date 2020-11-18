@@ -2,6 +2,7 @@ package com.quizmaster.backend.entities;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -10,11 +11,13 @@ public class QuizGame {
     private Quiz quiz;
     private ArrayList<PlayerScore> Player;
     private int actQuestion;
+    private LocalDateTime lastQuestionSend;
 
     public QuizGame(Quiz quiz) {
         this.quiz = quiz;
         this.Player = new ArrayList<PlayerScore>();
         this.actQuestion = -1;
+        this.lastQuestionSend = LocalDateTime.now().minusDays(1);
     }
 
     public void addPlayer(PlayerScore newUser){ Player.add(newUser); }

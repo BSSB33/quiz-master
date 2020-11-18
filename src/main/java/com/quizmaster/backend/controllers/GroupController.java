@@ -34,6 +34,15 @@ import java.util.Collection;
 @EnableScheduling
 public class GroupController {
 
+    private final long TIMEWINDOW = 1; // in Minutes
+    private final long SCHEDULERATE = 1; // in Seconds
+    private final long QUESTIONTIME = 20; // in Seconds
+
+
+    public GroupController(){
+        super();
+    }
+
     @Autowired
     private SimpMessagingTemplate template;
 
@@ -45,25 +54,23 @@ public class GroupController {
 
     ArrayList<QuizGame> activeGames = new ArrayList<>();
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = SCHEDULERATE * 1000)
     public void createGame() {
         //TODO assigned to: Pascal
         //TODO: every minute a loop should check whether the quiz can be started or not, if the date comes the quizGame should be started -> add it to activeGames array before 5 minutes
         //TODO create socket connection for ID -> like in webSocketConfig
 
-        LocalDateTime fiveMinutesLater = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES).plusMinutes(1);
-        System.out.println("############################################## New Iteration");
-        System.out.println("Time + 1: " + fiveMinutesLater.toString());
+        System.out.println("####################################################### New Iteration of checking for activeGames");
 
         for (Quiz Act : quizMongoRepository.findAll()){
-            if (Act.getStartingTime().truncatedTo(ChronoUnit.MINUTES).isEqual(fiveMinutesLater)){
+            if (Act.getStartingTime().minusMinutes(TIMEWINDOW).isAfter(LocalDateTime.now()) && Act.getStartingTime().minusMinutes(TIMEWINDOW).isBefore(LocalDateTime.now().plusSeconds(SCHEDULERATE))){
+                // check if quiz time is after now() and before next iteration now()
                 System.out.println("Quiz added " + Act.getId());
                 activeGames.add(new QuizGame(Act));
             }
         }
 
         System.out.println("Length activegames: " + activeGames.size());
-
         sendNextQuestion();
     }
 
@@ -71,34 +78,29 @@ public class GroupController {
         //TODO assigned to: Pascal
         //TODO with all the students joined to the game, at the point of the given timestamp, the game can be started -> this is the point wehere we send the first question to everyone
 
-        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         List<QuizGame> itemsToRemove = new ArrayList<QuizGame>();
 
         for (QuizGame Act : activeGames){
 
 
-            LocalDateTime quizTime = Act.getQuiz().getStartingTime().truncatedTo(ChronoUnit.MINUTES);
-            long diff = Duration.between(quizTime, now).toMinutes();
-            System.out.println("Difference in Time for active game: " + diff);
+            if (LocalDateTime.now().isBefore(Act.getQuiz().getStartingTime())){ //is about to start but not ready
 
-            if (diff < 0){ //is about to start
+            }else { //is starting or has already started
 
-            }else{ //is starting or has already started
-                Act.incActQuestion();
-
-                if (Act.isNextQuestion() == false){ //game is over
-                    itemsToRemove.add(Act);
-                    template.convertAndSend("/results/room/" + Act.getQuiz().getId(), "Quiz ended");
-                    //TODO Save Results for Teacher
-                    sendResults(Act);
-
-                }else{ //game still has more questions
-                    System.out.println("Sending out question");
-                    System.out.println("Sending out to room: results/room/" + Act.getQuiz().getId());
-                    System.out.println("Content of Questions is: " +  Act.getActQuestion().toString());
-                    template.convertAndSend("/results/room/" + Act.getQuiz().getId(), Act.getActQuestion().toString());
-
-
+                if (Act.getLastQuestionSend().plusSeconds(QUESTIONTIME).isBefore(LocalDateTime.now())){
+                    Act.setLastQuestionSend(LocalDateTime.now());
+                    Act.incActQuestion();
+                    if (Act.isNextQuestion() == false){ //game is over
+                        itemsToRemove.add(Act);
+                        template.convertAndSend("/results/room/" + Act.getQuiz().getId(), "Quiz ended");
+                        //TODO Save Results for Teacher
+                        sendResults(Act);
+                    }else{ //game still has more questions
+                        System.out.println("Sending out question");
+                        System.out.println("Sending out to room: results/room/" + Act.getQuiz().getId());
+                        System.out.println("Content of Questions is: " +  Act.getActQuestion().toString());
+                        template.convertAndSend("/results/room/" + Act.getQuiz().getId(), Act.getActQuestion().toString());
+                    }
                 }
             }
         }
@@ -107,7 +109,7 @@ public class GroupController {
 
     private void sendResults(QuizGame act) {
         try {
-            Thread.sleep(1000); //wait some time to let sockets start up
+            Thread.sleep(1000); //wait some time to let clients receive Quiz ended first
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -124,9 +126,6 @@ public class GroupController {
         headerAccessor.setLeaveMutable(true);
         return headerAccessor.getMessageHeaders();
     }
-
-
-
 
 
     @MessageMapping("/join/{gameId}")
@@ -162,6 +161,8 @@ public class GroupController {
                 PlayerScore userInfo = Act.getPlayer(sessionId);
                 if (userInfo != null){ //already joined
 
+                    //TODO Compare multiple answers
+                    //only possible when client can send a list with answers
                     //List<Integer> correctAnswer = Act.getActQuestion().getModel().getCorrectAnswers();
                     //Collections.sort(correctAnswer);
                     //Collections.sort(answerChoice);
