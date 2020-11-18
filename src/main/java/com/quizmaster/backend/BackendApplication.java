@@ -3,6 +3,7 @@ package com.quizmaster.backend;
 import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +20,7 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import javax.annotation.Nullable;
+import javax.sound.midi.SysexMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -104,7 +106,14 @@ public class BackendApplication implements CommandLineRunner {
         stompSession.send("/game/join/" + quizID, "Victor"); //Second invalid request as game didn´t start
 
         Thread.sleep(60000); //wait some time to let the game start
+        System.out.println("Trying to join 4 times: ");
         stompSession.send("/game/join/" + quizID, "Victor"); //Valid request as the game should move to activeGames
+        Thread.sleep(10);
+        stompSession.send("/game/join/" + quizID, "Victor"); // Should be rejected
+        Thread.sleep(10);
+        stompSession.send("/game/join/" + quizID, "Pascal"); // Should be rejected
+        Thread.sleep(10);
+        stompSession.send("/game/join/" + quizID, "Pascal"); // Should be rejected
 
         stompSession.subscribe("/results/room/" + quizID, sessionHandler); // subscribe to Channel for the questions
         System.out.println("Join room id: /results/room/" + quizID);
@@ -147,6 +156,7 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
         return String.class;
     }
 
+    @SneakyThrows
     @Override
     public void handleFrame(StompHeaders headers, @Nullable Object payload) {
 
@@ -155,7 +165,13 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
         if (payload.toString().startsWith("Question(")){ //if a question is received
             System.out.println("Answering Questions with 1");
-            this.actSession.send("/game/answer/" + this.id, "1");
+            this.actSession.send("/game/answer/" + this.id, "2"); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, "3"); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, "4"); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, "1"); // Send it multiple times to see if it can handle this
         }
     }
 

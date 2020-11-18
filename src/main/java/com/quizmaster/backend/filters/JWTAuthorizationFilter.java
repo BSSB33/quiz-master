@@ -37,7 +37,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private boolean isExcludedPath(String path) {
-        List<String> allowedPath = Arrays.asList( "/ws", "/newid", "/results");
+        List<String> allowedPath = Arrays.asList( "/ws");
         for(String currentPath : allowedPath){
             if(currentPath.equals(path)){
                 return true;

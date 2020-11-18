@@ -24,6 +24,14 @@ public class QuizGame {
 
     public ArrayList<PlayerScore> getPlayer(){ return this.Player; }
 
+    public boolean isNicknameAlreadyUsed(String nickname){
+        for (PlayerScore user : this.Player){
+            if (user.getNickname().toLowerCase().equals(nickname.toLowerCase())){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public PlayerScore getPlayer(String sessionID){
         for (PlayerScore user : this.Player){
@@ -34,9 +42,8 @@ public class QuizGame {
         return null;
     }
 
-    public Question getActQuestion() {
-        return this.getQuiz().getQuestions().get(this.actQuestion);
-    }
+    public Question getActQuestion() { return this.quiz.getQuestions().get(this.actQuestion); }
+
     public int getQuestionNumber(){
         return this.actQuestion;
     }
@@ -52,8 +59,6 @@ public class QuizGame {
             return false;
         }
     }
-
-
 
     public Quiz getQuiz() { return this.quiz;}
 

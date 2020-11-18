@@ -130,7 +130,7 @@ public class GroupController {
 
     @MessageMapping("/join/{gameId}")
     @SendToUser("/queue/reply")
-    public String join(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
+    public String join(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String nickname) {
 
         System.out.println("Join: Join Request Received");
 
@@ -140,6 +140,9 @@ public class GroupController {
                 if (userInfo != null){ //already joined
                     return "Already joined";
                 }else{
+                    if (Act.isNicknameAlreadyUsed(nickname)){ // If nickname already given out to someone
+                        return "Nickname already given out";
+                    }
                     PlayerScore addUser = new PlayerScore(sessionId, LocalDateTime.now());
                     addUser.setNickname(nickname+sessionId.substring(0,3)); // first 3 elements of sessionID are added to nickname to enable secure distribution of names
                     Act.addPlayer(addUser);
@@ -152,7 +155,7 @@ public class GroupController {
 
     @MessageMapping("/answer/{gameId}")
     @SendToUser("/queue/reply")
-    public String receiveAnswer(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String answerChoice) { //If object not string: (GameID gameId)
+    public String receiveAnswer(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String answerChoice) {
 
         System.out.println("Answer Received");
 

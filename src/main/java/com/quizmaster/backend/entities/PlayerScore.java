@@ -22,6 +22,7 @@ public class PlayerScore {
         this.sessionID = ID;
         this.connectAt = created;
         this.answers = new ArrayList<SavedAnswer>();
+        this.nickname = ID;
     }
 
     public void setNickname(String nickname) { this.nickname = nickname; }
