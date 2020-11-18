@@ -15,18 +15,25 @@ import java.util.List;
 public class PlayerScore {
     String nickname;
     LocalDateTime connectAt;
-    ArrayList<Boolean> answers;
+    ArrayList<SavedAnswer> answers;
     String sessionID;
 
     public PlayerScore(String ID, LocalDateTime created){
         this.sessionID = ID;
         this.connectAt = created;
-        this.answers = new ArrayList<Boolean>();
+        this.answers = new ArrayList<SavedAnswer>();
     }
 
     public void setNickname(String nickname) { this.nickname = nickname; }
 
-    public void addAnswer(boolean add){ this.answers.add(add);}
-
+    public void addAnswer(int questionNumber, boolean isCorrect){
+        for (SavedAnswer temp : this.answers){
+            if (temp.getQuestionNumber() == questionNumber){
+                temp.setCorrect(isCorrect);
+                return;
+            }
+        }
+        this.answers.add(new SavedAnswer(questionNumber, isCorrect));
+    }
 
 }

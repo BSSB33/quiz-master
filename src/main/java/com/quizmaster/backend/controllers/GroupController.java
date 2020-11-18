@@ -17,6 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.Collection;
+
 
 @RestController
 @CrossOrigin
@@ -87,7 +89,7 @@ public class GroupController {
                 if (Act.isNextQuestion() == false){ //game is over
                     itemsToRemove.add(Act);
                     template.convertAndSend("/results/room/" + Act.getQuiz().getId(), "Quiz ended");
-
+                    //TODO Save Results for Teacher
                     sendResults(Act);
 
                 }else{ //game still has more questions
@@ -140,7 +142,7 @@ public class GroupController {
                     return "Already joined";
                 }else{
                     PlayerScore addUser = new PlayerScore(sessionId, LocalDateTime.now());
-                    addUser.setNickname(nickname);
+                    addUser.setNickname(nickname+sessionId.substring(0,3)); // first 3 elements of sessionID are added to nickname to enable secure distribution of names
                     Act.addPlayer(addUser);
                     return "You were added";
                 }
@@ -151,7 +153,7 @@ public class GroupController {
 
     @MessageMapping("/answer/{gameId}")
     @SendToUser("/queue/reply")
-    public String answer(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String answerChoice) { //If object not string: (GameID gameId)
+    public String receiveAnswer(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String answerChoice) { //If object not string: (GameID gameId)
 
         System.out.println("Answer Received");
 
@@ -167,10 +169,10 @@ public class GroupController {
                     System.out.println("Comparing given and correct answers");
 
                     if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers().get(0).toString())){
-                        userInfo.addAnswer(true);
+                        userInfo.addAnswer(Act.getQuestionNumber(), true);
                         System.out.println("Provided answer is correct");
                     }else{
-                        userInfo.addAnswer(false);
+                        userInfo.addAnswer(Act.getQuestionNumber(), false);
                         System.out.println("Provided answer is incorrect");
                     }
                     return "Thanks for your answer";

@@ -34,6 +34,9 @@ public class QuizGame {
     public Question getActQuestion() {
         return this.getQuiz().getQuestions().get(this.actQuestion);
     }
+    public int getQuestionNumber(){
+        return this.actQuestion;
+    }
 
     public void incActQuestion(){
         this.actQuestion++;

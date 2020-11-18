@@ -103,7 +103,7 @@ public class BackendApplication implements CommandLineRunner {
         Thread.sleep(1000); //wait to see difference in console
         stompSession.send("/game/join/" + quizID, "Victor"); //Second invalid request as game didn´t start
 
-        Thread.sleep(60000); //wait some time to let sockets start up
+        Thread.sleep(70000); //wait some time to let the game start
         stompSession.send("/game/join/" + quizID, "Victor"); //Valid request as the game should move to activeGames
 
         stompSession.subscribe("/results/room/" + quizID, sessionHandler); // subscribe to Channel for the questions
