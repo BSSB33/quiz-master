@@ -9,4 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class Model {
+    private List<Integer> correctAnswers;
 }

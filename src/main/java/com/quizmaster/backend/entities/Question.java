@@ -15,4 +15,9 @@ public class Question {
         this.type = type;
         this.model = model;
     }
+
+
+    public Model getModel() {
+        return model;
+    }
 }

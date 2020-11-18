@@ -94,26 +94,29 @@ public class BackendApplication implements CommandLineRunner {
         StompSession stompSession = stompClient.connect(url, sessionHandler).get(10, TimeUnit.SECONDS);
         System.out.println("Connection was successful");
 
+        stompSession.subscribe("/user/queue/reply", sessionHandler); // connecting to private channel
+
 
         Thread.sleep(10); //wait some time to let sockets start up
         stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //First make invalid request
 
-        Thread.sleep(1000); //wait some time to let sockets start up
+        Thread.sleep(1000); //wait to see difference in console
         stompSession.send("/game/join/" + quizID, "Victor"); //Second invalid request as game didn´t start
 
         Thread.sleep(60000); //wait some time to let sockets start up
         stompSession.send("/game/join/" + quizID, "Victor"); //Valid request as the game should move to activeGames
 
-        //stompSession.subscribe("/results/room/" + quizID, sessionHandler);
-        //System.out.println("Join room id: /results/room/" + quizID);
+        stompSession.subscribe("/results/room/" + quizID, sessionHandler); // subscribe to Channel for the questions
+        System.out.println("Join room id: /results/room/" + quizID);
 
-        //stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //Demo quiz
+
     }
 }
 
 class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
     private String id;
+    private StompSession actSession;
 
     public MyStompSessionHandler(String quizID) {
         this.id = quizID;
@@ -121,9 +124,12 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+        this.actSession = session;
+
         System.out.println("Executed after successful connection...");
 
-        session.subscribe("/user/queue/reply", this); // connecting to private channel
+        //session.subscribe("/user/queue/reply", this); // connecting to private channel
+
 
         //session.subscribe("/results/room/" + this.id, this);
         //System.out.println("Join room id: /results/room/" + this.id);
@@ -143,8 +149,14 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
     @Override
     public void handleFrame(StompHeaders headers, @Nullable Object payload) {
+
         System.out.println("Received Frame by STOMPClient");
         System.out.println("Received: " + (payload.toString()));
+
+        if (payload.toString().startsWith("Question(")){ //if a question is received
+            System.out.println("Answering Questions with 1");
+            this.actSession.send("/game/answer/" + this.id, "1");
+        }
     }
 
 

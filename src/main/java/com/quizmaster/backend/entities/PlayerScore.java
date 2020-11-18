@@ -6,6 +6,7 @@ import lombok.Data;
 import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -14,13 +15,18 @@ import java.util.List;
 public class PlayerScore {
     String nickname;
     LocalDateTime connectAt;
-    List<Boolean> answers;
+    ArrayList<Boolean> answers;
     String sessionID;
 
-    public PlayerScore(String ID, LocalDateTime created){ this.sessionID = ID; this.connectAt = created;}
+    public PlayerScore(String ID, LocalDateTime created){
+        this.sessionID = ID;
+        this.connectAt = created;
+        this.answers = new ArrayList<Boolean>();
+    }
 
     public void setNickname(String nickname) { this.nickname = nickname; }
 
     public void addAnswer(boolean add){ this.answers.add(add);}
+
 
 }

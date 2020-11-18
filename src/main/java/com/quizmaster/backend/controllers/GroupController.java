@@ -6,10 +6,13 @@ import com.quizmaster.backend.repositories.UserMongoRepository;
 import com.quizmaster.services.GameIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -71,6 +74,7 @@ public class GroupController {
 
         for (QuizGame Act : activeGames){
 
+
             LocalDateTime quizTime = Act.getQuiz().getStartingTime().truncatedTo(ChronoUnit.MINUTES);
             long diff = Duration.between(quizTime, now).toMinutes();
             System.out.println("Difference in Time for active game: " + diff);
@@ -78,27 +82,56 @@ public class GroupController {
             if (diff < 0){ //is about to start
 
             }else{ //is starting or has already started
+                Act.incActQuestion();
 
-                if (diff > Act.getQuiz().getQuestions().size()-1){ //game is over
+                if (Act.isNextQuestion() == false){ //game is over
                     itemsToRemove.add(Act);
                     template.convertAndSend("/results/room/" + Act.getQuiz().getId(), "Quiz ended");
+
+                    sendResults(Act);
+
                 }else{ //game still has more questions
                     System.out.println("Sending out question");
                     System.out.println("Sending out to room: results/room/" + Act.getQuiz().getId());
-                    System.out.println("Content of Questions is: " +  Act.getQuiz().getQuestions().get((int) diff).toString());
-                    template.convertAndSend("/results/room/" + Act.getQuiz().getId(), Act.getQuiz().getQuestions().get((int) diff).toString());
+                    System.out.println("Content of Questions is: " +  Act.getActQuestion().toString());
+                    template.convertAndSend("/results/room/" + Act.getQuiz().getId(), Act.getActQuestion().toString());
+
+
                 }
             }
         }
         activeGames.removeAll(itemsToRemove);
     }
 
+    private void sendResults(QuizGame act) {
+        try {
+            Thread.sleep(1000); //wait some time to let sockets start up
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("printing results");
+        for (PlayerScore userResult : act.getPlayer()){
+            System.out.println("Found finished game and sending results");
+            template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", "Results: " + userResult.getAnswers().toString(), createHeaders(userResult.getSessionID()));
+        }
+    }
+
+    private MessageHeaders createHeaders(String sessionId) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        return headerAccessor.getMessageHeaders();
+    }
+
+
+
+
 
     @MessageMapping("/join/{gameId}")
     @SendToUser("/queue/reply")
     public String join(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String nickname) { //If object not string: (GameID gameId)
 
-        System.out.println("Join Request Received");
+        System.out.println("Join: Join Request Received");
 
         for (QuizGame Act : activeGames){
             if (Act.getQuiz().getId().equals(gameId)){ //quiz found
@@ -116,6 +149,38 @@ public class GroupController {
         return "GameID not found";
     }
 
+    @MessageMapping("/answer/{gameId}")
+    @SendToUser("/queue/reply")
+    public String answer(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String answerChoice) { //If object not string: (GameID gameId)
+
+        System.out.println("Answer Received");
+
+        for (QuizGame Act : activeGames){
+            if (Act.getQuiz().getId().equals(gameId)){ //quiz found
+                PlayerScore userInfo = Act.getPlayer(sessionId);
+                if (userInfo != null){ //already joined
+
+                    //List<Integer> correctAnswer = Act.getActQuestion().getModel().getCorrectAnswers();
+                    //Collections.sort(correctAnswer);
+                    //Collections.sort(answerChoice);
+
+                    System.out.println("Comparing given and correct answers");
+
+                    if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers().get(0).toString())){
+                        userInfo.addAnswer(true);
+                        System.out.println("Provided answer is correct");
+                    }else{
+                        userInfo.addAnswer(false);
+                        System.out.println("Provided answer is incorrect");
+                    }
+                    return "Thanks for your answer";
+                }else{
+                    return "You did not join correctly to the game";
+                }
+            }
+        }
+        return "GameID not found";
+    }
 
     @GetMapping("/newid")
     public String test() {
