@@ -10,11 +10,6 @@ cache:
     - .gradle/wrapper
     - .gradle/caches
 
-before_script:
-    - run:
-       name: chmod permissions
-       command: chmod +x ./gradlew
-
 build:
   stage: build
   script:
