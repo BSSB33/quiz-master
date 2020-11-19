@@ -29,7 +29,10 @@ test:
 deploy:
   stage: deploy
   script:
-    - ./deploy
+   - ./gradlew build
+  artifacts:
+    paths:
+     - build/libs/*.jar
 
 after_script:
   - echo "End CI"
