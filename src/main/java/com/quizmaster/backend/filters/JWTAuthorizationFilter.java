@@ -6,7 +6,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.quizmaster.backend.entities.User;
-import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
@@ -37,9 +38,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private boolean isExcludedPath(String path) {
-        List<String> allowedPath = Arrays.asList( "/ws");
-        for(String currentPath : allowedPath){
-            if(currentPath.equals(path)){
+        List<String> allowedPath = Arrays.asList("/ws");
+        for (String currentPath : allowedPath) {
+            if (currentPath.equals(path)) {
                 return true;
             }
         }
@@ -48,12 +49,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // super.doFilterInternal(request, response, chain);
         String headerName = "Authorization";
         String tokenPrefix = "Bearer ";
 
-        String path = '/' + request.getRequestURI().split("/")[1];
         //Path where the filter shouldn't apply on
+        String path = '/' + request.getRequestURI().split("/")[1];
 
         if (isExcludedPath(path)) {
             chain.doFilter(request, response);
@@ -67,7 +67,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 if (idToken != null) {
                     Payload payload = idToken.getPayload();
                     saveUserIfNew(payload);
-                    //TODO: userId should be stored somewhere.
                     chain.doFilter(request, response);
                 } else {
                     response.sendError(401, "Token is not valid. ");
@@ -84,15 +83,14 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Autowired
     private UserMongoRepository userMongoRepository;
 
-    void saveUserIfNew(Payload payload){
+    void saveUserIfNew(Payload payload) {
         String userId = payload.getSubject();
         System.out.println("Email :" + payload.getEmail());
         System.out.println("UserID :" + userId);
 
-        if(!userMongoRepository.existsUserByEmail(payload.getEmail())){
+        if (!userMongoRepository.existsUserByEmail(payload.getEmail())) {
             System.out.println("New user registered: " + payload.getEmail() + " - " + userId);
             userMongoRepository.save(new User(payload.getEmail(), userId));
-        }
-        else System.out.println("Already known user: " + payload.getEmail() + " - " + userId);
+        } else System.out.println("Already known user: " + payload.getEmail() + " - " + userId);
     }
 }

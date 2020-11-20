@@ -11,7 +11,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -22,8 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Override
-    protected void configure(HttpSecurity security) throws Exception
-    {
+    protected void configure(HttpSecurity security) throws Exception {
         security.httpBasic().disable();
         getHttp().cors().and().csrf().disable();
         security.addFilter(jwtAuthFilter()).antMatcher("/quizzes/**");
@@ -43,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JWTAuthorizationFilter jwtAuthFilter() throws Exception{
+    public JWTAuthorizationFilter jwtAuthFilter() throws Exception {
         return new JWTAuthorizationFilter(authenticationManager(), clientId);
     }
 }

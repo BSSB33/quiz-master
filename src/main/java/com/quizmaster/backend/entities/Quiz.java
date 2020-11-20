@@ -31,18 +31,24 @@ public class Quiz {
         this.questions = questions;
     }
 
-    public void setCreatedAt(LocalDateTime creatingTime){
+    public void setCreatedAt(LocalDateTime creatingTime) {
         this.createdAt = creatingTime;
     }
 
-    public LocalDateTime getCreatedAt(){
+    public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
-    public LocalDateTime getStartingTime() { return this.startingTime; }
+    public LocalDateTime getStartingTime() {
+        return this.startingTime;
+    }
 
-    public String getId() { return this.id;}
+    public String getId() {
+        return this.id;
+    }
 
 
-    public List<Question> getQuestions() { return this.questions;}
+    public List<Question> getQuestions() {
+        return this.questions;
+    }
 }

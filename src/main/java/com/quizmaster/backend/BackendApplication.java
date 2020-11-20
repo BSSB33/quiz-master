@@ -1,6 +1,9 @@
 package com.quizmaster.backend;
 
-import com.quizmaster.backend.entities.*;
+import com.quizmaster.backend.entities.Model;
+import com.quizmaster.backend.entities.MultipleChoicesModel;
+import com.quizmaster.backend.entities.Question;
+import com.quizmaster.backend.entities.Quiz;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import lombok.SneakyThrows;
@@ -8,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.SimpleMessageConverter;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
@@ -20,15 +21,10 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import javax.annotation.Nullable;
-import javax.sound.midi.SysexMessage;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -52,24 +48,24 @@ public class BackendApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         System.out.println("=============== Users: ===============");
-        userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() +  " -> DB ID: " + user.getId()));
+        userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() + " -> DB ID: " + user.getId()));
 
         System.out.println("============== Quizzes: ==============");
         quizMongoRepository.findAll().forEach(qu -> System.out.println(qu.getTitle() + " -> " + qu.getId()));
 
-		LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
-		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-		Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
-		Question q1 = new Question("qm.multiple_choice", m1);
-		Question q2 = new Question("qm.multiple_choice", m2);
+        LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
+        Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+        Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
+        Question q1 = new Question("qm.multiple_choice", m1);
+        Question q2 = new Question("qm.multiple_choice", m2);
 
-        for (Quiz Act : quizMongoRepository.findAll()){
-            if (Act.getTitle().equals("Testquiz")){
+        for (Quiz Act : quizMongoRepository.findAll()) {
+            if (Act.getTitle().equals("Testquiz")) {
                 quizMongoRepository.deleteById(Act.getId());
             }
         }
 
-        Quiz quiz = new Quiz("Testquiz", "d",LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
+        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
         quizMongoRepository.save(quiz);
 
         try {
@@ -163,7 +159,7 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
         System.out.println("Received Frame by STOMPClient");
         System.out.println("Received: " + (payload.toString()));
 
-        if (payload.toString().startsWith("Question(")){ //if a question is received
+        if (payload.toString().startsWith("Question(")) { //if a question is received
             System.out.println("Answering Questions with 1");
             this.actSession.send("/game/answer/" + this.id, "2"); // Send it multiple times to see if it can handle this
             Thread.sleep(10);

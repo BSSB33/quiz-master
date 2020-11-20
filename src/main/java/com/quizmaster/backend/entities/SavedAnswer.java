@@ -8,8 +8,7 @@ public class SavedAnswer {
     int questionNumber;
     boolean isCorrect;
 
-    public SavedAnswer(int questionNumber, boolean isCorrect)
-    {
+    public SavedAnswer(int questionNumber, boolean isCorrect) {
         this.questionNumber = questionNumber;
         this.isCorrect = isCorrect;
     }
