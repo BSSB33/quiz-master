@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@TestPropertySource("classpath:application-test.properties")
+
 @AutoConfigureMockMvc
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
@@ -59,7 +59,7 @@ public class QuizTests {
     @Test
     public void shouldGetQuizById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/quizzes/5f91921c894d6016707a01a0"))
+                .get("/quizzes/5f92fc1dc14fbe24614fcd0d"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
     }
@@ -90,18 +90,18 @@ public class QuizTests {
         Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
 
 
-        Quiz oldQuiz = quizMongoRepository.getById("5f91921c894d6016707a01a0");
+        Quiz oldQuiz = quizMongoRepository.getById("5f92fc1dc14fbe24614fcd0d");
         LocalDateTime initialCreatedAt = oldQuiz.getCreatedAt();
 
         oldQuiz.setCreatedAt(LocalDateTime.now());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f91921c894d6016707a01a0")
+        mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
                 .content(jsonToString(quiz))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertThat(quizMongoRepository.getById("5f91921c894d6016707a01a0").getCreatedAt()).isEqualTo(initialCreatedAt);
+        assertThat(quizMongoRepository.getById("5f92fc1dc14fbe24614fcd0d").getCreatedAt()).isEqualTo(initialCreatedAt);
     }
 
 
