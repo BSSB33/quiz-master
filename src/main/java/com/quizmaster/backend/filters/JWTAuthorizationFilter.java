@@ -8,6 +8,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.quizmaster.backend.entities.User;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -25,6 +26,9 @@ import java.util.List;
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private GoogleIdTokenVerifier verifier = null;
+
+    @Autowired
+    private Environment environment;
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -49,6 +53,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+
+        String var_name = environment.getProperty("DisabledSec");
+        if (var_name.equals("true")){
+            chain.doFilter(request, response);
+            return;
+        }
+
         String headerName = "Authorization";
         String tokenPrefix = "Bearer ";
 

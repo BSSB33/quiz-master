@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.env.Environment;
 import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @SpringBootApplication
-public class BackendApplication implements CommandLineRunner {
+public class BackendApplication<data_type> implements CommandLineRunner {
 
     @Autowired
     private UserMongoRepository userMongoRepository;
@@ -40,12 +41,23 @@ public class BackendApplication implements CommandLineRunner {
     @Autowired
     private QuizMongoRepository quizMongoRepository;
 
+    @Autowired
+    private Environment environment;
+
+
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }
 
     @Override
     public void run(String... args) throws Exception {
+        String var_name = environment.getProperty("DisabledSec");
+        System.out.println("IMPORTANT");
+        System.out.println("------------------------------------------------------------------------------------");
+        System.out.println(var_name);
+
+
+
 
         System.out.println("=============== Users: ===============");
         userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() + " -> DB ID: " + user.getId()));
@@ -69,7 +81,7 @@ public class BackendApplication implements CommandLineRunner {
         quizMongoRepository.save(quiz);
 
         try {
-            connect(quiz.getId()); //Very simple STOMPClient test
+            //connect(quiz.getId()); //Very simple STOMPClient test
         } catch (Exception e) {
             e.printStackTrace();
         }
