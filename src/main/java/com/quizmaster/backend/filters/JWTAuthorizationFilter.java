@@ -24,8 +24,7 @@ import java.util.List;
 
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    @Autowired
-    private Environment environment;
+
 
     private GoogleIdTokenVerifier verifier = null;
 
