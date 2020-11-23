@@ -35,6 +35,8 @@ import java.util.concurrent.TimeoutException;
 @SpringBootApplication
 public class BackendApplication<data_type> implements CommandLineRunner {
 
+
+    public Boolean disabledSecurity = false;
     @Autowired
     private UserMongoRepository userMongoRepository;
 
@@ -48,6 +50,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }
+
 
     @Override
     public void run(String... args) throws Exception {

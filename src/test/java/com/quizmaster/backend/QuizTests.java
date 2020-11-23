@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestPropertySource("classpath:application-test.properties")
 @AutoConfigureMockMvc
+@TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
 public class QuizTests {
 

@@ -24,6 +24,8 @@ import java.util.List;
 
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+    @Autowired
+    private Environment environment;
 
     private GoogleIdTokenVerifier verifier = null;
 
@@ -53,13 +55,12 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-
         String var_name = environment.getProperty("DisabledSec");
-        if (var_name.equals("true")){
+
+        if(var_name.equals("true")){
             chain.doFilter(request, response);
             return;
         }
-
         String headerName = "Authorization";
         String tokenPrefix = "Bearer ";
 
