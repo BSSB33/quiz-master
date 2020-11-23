@@ -1,5 +1,6 @@
 package com.quizmaster.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public class MultipleChoicesModel extends Model {
     private String question;
     private List<String> answers;
 
-    public MultipleChoicesModel(String question, List<String> answers, List<Integer> correctAnswers) {
+    public MultipleChoicesModel(@JsonProperty("question") String question, @JsonProperty("answers") List<String> answers, @JsonProperty("correctAnswers") List<Integer> correctAnswers) {
         super(correctAnswers);
         this.question = question;
         this.answers = answers;

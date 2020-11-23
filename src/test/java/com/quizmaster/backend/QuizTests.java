@@ -2,6 +2,9 @@ package com.quizmaster.backend;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.quizmaster.backend.entities.Model;
 import com.quizmaster.backend.entities.MultipleChoicesModel;
 import com.quizmaster.backend.entities.Question;
@@ -35,6 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class QuizTests {
 
+    private String workingQuizID = "5fa41dd32294816932ccc204";
+
     @Autowired
     private Environment environment;
 
@@ -47,6 +52,10 @@ public class QuizTests {
     private String jsonToString(final Object obj) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.registerModule(new ParameterNamesModule());
+            objectMapper.registerModule(new Jdk8Module());
+
             objectMapper.disable(MapperFeature.USE_ANNOTATIONS);
             return objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
@@ -59,7 +68,7 @@ public class QuizTests {
     @Test
     public void shouldGetQuizById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/quizzes/5f92fc1dc14fbe24614fcd0d"))
+                .get("/quizzes/" + workingQuizID))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
     }
@@ -80,29 +89,22 @@ public class QuizTests {
     //Test for createdAt date change should look like this
     @Test
     public void shouldKeepCreatedAt() throws Exception {
-
-
         LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
         Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
         Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
         Question q1 = new Question("qm.multiple_choice", m1);
         Question q2 = new Question("qm.multiple_choice", m2);
-        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
+        Quiz quiz = new Quiz("ShouldKeepCreatedAt", "d", LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
 
-
-        Quiz oldQuiz = quizMongoRepository.getById("5f92fc1dc14fbe24614fcd0d");
+        Quiz oldQuiz = quizMongoRepository.getById(workingQuizID);
         LocalDateTime initialCreatedAt = oldQuiz.getCreatedAt();
 
-        oldQuiz.setCreatedAt(LocalDateTime.now());
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
+        mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/" + workingQuizID)
                 .content(jsonToString(quiz))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertThat(quizMongoRepository.getById("5f92fc1dc14fbe24614fcd0d").getCreatedAt()).isEqualTo(initialCreatedAt);
+        assertThat(quizMongoRepository.getById(workingQuizID).getCreatedAt()).isEqualTo(initialCreatedAt);
     }
-
-
 }
