@@ -28,10 +28,10 @@ public class QuizController {
 
     @PostMapping("")
     public ResponseEntity postById(@RequestBody Quiz quiz) {
-        String providedId = quiz.getId();
-        if (providedId != null && quizMongoRepository.existsById(providedId)) { // ERROR: getId should not be called before save!
+        if (quiz.getId() != null && quizMongoRepository.existsById(quiz.getId())) { // ERROR: getId should not be called before save!
             return ResponseEntity.badRequest().body("ID Taken!");
         }
+        if(quiz.getCreatedAt() == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(quizMongoRepository.save(quiz));
     }
 
@@ -39,12 +39,11 @@ public class QuizController {
     public ResponseEntity putById(@PathVariable String id, @RequestBody Quiz quizToSave) {
         if (quizMongoRepository.existsById(id)) {
             quizToSave.setId(id);
-
             Quiz oldQuiz = quizMongoRepository.getById(id);
             quizToSave.setCreatedAt(oldQuiz.getCreatedAt());
-
             return ResponseEntity.ok(quizMongoRepository.save(quizToSave));
         }
+        if(quizToSave.getCreatedAt() == null) return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
     }
 

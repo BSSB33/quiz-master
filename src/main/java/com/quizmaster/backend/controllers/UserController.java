@@ -29,10 +29,10 @@ public class UserController {
 
     @PostMapping("")
     public ResponseEntity postById(@RequestBody User userToSave) {
-        String providedId = userToSave.getId();
-        if (providedId != null && userMongoRepository.existsById(providedId)) { // ERROR: getId should not be called before save!
+        if (userToSave.getId() != null && userMongoRepository.existsById(userToSave.getId())) { // ERROR: getId should not be called before save!
             return ResponseEntity.badRequest().body("ID Taken!");
         }
+        if(userToSave.getGoogleId() == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(userMongoRepository.save(userToSave));
     }
 
@@ -42,6 +42,7 @@ public class UserController {
             userToSave.setId(id);
             return ResponseEntity.ok(userMongoRepository.save(userToSave));
         }
+        if(userToSave.getGoogleId() == null) return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
     }
 
