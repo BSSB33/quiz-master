@@ -1,6 +1,7 @@
 package com.quizmaster.backend.entities;
 
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,6 +9,9 @@ import java.util.ArrayList;
 
 @Data
 public class QuizGame {
+
+    @Id
+    private String id;
     private Quiz quiz;
     private ArrayList<PlayerScore> Player;
     private int actQuestion;

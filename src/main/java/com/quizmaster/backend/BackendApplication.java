@@ -74,9 +74,9 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         Question q1 = new Question("qm.multiple_choice", m1);
         Question q2 = new Question("qm.multiple_choice", m2);
 
-        for (Quiz Act : quizMongoRepository.findAll()) {
-            if (Act.getTitle().equals("Testquiz")) {
-                quizMongoRepository.deleteById(Act.getId());
+        for (Quiz act : quizMongoRepository.findAll()) {
+            if (act.getTitle().equals("Testquiz")) {
+                quizMongoRepository.deleteById(act.getId());
             }
         }
 

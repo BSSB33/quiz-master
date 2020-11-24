@@ -2,7 +2,7 @@ package com.quizmaster.backend.entities;
 
 
 import lombok.Data;
-import nonapi.io.github.classgraph.json.Id;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.List;
