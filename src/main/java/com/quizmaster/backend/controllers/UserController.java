@@ -32,18 +32,21 @@ public class UserController {
         if (userToSave.getId() != null && userMongoRepository.existsById(userToSave.getId())) { // ERROR: getId should not be called before save!
             return ResponseEntity.badRequest().body("ID Taken!");
         }
-        if(userToSave.getGoogleId() == null) return ResponseEntity.noContent().build();
+        if(userToSave.getGoogleId() == null|| userToSave.getEmail() ==null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(userMongoRepository.save(userToSave));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity putById(@PathVariable String id, @RequestBody User userToSave) {
+
+        if(userToSave.getGoogleId() == null || userToSave.getEmail() ==null) return ResponseEntity.noContent().build();
+
         if (userMongoRepository.existsById(id)) {
             userToSave.setId(id);
             return ResponseEntity.ok(userMongoRepository.save(userToSave));
         }
-        if(userToSave.getGoogleId() == null) return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
+
     }
 
     @DeleteMapping("/{id}")

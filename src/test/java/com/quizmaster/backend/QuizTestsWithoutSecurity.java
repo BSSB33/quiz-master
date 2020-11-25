@@ -286,5 +286,61 @@ public class QuizTestsWithoutSecurity {
 
     }
 
+    @Test
+    public void shouldFailPostEmptyTitle() throws Exception {
+
+        Quiz quiz = new Quiz(null, "test description", LocalDateTime.now().plusMinutes(2), "test Note", List.of(q1, q2));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/quizzes")
+                .content(jsonToString(quiz))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+    @Test
+    public void shouldFailPostEmptyDescription() throws Exception {
+
+        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation", null, LocalDateTime.now().plusMinutes(2), "test Note", List.of(q1, q2));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/quizzes")
+                .content(jsonToString(quiz))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+    @Test
+    public void shouldFailPostEmptyStartingTime() throws Exception {
+
+        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation", "test description", null, "test Note", List.of(q1, q2));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/quizzes")
+                .content(jsonToString(quiz))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+    @Test
+    public void shouldFailPostEmptyNotes() throws Exception {
+
+        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation", "test description", LocalDateTime.now().plusMinutes(2), null, List.of(q1, q2));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/quizzes")
+                .content(jsonToString(quiz))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+    @Test
+    public void shouldFailPostEmptyQuestions() throws Exception {
+
+        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation", "test description", LocalDateTime.now().plusMinutes(2), "test Note", null);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/quizzes")
+                .content(jsonToString(quiz))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
 
 }
