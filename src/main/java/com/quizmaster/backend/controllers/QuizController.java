@@ -32,7 +32,7 @@ public class QuizController {
             return ResponseEntity.badRequest().body("ID Taken!");
         }
         if(!nullChecker(quiz)){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(quizMongoRepository.save(quiz));
     }
@@ -40,7 +40,7 @@ public class QuizController {
     @PutMapping("/{id}")
     public ResponseEntity putById(@PathVariable String id, @RequestBody Quiz quizToSave) {
         if(!nullChecker(quizToSave)){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
         if (quizMongoRepository.existsById(id)) {
             quizToSave.setId(id);
@@ -58,7 +58,7 @@ public class QuizController {
             quizMongoRepository.deleteById(id);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.notFound().build();
     }
 
     public Boolean nullChecker(Quiz quiz){
