@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,14 @@ public class GroupController {
         System.out.println("####################################################### New Iteration of checking for activeGames");
 
         for (Quiz act : quizMongoRepository.findAll()) {
+
+            System.out.println("Quiz " + act.getTitle() + " found, StartingTime is:" + act.getStartingTime());
+            System.out.println("LocalTime is: " + LocalDateTime.now());
+            LocalDateTime tempDateTime = LocalDateTime.from( LocalDateTime.now() );
+            long seconds = tempDateTime.until(act.getStartingTime(), ChronoUnit.SECONDS );
+            System.out.println("It should start in X seconds from now: " + seconds);
+
+
             if (act.getStartingTime().minusMinutes(TIMEWINDOW).isAfter(LocalDateTime.now()) && act.getStartingTime().minusMinutes(TIMEWINDOW).isBefore(LocalDateTime.now().plusSeconds(SCHEDULERATE))) {
                 // check if quiz time is after now() and before next iteration now()
                 System.out.println("Quiz added " + act.getId());

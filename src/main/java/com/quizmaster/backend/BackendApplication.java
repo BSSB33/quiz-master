@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -48,6 +49,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
 
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         SpringApplication.run(BackendApplication.class, args);
     }
 
@@ -84,7 +86,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         quizMongoRepository.save(quiz);
 
         try {
-            //connect(quiz.getId()); //Very simple STOMPClient test
+            connect(quiz.getId()); //Very simple STOMPClient test
         } catch (Exception e) {
             e.printStackTrace();
         }
