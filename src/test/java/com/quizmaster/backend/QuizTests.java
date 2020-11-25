@@ -107,4 +107,18 @@ public class QuizTests {
 
         assertThat(quizMongoRepository.getById(workingQuizID).getCreatedAt()).isEqualTo(initialCreatedAt);
     }
+
+    @Test
+    public void shouldBeForbiddenNullAttribute() throws Exception {
+
+
+        Quiz quiz = new Quiz(null,null,null,null,null);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
+                .content(jsonToString(quiz))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotAcceptable());
+    }
+
 }

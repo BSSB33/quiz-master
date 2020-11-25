@@ -31,12 +31,17 @@ public class QuizController {
         if (quiz.getId() != null && quizMongoRepository.existsById(quiz.getId())) { // ERROR: getId should not be called before save!
             return ResponseEntity.badRequest().body("ID Taken!");
         }
-        if(quiz.getCreatedAt() == null) return ResponseEntity.noContent().build();
+        if(!nullChecker(quiz)){
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(quizMongoRepository.save(quiz));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity putById(@PathVariable String id, @RequestBody Quiz quizToSave) {
+        if(!nullChecker(quizToSave)){
+            return ResponseEntity.notFound().build();
+        }
         if (quizMongoRepository.existsById(id)) {
             quizToSave.setId(id);
             Quiz oldQuiz = quizMongoRepository.getById(id);
@@ -56,5 +61,10 @@ public class QuizController {
         return ResponseEntity.badRequest().build();
     }
 
-
+    public Boolean nullChecker(Quiz quiz){
+        if(quiz.getTitle()== null || quiz.getDescription()== null || quiz.getCreatedAt()== null ||quiz.getStartingTime()== null || quiz.getNotes()== null || quiz.getQuestions()== null){
+            return false;
+        }
+        return true;
+    }
 }
