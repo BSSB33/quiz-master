@@ -9,6 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class Model {
-    @JsonIgnore
     private List<Integer> correctAnswers;
 }

@@ -33,7 +33,7 @@ import java.util.List;
 @EnableScheduling
 public class GroupController {
 
-    private final long TIMEWINDOW = 300; // in Seconds
+    private final long TIMEWINDOW = 10; // in Seconds
     private final long SCHEDULERATE = 1; // in Seconds
     private final long QUESTIONTIME = 20; // in Seconds
 
@@ -70,6 +70,7 @@ public class GroupController {
 
 
             if (act.getStartingTime().minusSeconds(TIMEWINDOW).isAfter(LocalDateTime.now()) && act.getStartingTime().minusSeconds(TIMEWINDOW).isBefore(LocalDateTime.now().plusSeconds(SCHEDULERATE))) {
+
                 if (!activeGames.contains(act)){
                     // check if quiz time is after now() and before next iteration now()
                     System.out.println("Quiz added " + act.getId());
@@ -105,7 +106,11 @@ public class GroupController {
                         System.out.println("Sending out question");
                         System.out.println("Sending out to room: results/room/" + act.getQuiz().getId());
                         System.out.println("Content of Questions is: " + act.getActQuestion().toString());
+
+                        List<Integer> temp = act.getActQuestion().getModel().getCorrectAnswers();
+                        act.getActQuestion().getModel().setCorrectAnswers(null);
                         template.convertAndSend("/results/room/" + act.getQuiz().getId(), act.getActQuestion());
+                        act.getActQuestion().getModel().setCorrectAnswers(temp);
                     }
                 }
             }
