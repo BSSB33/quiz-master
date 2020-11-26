@@ -1,11 +1,14 @@
 package com.quizmaster.backend.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import com.quizmaster.services.GameIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -116,7 +119,7 @@ public class GroupController {
         }
         System.out.println("printing results");
         for (PlayerScore userResult : act.getPlayer()) {
-            userResult.fillUnanswered(act.getQuestionNumber()+1);
+            userResult.fillUnanswered(act.getQuestionNumber());
 
             System.out.println("Found finished game and sending results");
             template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", userResult, createHeaders(userResult.getSessionID()));
@@ -138,19 +141,19 @@ public class GroupController {
         System.out.println("Join: Join Request Received");
 
 
-        for (QuizGame Act : activeGames) {
-            if (Act.getQuiz().getId().equals(gameId)) { //quiz found
-                PlayerScore userInfo = Act.getPlayer(sessionId);
+        for (QuizGame act : activeGames) {
+            if (act.getQuiz().getId().equals(gameId)) { //quiz found
+                PlayerScore userInfo = act.getPlayer(sessionId);
                 if (userInfo != null) { //already joined
-                    return new GameJoinResponse("Already joined",false,null);
+                    return new GameJoinResponse("Already joined",false,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                 } else {
-                    if (Act.isNicknameAlreadyUsed(nickname)) { // If nickname already given out to someone
-                        return new GameJoinResponse("Nickname already given out",false,null);
+                    if (act.isNicknameAlreadyUsed(nickname)) { // If nickname already given out to someone
+                        return new GameJoinResponse("Nickname already given out",false,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                     }
                     PlayerScore addUser = new PlayerScore(sessionId, LocalDateTime.now());
                     addUser.setNickname(nickname + sessionId.substring(0, 3)); // first 3 elements of sessionID are added to nickname to enable secure distribution of names
-                    Act.addPlayer(addUser);
-                    return new GameJoinResponse("You were added",true,null);
+                    act.addPlayer(addUser);
+                    return new GameJoinResponse("You were added",true,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                 }
             }
         }
@@ -158,15 +161,15 @@ public class GroupController {
         for (Quiz act : quizMongoRepository.findAll()) {
             if (act.getId().equals(gameId)){
                 if (act.getStartingTime().isAfter(LocalDateTime.now())){
-                    return new GameJoinResponse("Quiz already ended",false,null);
+                    return new GameJoinResponse("Quiz already ended",false,act.getStartingTime(), act.getTitle(), act.getDescription());
                 }
                 if (act.getStartingTime().isBefore(LocalDateTime.now())){
-                    return new GameJoinResponse("Quiz will start",false,act.getStartingTime());
+                    return new GameJoinResponse("Quiz will start",false,act.getStartingTime(), act.getTitle(), act.getDescription());
                 }
             }
         }
 
-        return new GameJoinResponse("Quiz not found",false,null);
+        return new GameJoinResponse("Quiz not found",false,null,null,null);
     }
 
     @MessageMapping("/answer/{gameId}")

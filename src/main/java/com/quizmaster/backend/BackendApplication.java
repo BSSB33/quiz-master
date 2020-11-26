@@ -1,5 +1,6 @@
 package com.quizmaster.backend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quizmaster.backend.entities.Model;
 import com.quizmaster.backend.entities.MultipleChoicesModel;
 import com.quizmaster.backend.entities.Question;
@@ -100,6 +101,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         WebSocketClient transport = new SockJsClient(transports);
         WebSocketStompClient stompClient = new WebSocketStompClient(transport);
+
         stompClient.setMessageConverter(new MappingJackson2MessageConverter()); //later if we want to use other classes than plaintext we should switch to MappingJackson2MessageConverter
         //stompClient.setMessageConverter(new StringMessageConverter());
 
@@ -181,8 +183,8 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public Type getPayloadType(StompHeaders headers) {
         System.out.println("Received Header by STOMPClient " + headers.toString());
-        System.out.println(byte[].class);
-        return byte[].class;
+        System.out.println(String.class);
+        return String.class;
     }
 
     @SneakyThrows
@@ -190,10 +192,10 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public void handleFrame(StompHeaders headers, @Nullable Object payload) {
 
         System.out.println("Received Frame by STOMPClient");
-        System.out.println("Received: " + (payload.toString()));
+//        System.out.println("Received: " + (payload.toString()));
 
-        System.out.println((String) payload);
-        System.out.println(payload.toString());
+//        System.out.println((String) payload);
+//        System.out.println(payload.toString());
 
 //        if (payload.toString().startsWith("Question(")) { //if a question is received
 //            System.out.println("Answering Questions with 1");
