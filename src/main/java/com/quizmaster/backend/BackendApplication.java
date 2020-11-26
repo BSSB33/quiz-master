@@ -51,8 +51,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
 
 
     public static void main(String[] args) {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-//        SpringApplication.run(BackendApplication.class, args);
+        SpringApplication.run(BackendApplication.class, args);
     }
 
 
