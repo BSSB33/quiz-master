@@ -57,6 +57,11 @@ public class BackendApplication<data_type> implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        String timeZone = environment.getProperty("TimeZone");
+        TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+
+        System.out.println("TIMEZONE " + timeZone);
+
         String var_name = environment.getProperty("DisabledSec");
         System.out.println("IMPORTANT");
         System.out.println("------------------------------------------------------------------------------------");
