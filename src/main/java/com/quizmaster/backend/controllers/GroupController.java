@@ -1,9 +1,6 @@
 package com.quizmaster.backend.controllers;
 
-import com.quizmaster.backend.entities.Answer;
-import com.quizmaster.backend.entities.PlayerScore;
-import com.quizmaster.backend.entities.Quiz;
-import com.quizmaster.backend.entities.QuizGame;
+import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import com.quizmaster.services.GameIdGenerator;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -61,11 +59,11 @@ public class GroupController {
 
         for (Quiz act : quizMongoRepository.findAll()) {
 
-            System.out.println("Quiz " + act.getTitle() + " found, StartingTime is:" + act.getStartingTime());
-            System.out.println("LocalTime is: " + LocalDateTime.now());
-            LocalDateTime tempDateTime = LocalDateTime.from( LocalDateTime.now() );
-            long seconds = tempDateTime.until(act.getStartingTime(), ChronoUnit.SECONDS );
-            System.out.println("It should start in X seconds from now: " + seconds);
+//            System.out.println("Quiz " + act.getTitle() + " found, StartingTime is:" + act.getStartingTime());
+//            System.out.println("LocalTime is: " + LocalDateTime.now());
+//            LocalDateTime tempDateTime = LocalDateTime.from( LocalDateTime.now() );
+//            long seconds = tempDateTime.until(act.getStartingTime(), ChronoUnit.SECONDS );
+//            System.out.println("It should start in X seconds from now: " + seconds);
 
 
             if (act.getStartingTime().minusSeconds(TIMEWINDOW).isAfter(LocalDateTime.now()) && act.getStartingTime().minusSeconds(TIMEWINDOW).isBefore(LocalDateTime.now().plusSeconds(SCHEDULERATE))) {
@@ -102,7 +100,7 @@ public class GroupController {
                         System.out.println("Sending out question");
                         System.out.println("Sending out to room: results/room/" + act.getQuiz().getId());
                         System.out.println("Content of Questions is: " + act.getActQuestion().toString());
-                        template.convertAndSend("/results/room/" + act.getQuiz().getId(), act.getActQuestion().toString());
+                        template.convertAndSend("/results/room/" + act.getQuiz().getId(), act.getActQuestion());
                     }
                 }
             }
@@ -121,7 +119,7 @@ public class GroupController {
             userResult.fillUnanswered(act.getQuestionNumber()+1);
 
             System.out.println("Found finished game and sending results");
-            template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", "Results: " + userResult.getAnswers().toString(), createHeaders(userResult.getSessionID()));
+            template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", userResult, createHeaders(userResult.getSessionID()));
         }
     }
 
@@ -135,7 +133,7 @@ public class GroupController {
 
     @MessageMapping("/join/{gameId}")
     @SendToUser("/queue/reply")
-    public String join(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String nickname) {
+    public GameJoinResponse join(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String nickname) {
 
         System.out.println("Join: Join Request Received");
 
@@ -144,15 +142,15 @@ public class GroupController {
             if (Act.getQuiz().getId().equals(gameId)) { //quiz found
                 PlayerScore userInfo = Act.getPlayer(sessionId);
                 if (userInfo != null) { //already joined
-                    return "Already joined";
+                    return new GameJoinResponse("Already joined",false,null);
                 } else {
                     if (Act.isNicknameAlreadyUsed(nickname)) { // If nickname already given out to someone
-                        return "Nickname already given out";
+                        return new GameJoinResponse("Nickname already given out",false,null);
                     }
                     PlayerScore addUser = new PlayerScore(sessionId, LocalDateTime.now());
                     addUser.setNickname(nickname + sessionId.substring(0, 3)); // first 3 elements of sessionID are added to nickname to enable secure distribution of names
                     Act.addPlayer(addUser);
-                    return "You were added";
+                    return new GameJoinResponse("You were added",true,null);
                 }
             }
         }
@@ -160,20 +158,20 @@ public class GroupController {
         for (Quiz act : quizMongoRepository.findAll()) {
             if (act.getId().equals(gameId)){
                 if (act.getStartingTime().isAfter(LocalDateTime.now())){
-                    return "Quiz already ended";
+                    return new GameJoinResponse("Quiz already ended",false,null);
                 }
                 if (act.getStartingTime().isBefore(LocalDateTime.now())){
-                    return act.getStartingTime().toString();
+                    return new GameJoinResponse("Quiz will start",false,act.getStartingTime());
                 }
             }
         }
 
-        return "GameID not found";
+        return new GameJoinResponse("Quiz not found",false,null);
     }
 
     @MessageMapping("/answer/{gameId}")
     @SendToUser("/queue/reply")
-    public String receiveAnswer(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, String answerChoice) {
+    public GameReceiveAnswerResponse receiveAnswer(@Header("simpSessionId") String sessionId, @DestinationVariable String gameId, List<Integer> answerChoice) {
 
         System.out.println("Answer Received");
 
@@ -184,26 +182,26 @@ public class GroupController {
 
                     //TODO Compare multiple answers
                     //only possible when client can send a list with answers
-                    //List<Integer> correctAnswer = Act.getActQuestion().getModel().getCorrectAnswers();
-                    //Collections.sort(correctAnswer);
-                    //Collections.sort(answerChoice);
+                    List<Integer> correctAnswer = Act.getActQuestion().getModel().getCorrectAnswers();
+                    Collections.sort(correctAnswer);
+                    Collections.sort(answerChoice);
 
                     System.out.println("Comparing given and correct answers");
 
-                    if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers().get(0).toString())) {
+                    if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers())) {
                         userInfo.addAnswer(Act.getQuestionNumber(), Answer.CORRECT);
                         System.out.println("Provided answer is correct");
                     } else {
                         userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT);
                         System.out.println("Provided answer is incorrect");
                     }
-                    return "Thanks for your answer";
+                    return new GameReceiveAnswerResponse("Thanks for your answer",true);
                 } else {
-                    return "You did not join correctly to the game";
+                    return new GameReceiveAnswerResponse("You did not join correctly to the game", false);
                 }
             }
         }
-        return "GameID not found";
+        return new GameReceiveAnswerResponse("GameID not found", false);
     }
 
     @GetMapping("/newid")

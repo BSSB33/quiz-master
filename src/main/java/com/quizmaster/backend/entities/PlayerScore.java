@@ -1,5 +1,7 @@
 package com.quizmaster.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.quizmaster.backend.services.QuestionDeserializer;
 import lombok.Data;
@@ -17,7 +19,8 @@ public class PlayerScore {
     ArrayList<SavedAnswer> answers;
     String sessionID;
 
-    public PlayerScore(String ID, LocalDateTime created) {
+    @JsonCreator
+    public PlayerScore(@JsonProperty("ID") String ID, @JsonProperty("created") LocalDateTime created) {
         this.sessionID = ID;
         this.connectAt = created;
         this.answers = new ArrayList<SavedAnswer>();
