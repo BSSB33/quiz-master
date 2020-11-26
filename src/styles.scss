@@ -71,6 +71,12 @@ $custom-typography: mat-typography-config(
   }
 }
 
+.quiz-id {
+  .mat-form-field-label {
+    margin-top: 0;
+  }
+}
+
 .user-overlay {
   background-color: #eeeeee;
   padding: 20px;

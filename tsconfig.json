@@ -16,5 +16,8 @@
       "es2018",
       "dom"
     ]
-  }
+  },
+  "files": [
+    "typings.d.ts"
+  ]
 }

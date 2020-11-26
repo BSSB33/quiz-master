@@ -13,23 +13,15 @@
     <div class="flex-row" style="flex: 0 1 0;">
       <div style="flex: 0 9 50px;"></div>
       <div style="flex: 1 1 200px; text-align: center; font-size: 1.5em; line-height: 1.2em;" class="title-font">
-        Please provide a Quiz ID in order to join one.
+        In order to join a game, click on the Play button.
       </div>
       <div style="flex: 0 9 50px;"></div>
     </div>
     <div style="flex: 1 1 0"></div>
-<!--    row3-->
-    <div class="flex-row" style="flex: 0 1 0;">
-      <div style="flex: 5 9 200px;"></div>
-      <div style="flex: 0 1 50px">
-        <app-quiz-id-input style="width: 100%"></app-quiz-id-input>
-      </div>
-      <div style="flex: 5 9 200px;"></div>
-    </div>
 
-<!--    row4-->
+<!--    row3-->
     <div style="flex: 0 1 0; text-align: center;">
-        <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
+        <button mat-fab color="primary" aria-label="Example icon button with a delete icon" routerLink="/game">
           <mat-icon>play_arrow</mat-icon>
         </button>
     </div>

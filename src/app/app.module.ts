@@ -25,6 +25,7 @@ import {environment} from '../environments/environment';
 import {AuthService} from "./modules/shared/services/auth.service";
 import {Router} from "@angular/router";
 import {JSON_CONFIG_FILENAME} from "tslint/lib/configuration";
+import {GameService} from "./modules/shared/services/game.service";
 
 @NgModule({
   declarations: [
@@ -66,6 +67,13 @@ import {JSON_CONFIG_FILENAME} from "tslint/lib/configuration";
       deps: [HttpClient],
       useFactory: (httpClient: HttpClient) => {
         return new QuizService(httpClient, INIT_CONFIG_JSON.api_url)
+      }
+    },
+    {
+      provide: GameService,
+      deps: [],
+      useFactory: () => {
+        return new GameService(INIT_CONFIG_JSON.api_url)
       }
     },
   ],

@@ -18,6 +18,10 @@ const routes: Routes = [
     path: 'quizzes',
     loadChildren: () => import('./modules/lazy/quizzes/quizzes.module').then(m => m.QuizzesModule),
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'game',
+    loadChildren: () => import('./modules/lazy/game/game.module').then(m => m.GameModule)
   }
 ];
 
@@ -25,5 +29,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

@@ -20,9 +20,10 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {GoogleTokenInterceptor} from "./interceptors/google-token.interceptor";
+import {UserNicknameInputComponent} from "./components/user-nickname-input/user-nickname-input.component";
 
 @NgModule({
-  declarations: [QuizIdInputComponent, UserDetailsComponent, ImgCachePipe, SanitizePipe, QuizOverviewComponent, MultipleChoicesComponent, QuestionBaseComponent],
+  declarations: [QuizIdInputComponent, UserDetailsComponent, UserNicknameInputComponent, ImgCachePipe, SanitizePipe, QuizOverviewComponent, MultipleChoicesComponent, QuestionBaseComponent],
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -42,7 +43,8 @@ import {GoogleTokenInterceptor} from "./interceptors/google-token.interceptor";
     ImgCachePipe,
     SanitizePipe,
     QuizOverviewComponent,
-    MultipleChoicesComponent
+    MultipleChoicesComponent,
+    UserNicknameInputComponent
   ],
 })
 export class SharedModule { }

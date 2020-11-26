@@ -1,0 +1,7 @@
+<mat-form-field style="width: 100%;" appearance="outline" floatLabel="never">
+  <mat-label>Nickname</mat-label>
+  <input matInput type="text" placeholder="Nickname" autocomplete="off"  [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)">
+  <mat-hint *ngIf="error">
+    <span class="mat-error">{{error}}</span>
+  </mat-hint>
+</mat-form-field>

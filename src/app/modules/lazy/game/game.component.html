@@ -1,0 +1,105 @@
+<ng-container *ngIf="!(joinDetails.gameId.approved && joinDetails.nickname.approved)">
+  <div class="fullscreen">
+    <div class="flex-column" style="height: 100%">
+      <div style="flex: 5 5 0"></div>
+      <!--    row1-->
+      <div class="flex-row" style="flex: 0 1 0;">
+        <div style="flex: 5 9 200px;"></div>
+        <div style="flex: 1 1 200px;">
+          <img [src]="'assets/vectors/logo.svg' | imgCache | async | sanitize:'resourceUrl'" style="max-width: 100%;" alt="Logo of Quiz Master"></div>
+        <div style="flex: 5 9 200px;"></div>
+      </div>
+      <div style="flex: 1 1 0"></div>
+
+
+      <!--    row2-->
+      <div class="flex-row" style="flex: 0 1 0;">
+        <div style="flex: 1 0;"></div>
+        <app-quiz-id-input [(value)]="joinDetails.gameId.value" [error]="joinDetails.gameId.error"></app-quiz-id-input>
+        <div style="flex: 1 0;"></div>
+      </div>
+
+
+      <div class="flex-row" style="flex: 0 1 0;">
+        <div style="flex: 1 0;"></div>
+        <app-user-nickname-input [(value)]="joinDetails.nickname.value" [error]="joinDetails.nickname.error"></app-user-nickname-input>
+        <div style="flex: 1 0;"></div>
+      </div>
+      <div style="flex: 1 1 0"></div>
+
+      <!--    row3-->
+      <div style="flex: 0 1 0; text-align: center;">
+        <button mat-raised-button [disabled]="joinDetails.nickname.value === '' || joinDetails.gameId.value === ''" color="primary" aria-label="Play button" (click)="joinGame();">
+          Join
+        </button>
+      </div>
+
+      <div style="flex: 5 5 0"></div>
+    </div>
+  </div>
+</ng-container>
+
+
+<ng-container *ngIf="joinDetails.gameId.approved && joinDetails.nickname.approved">
+
+  <div class="with-header full-height-width-header">
+    <div class="flex-row" style="height: 100%">
+      <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+      <div style="flex: 3 1; text-align: center; max-width: 100%;"
+           [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
+           class="flex-column">
+<!--        <ng-container *ngIf="!isLoading">-->
+<!--          &lt;!&ndash; first page       &ndash;&gt;-->
+<!--          <ng-container *ngIf="currentIndex === 0">-->
+<!--            <h1 *ngIf="!isLoading" style="text-align: center" class="title-font" matTooltip="Quiz {{id}}">-->
+<!--              {{quizModel.title}}-->
+<!--            </h1>-->
+<!--            <h2>{{quizModel.description}}</h2>-->
+<!--          </ng-container>-->
+<!--          &lt;!&ndash;        questions&ndash;&gt;-->
+<!--          <ng-container *ngIf="currentIndex !== 0">-->
+<!--            <ng-container [ngSwitch]="quizModel.questions[currentIndex-1].type">-->
+<!--              <ng-container *ngSwitchCase="'qm.multiple_choice'">-->
+<!--                <app-multiple-choices [index]="currentIndex - 1" type="game" [gameModel]="quizModel.questions[currentIndex - 1].model"></app-multiple-choices>-->
+<!--              </ng-container>-->
+<!--            </ng-container>-->
+<!--          </ng-container>-->
+<!--        </ng-container>-->
+<!--        <ng-container *ngIf="isLoading">-->
+<!--          Loading details...-->
+<!--          <div>-->
+<!--            <mat-icon class="rotate">-->
+<!--              sync-->
+<!--            </mat-icon>-->
+<!--          </div>-->
+<!--        </ng-container>-->
+        <ul>
+          <li *ngFor="let opt of messages">{{opt}}</li>
+        </ul>
+      </div>
+      <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+    </div>
+  </div>
+  <div style="position: absolute; bottom: 5px; width: 100%;" class="flex-row" *ngIf="true">
+    <!--  navigate back to quizzes-->
+    <div style="flex: 1 1 0;"></div>
+    <button mat-raised-button color="primary" [disabled]="false">
+      Send
+    </button>
+  </div>
+
+</ng-container>
+
+<!--</ng-container>-->
+<!--<ng-container *ngIf="joinDetails.quizId.approved && joinDetails.nickname.approved">-->
+<!--  Current status is: {{gameService.isConnected ? 'CONNECTED' : 'DISCONNECTED'}}-->
+
+<!--  <ng-container *ngIf="gameService.isConnected">-->
+<!--    <ul>-->
+<!--      <li *ngFor="let message of messages">-->
+<!--        {{message}}-->
+<!--      </li>-->
+<!--    </ul>-->
+<!--  </ng-container>-->
+<!--</ng-container>-->
+
