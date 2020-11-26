@@ -33,7 +33,7 @@ import java.util.List;
 @EnableScheduling
 public class GroupController {
 
-    private final long TIMEWINDOW = 10; // in Seconds
+    private final long TIMEWINDOW = 300; // in Seconds
     private final long SCHEDULERATE = 1; // in Seconds
     private final long QUESTIONTIME = 20; // in Seconds
 
@@ -70,9 +70,11 @@ public class GroupController {
 
 
             if (act.getStartingTime().minusSeconds(TIMEWINDOW).isAfter(LocalDateTime.now()) && act.getStartingTime().minusSeconds(TIMEWINDOW).isBefore(LocalDateTime.now().plusSeconds(SCHEDULERATE))) {
-                // check if quiz time is after now() and before next iteration now()
-                System.out.println("Quiz added " + act.getId());
-                activeGames.add(new QuizGame(act));
+                if (!activeGames.contains(act)){
+                    // check if quiz time is after now() and before next iteration now()
+                    System.out.println("Quiz added " + act.getId());
+                    activeGames.add(new QuizGame(act));
+                }
             }
         }
 
