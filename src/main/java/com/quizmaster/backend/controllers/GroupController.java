@@ -1,5 +1,6 @@
 package com.quizmaster.backend.controllers;
 
+import com.quizmaster.backend.entities.Answer;
 import com.quizmaster.backend.entities.PlayerScore;
 import com.quizmaster.backend.entities.Quiz;
 import com.quizmaster.backend.entities.QuizGame;
@@ -31,7 +32,7 @@ import java.util.List;
 @EnableScheduling
 public class GroupController {
 
-    private final long TIMEWINDOW = 1; // in Minutes
+    private final long TIMEWINDOW = 10; // in Seconds
     private final long SCHEDULERATE = 1; // in Seconds
     private final long QUESTIONTIME = 20; // in Seconds
 
@@ -67,7 +68,7 @@ public class GroupController {
             System.out.println("It should start in X seconds from now: " + seconds);
 
 
-            if (act.getStartingTime().minusMinutes(TIMEWINDOW).isAfter(LocalDateTime.now()) && act.getStartingTime().minusMinutes(TIMEWINDOW).isBefore(LocalDateTime.now().plusSeconds(SCHEDULERATE))) {
+            if (act.getStartingTime().minusSeconds(TIMEWINDOW).isAfter(LocalDateTime.now()) && act.getStartingTime().minusSeconds(TIMEWINDOW).isBefore(LocalDateTime.now().plusSeconds(SCHEDULERATE))) {
                 // check if quiz time is after now() and before next iteration now()
                 System.out.println("Quiz added " + act.getId());
                 activeGames.add(new QuizGame(act));
@@ -117,6 +118,8 @@ public class GroupController {
         }
         System.out.println("printing results");
         for (PlayerScore userResult : act.getPlayer()) {
+            userResult.fillUnanswered(act.getQuestionNumber()+1);
+
             System.out.println("Found finished game and sending results");
             template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", "Results: " + userResult.getAnswers().toString(), createHeaders(userResult.getSessionID()));
         }
@@ -136,6 +139,7 @@ public class GroupController {
 
         System.out.println("Join: Join Request Received");
 
+
         for (QuizGame Act : activeGames) {
             if (Act.getQuiz().getId().equals(gameId)) { //quiz found
                 PlayerScore userInfo = Act.getPlayer(sessionId);
@@ -152,6 +156,18 @@ public class GroupController {
                 }
             }
         }
+
+        for (Quiz act : quizMongoRepository.findAll()) {
+            if (act.getId().equals(gameId)){
+                if (act.getStartingTime().isAfter(LocalDateTime.now())){
+                    return "Quiz already ended";
+                }
+                if (act.getStartingTime().isBefore(LocalDateTime.now())){
+                    return act.getStartingTime().toString();
+                }
+            }
+        }
+
         return "GameID not found";
     }
 
@@ -175,10 +191,10 @@ public class GroupController {
                     System.out.println("Comparing given and correct answers");
 
                     if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers().get(0).toString())) {
-                        userInfo.addAnswer(Act.getQuestionNumber(), true);
+                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.CORRECT);
                         System.out.println("Provided answer is correct");
                     } else {
-                        userInfo.addAnswer(Act.getQuestionNumber(), false);
+                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT);
                         System.out.println("Provided answer is incorrect");
                     }
                     return "Thanks for your answer";

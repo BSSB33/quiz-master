@@ -82,7 +82,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
             }
         }
 
-        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
+        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusMinutes(1), "Random Note", List.of(q1, q2));
         quizMongoRepository.save(quiz);
 
         try {
@@ -115,10 +115,23 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         Thread.sleep(10); //wait some time to let sockets start up
         stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //First make invalid request
 
+        System.out.println("OLD GAME");
+        Thread.sleep(10); //wait some time to let sockets start up
+        stompSession.send("/game/join/5fb30e4f3070b14d537cad3b", "Victor"); //Make request for old GAME
+
+        System.out.println("Not existing GAME");
+        Thread.sleep(10); //wait some time to let sockets start up
+        stompSession.send("/game/join/5fb3037cad3b", "Victor"); //
+
+        System.out.println("Null GAME");
+        Thread.sleep(10); //wait some time to let sockets start up
+        stompSession.send("/game/join/", "Victor"); //Make request for null GAME
+
         Thread.sleep(1000); //wait to see difference in console
         stompSession.send("/game/join/" + quizID, "Victor"); //Second invalid request as game didn´t start
 
-        Thread.sleep(60000); //wait some time to let the game start
+        System.out.println("########################################################################");
+        Thread.sleep(51000); //wait some time to let the game start
         System.out.println("Trying to join 4 times: ");
         stompSession.send("/game/join/" + quizID, "Victor"); //Valid request as the game should move to activeGames
         Thread.sleep(10);
@@ -178,13 +191,13 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
         if (payload.toString().startsWith("Question(")) { //if a question is received
             System.out.println("Answering Questions with 1");
-            this.actSession.send("/game/answer/" + this.id, "2"); // Send it multiple times to see if it can handle this
-            Thread.sleep(10);
-            this.actSession.send("/game/answer/" + this.id, "3"); // Send it multiple times to see if it can handle this
-            Thread.sleep(10);
-            this.actSession.send("/game/answer/" + this.id, "4"); // Send it multiple times to see if it can handle this
-            Thread.sleep(10);
-            this.actSession.send("/game/answer/" + this.id, "1"); // Send it multiple times to see if it can handle this
+//            this.actSession.send("/game/answer/" + this.id, "2"); // Send it multiple times to see if it can handle this
+//            Thread.sleep(10);
+//            this.actSession.send("/game/answer/" + this.id, "3"); // Send it multiple times to see if it can handle this
+//            Thread.sleep(10);
+//            this.actSession.send("/game/answer/" + this.id, "4"); // Send it multiple times to see if it can handle this
+//            Thread.sleep(10);
+//            this.actSession.send("/game/answer/" + this.id, "1"); // Send it multiple times to see if it can handle this
         }
     }
 

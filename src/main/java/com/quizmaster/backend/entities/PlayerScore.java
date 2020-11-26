@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 
 @JsonDeserialize(using = QuestionDeserializer.class)
@@ -27,14 +28,27 @@ public class PlayerScore {
         this.nickname = nickname;
     }
 
-    public void addAnswer(int questionNumber, boolean isCorrect) {
+    public void addAnswer(int questionNumber, Answer stateAnswer) {
         for (SavedAnswer temp : this.answers) {
             if (temp.getQuestionNumber() == questionNumber) {
-                temp.setCorrect(isCorrect);
+                temp.setCorrect(stateAnswer);
                 return;
             }
         }
-        this.answers.add(new SavedAnswer(questionNumber, isCorrect));
+        this.answers.add(new SavedAnswer(questionNumber, stateAnswer));
     }
 
+    public void fillUnanswered(int questionAmount){
+        List<Integer> unanswered =new ArrayList<Integer>();
+        for (int i = 0; i<questionAmount; i++){
+            unanswered.add(i);
+        }
+        for (SavedAnswer temp : this.answers) {
+            unanswered.remove(temp.getQuestionNumber());
+        }
+
+        for (Integer notIncluded : unanswered){
+            addAnswer(notIncluded, Answer.NOTANSWERED);
+        }
+    }
 }

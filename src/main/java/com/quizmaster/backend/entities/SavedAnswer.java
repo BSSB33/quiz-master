@@ -6,11 +6,17 @@ import lombok.Data;
 public class SavedAnswer {
 
     int questionNumber;
-    boolean isCorrect;
+    Answer isCorrect;
 
-    public SavedAnswer(int questionNumber, boolean isCorrect) {
+    public SavedAnswer(int questionNumber, Answer isCorrect) {
         this.questionNumber = questionNumber;
         this.isCorrect = isCorrect;
     }
+
+
+    public void setCorrect(Answer stateAnswer) {
+        this.isCorrect = stateAnswer;
+    }
+
 
 }
