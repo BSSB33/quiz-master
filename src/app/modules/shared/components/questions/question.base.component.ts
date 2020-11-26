@@ -14,6 +14,7 @@ export class QuestionBaseComponent implements OnInit, OnChanges{
   @Input() index: number;
   @Input() fc: AbstractControl;
   @Output() delete = new EventEmitter<number>();
+  @Output() answer = new EventEmitter<any>();
 
 
   public visibleIndex;

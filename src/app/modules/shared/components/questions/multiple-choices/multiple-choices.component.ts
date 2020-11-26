@@ -82,6 +82,8 @@ export class MultipleChoicesComponent extends QuestionBaseComponent implements O
       } else {
         this.selected.push(ind);
       }
+      this.answer.emit(this.selected);
     }
+
   }
 }

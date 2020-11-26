@@ -1,18 +1,21 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import * as SockJS from 'sockjs-client';
-import {Stomp} from "@stomp/stompjs";
+import {IMessage, Stomp, StompSubscription} from "@stomp/stompjs";
 import {CompatClient} from "@stomp/stompjs/esm6/compatibility/compat-client";
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
+  id: string = undefined;
   joinEvents: EventEmitter<string> = new EventEmitter<string>();
   gameEvents: EventEmitter<string> = new EventEmitter<string>();
 
   public static endpoints = {
     socket: '/ws'
   }
+
+  subscriptions: StompSubscription[] = [];
 
   public stompClient: CompatClient;
 
@@ -28,20 +31,34 @@ export class GameService {
 
       this.stompClient.onConnect = (frame) => {
         console.log('onconnect');
-        this.stompClient.subscribe('/user/queue/reply', (hello) => {
-          this.joinEvents.emit(hello.body);
-          console.log(hello.body);
+        this.stompClient.subscribe('/user/queue/reply', (ans) => {
+          const mes = GameService.getMessage(ans);
+          this.joinEvents.emit(mes);
+          console.log(mes);
         })
       }
     }
   }
 
+  private static getMessage(ans: IMessage): any {
+    let res = ans.body;
+    if (ans.headers.hasOwnProperty('content-type') && ans.headers['content-type'] === 'application/json') {
+      res = JSON.parse(ans.body);
+    }
+    return res;
+  }
+
   public joinGame(id: string, name: string) {
+    this.id = id;
     this.stompClient.send('/game/join/' + id, {}, name);
-    this.stompClient.subscribe('/results/room/' + id,(hello) => {
-      this.gameEvents.emit(hello.body);
-      console.log(hello.body);
-    })
+    this.subscriptions.forEach( (par: StompSubscription) => par.unsubscribe());
+    this.subscriptions = [];
+    const sub = this.stompClient.subscribe('/results/room/' + id,(ans) => {
+      const mes = GameService.getMessage(ans);
+      this.gameEvents.emit(mes);
+      console.log(mes);
+    });
+    this.subscriptions.push(sub);
   }
 
 
@@ -52,6 +69,12 @@ export class GameService {
   public disconnect() {
     this.stompClient.disconnect();
     this.stompClient = undefined;
+  }
+
+  public submitAnswer(ans: any) {
+    if (this.stompClient) {
+      this.stompClient.send('/game/answer/' + this.id, {}, JSON.stringify(ans));
+    }
   }
 
 }
