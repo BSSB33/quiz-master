@@ -33,7 +33,7 @@ import java.util.List;
 @EnableScheduling
 public class GroupController {
 
-    private final long TIMEWINDOW = 60; // in Seconds
+    private final long TIMEWINDOW = 300; // in Seconds
     private final long SCHEDULERATE = 1; // in Seconds
     private final long QUESTIONTIME = 20; // in Seconds
 
@@ -173,10 +173,10 @@ public class GroupController {
 
         for (Quiz act : quizMongoRepository.findAll()) {
             if (act.getId().equals(gameId)){
-                if (act.getStartingTime().isAfter(LocalDateTime.now())){
+                if (act.getStartingTime().isBefore(LocalDateTime.now())){
                     return new GameJoinResponse("Quiz already ended",false,act.getStartingTime(), act.getTitle(), act.getDescription());
                 }
-                if (act.getStartingTime().isBefore(LocalDateTime.now())){
+                if (act.getStartingTime().isAfter(LocalDateTime.now())){
                     return new GameJoinResponse("Quiz will start",false,act.getStartingTime(), act.getTitle(), act.getDescription());
                 }
             }
