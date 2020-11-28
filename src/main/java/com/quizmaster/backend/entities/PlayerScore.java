@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -42,16 +43,26 @@ public class PlayerScore {
     }
 
     public void fillUnanswered(int questionAmount){
+        System.out.println("amount of questions " + questionAmount);
+
         List<Integer> unanswered =new ArrayList<Integer>();
         for (int i = 0; i<questionAmount; i++){
             unanswered.add(i);
         }
+
+        System.out.println("List original");
+        System.out.println(unanswered.toString());
+
         for (SavedAnswer temp : this.answers) {
-            unanswered.remove(temp.getQuestionNumber());
+            System.out.println("remove " + temp.getQuestionNumber());
+            unanswered.remove( (Integer) temp.getQuestionNumber());
+            System.out.println("unanswered list: " + unanswered.toString());
+            System.out.println("act List: " + this.answers.toString());
         }
 
         for (Integer notIncluded : unanswered){
             addAnswer(notIncluded, Answer.NOTANSWERED);
         }
+        Collections.sort(this.answers);
     }
 }

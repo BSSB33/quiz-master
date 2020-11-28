@@ -78,8 +78,10 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
         Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
         Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
+        Model m3 = new MultipleChoicesModel("Which one is Letter BD?", List.of("A", "B", "C", "D"), List.of(2,4));
         Question q1 = new Question("qm.multiple_choice", m1);
         Question q2 = new Question("qm.multiple_choice", m2);
+        Question q3 = new Question("qm.multiple_choice", m3);
 
         for (Quiz act : quizMongoRepository.findAll()) {
             if (act.getTitle().equals("Testquiz")) {
@@ -87,7 +89,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
             }
         }
 
-        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusSeconds(11), "Random Note", List.of(q1, q2));
+        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusSeconds(11), "Random Note", List.of(q1, q2, q3));
         quizMongoRepository.save(quiz);
 
         try {
@@ -186,7 +188,6 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public Type getPayloadType(StompHeaders headers) {
         System.out.println("Received Header by STOMPClient " + headers.toString());
-        System.out.println(String.class);
         return Object.class;
     }
 
@@ -196,6 +197,8 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
         System.out.println("Received Frame by STOMPClient");
         LinkedHashMap content = (LinkedHashMap) payload;
+
+        System.out.println(content.toString());
 
         if(content.size() == 5){
             //GameJoinResponse
@@ -207,6 +210,19 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
             LinkedHashMap getQuestionContent = (LinkedHashMap) content.get("model");
             MultipleChoicesModel finalQuestion = new MultipleChoicesModel((String) getQuestionContent.get("question"), (List<String>) getQuestionContent.get("answers"), null);
 
+            if (finalQuestion.getQuestion().equals("Which one is Letter A?")){
+                return;
+            }
+
+
+            System.out.println("Answering Questions with 1");
+            this.actSession.send("/game/answer/" + this.id, List.of(1,2)); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, List.of(1,2,3,4)); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, List.of(1)); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, List.of(2,4)); // Send it multiple times to see if it can handle this
 
         }else if(content.size() == 4){
             //result
