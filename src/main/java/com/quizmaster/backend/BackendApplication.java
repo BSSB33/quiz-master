@@ -1,13 +1,11 @@
 package com.quizmaster.backend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.quizmaster.backend.entities.Model;
-import com.quizmaster.backend.entities.MultipleChoicesModel;
-import com.quizmaster.backend.entities.Question;
-import com.quizmaster.backend.entities.Quiz;
+import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import lombok.SneakyThrows;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,6 +27,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
@@ -188,7 +187,7 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public Type getPayloadType(StompHeaders headers) {
         System.out.println("Received Header by STOMPClient " + headers.toString());
         System.out.println(String.class);
-        return String.class;
+        return Object.class;
     }
 
     @SneakyThrows
@@ -196,21 +195,30 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     public void handleFrame(StompHeaders headers, @Nullable Object payload) {
 
         System.out.println("Received Frame by STOMPClient");
-//        System.out.println("Received: " + (payload.toString()));
+        LinkedHashMap content = (LinkedHashMap) payload;
 
-//        System.out.println((String) payload);
-//        System.out.println(payload.toString());
+        if(content.size() == 5){
+            //GameJoinResponse
+            GameJoinResponse translate = new GameJoinResponse((String) content.get("code"), (boolean) content.get("correct"), LocalDateTime.parse((String) content.get("startingTime")), (String) content.get("quizTitle"), (String) content.get("quizDescription"));
+            System.out.println(translate.getCode());
 
-//        if (payload.toString().startsWith("Question(")) { //if a question is received
-//            System.out.println("Answering Questions with 1");
-//            this.actSession.send("/game/answer/" + this.id, "2"); // Send it multiple times to see if it can handle this
-//            Thread.sleep(10);
-//            this.actSession.send("/game/answer/" + this.id, "3"); // Send it multiple times to see if it can handle this
-//            Thread.sleep(10);
-//            this.actSession.send("/game/answer/" + this.id, "4"); // Send it multiple times to see if it can handle this
-//            Thread.sleep(10);
-//            this.actSession.send("/game/answer/" + this.id, "1"); // Send it multiple times to see if it can handle this
-//        }
+        }else if(content.size() == 2){
+            //Question
+            LinkedHashMap getQuestionContent = (LinkedHashMap) content.get("model");
+            MultipleChoicesModel finalQuestion = new MultipleChoicesModel((String) getQuestionContent.get("question"), (List<String>) getQuestionContent.get("answers"), null);
+
+
+        }else if(content.size() == 4){
+            //result
+            PlayerScore result = new PlayerScore((String) content.get("sessionID"), LocalDateTime.parse((String) content.get("connectAt")));
+            result.setAnswers((ArrayList<SavedAnswer>) content.get("answers"));
+            result.setNickname((String) content.get("nickname"));
+
+        }else if(content.size() == 1){
+            //QuizEnded
+            QuizEndedResponse end = new QuizEndedResponse((String) content.get("message"));
+        }
+
     }
 
 

@@ -1,14 +1,11 @@
 package com.quizmaster.backend.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import com.quizmaster.services.GameIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,7 +101,9 @@ public class GroupController {
                     act.incActQuestion();
                     if (!act.isNextQuestion()) { //game is over
                         itemsToRemove.add(act);
-                        template.convertAndSend("/results/room/" + act.getQuiz().getId(), "Quiz ended");
+                        QuizEndedResponse toSend = new QuizEndedResponse("Quiz ended");
+                        template.convertAndSend("/results/room/" + act.getQuiz().getId(), toSend);
+                        System.out.println("sent out--------------------------------------");
                         //TODO Save Results for Teacher
                         sendResults(act);
                     } else { //game still has more questions
