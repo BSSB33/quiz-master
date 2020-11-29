@@ -162,7 +162,7 @@ public class GroupController {
                         return new GameJoinResponse("Nickname already given out",false,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                     }
                     PlayerScore addUser = new PlayerScore(sessionId, LocalDateTime.now());
-                    addUser.setNickname(nickname + sessionId.substring(0, 3)); // first 3 elements of sessionID are added to nickname to enable secure distribution of names
+                    addUser.setNickname(nickname); // first 3 elements of sessionID are added to nickname to enable secure distribution of names
                     act.addPlayer(addUser);
                     return new GameJoinResponse("You were added",true,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                 }
