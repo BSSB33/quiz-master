@@ -1,18 +1,15 @@
 package com.quizmaster.backend;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import lombok.SneakyThrows;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -92,11 +89,11 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusSeconds(11), "Random Note", List.of(q1, q2, q3));
         quizMongoRepository.save(quiz);
 
-        try {
-            connect(quiz.getId()); //Very simple STOMPClient test
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            connect(quiz.getId()); //Very simple STOMPClient test
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 
