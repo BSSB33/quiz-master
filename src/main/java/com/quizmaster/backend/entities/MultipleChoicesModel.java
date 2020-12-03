@@ -1,20 +1,22 @@
 package com.quizmaster.backend.entities;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
-public class MultipleChoicesModel extends Model{
+public class MultipleChoicesModel extends Model {
 
     private String question;
     private List<String> answers;
-    private List<Integer> correctAnswers;
 
+    @JsonCreator
+    public MultipleChoicesModel(@JsonProperty("question") String question, @JsonProperty("answers") List<String> answers, @JsonProperty("correctAnswers") List<Integer> correctAnswers) {
+        super(correctAnswers);
+        this.question = question;
+        this.answers = answers;
+    }
 }

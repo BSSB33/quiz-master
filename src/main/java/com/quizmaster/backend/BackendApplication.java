@@ -3,13 +3,13 @@ package com.quizmaster.backend;
 import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.env.Environment;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.SimpleMessageConverter;
-import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -19,102 +19,160 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import javax.annotation.Nullable;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @SpringBootApplication
-public class BackendApplication implements CommandLineRunner {
+public class BackendApplication<data_type> implements CommandLineRunner {
 
+
+    public Boolean disabledSecurity = false;
     @Autowired
     private UserMongoRepository userMongoRepository;
 
     @Autowired
     private QuizMongoRepository quizMongoRepository;
 
+    @Autowired
+    private Environment environment;
+
+
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }
 
+
     @Override
     public void run(String... args) throws Exception {
+        String timeZone = environment.getProperty("TimeZone");
+        TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
 
-        System.out.println("=============== Users: ===============");
-        userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() +  " -> DB ID: " + user.getId()));
+//        System.out.println("TIMEZONE " + timeZone);
+//
+//        String var_name = environment.getProperty("DisabledSec");
+//        System.out.println("IMPORTANT");
+//        System.out.println("------------------------------------------------------------------------------------");
+//        System.out.println(var_name);
+//
+//
+//
+//
+//        System.out.println("=============== Users: ===============");
+//        userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() + " -> DB ID: " + user.getId()));
+//
+//        System.out.println("============== Quizzes: ==============");
+//        quizMongoRepository.findAll().forEach(qu -> System.out.println(qu.getTitle() + " -> " + qu.getId()));
+//
+//        LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
+//        Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+//        Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
+//        Model m3 = new MultipleChoicesModel("Which one is Letter BD?", List.of("A", "B", "C", "D"), List.of(2,4));
+//        Question q1 = new Question("qm.multiple_choice", m1);
+//        Question q2 = new Question("qm.multiple_choice", m2);
+//        Question q3 = new Question("qm.multiple_choice", m3);
+//
+//        for (Quiz act : quizMongoRepository.findAll()) {
+//            if (act.getTitle().equals("Testquiz")) {
+//                quizMongoRepository.deleteById(act.getId());
+//            }
+//        }
+//
+//        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusSeconds(11), "Random Note", List.of(q1, q2, q3));
+//        quizMongoRepository.save(quiz);
 
-        System.out.println("============== Quizzes: ==============");
-        quizMongoRepository.findAll().forEach(qu -> System.out.println(qu.getTitle() + " -> " + qu.getId()));
-
-		LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
-		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-		Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
-		Question q1 = new Question("qm.multiple_choice", m1);
-		Question q2 = new Question("qm.multiple_choice", m2);
-        Quiz quiz = new Quiz("Quiz 1", "d",random, "Random Note", List.of(q1, q2));
-
-        //quizMongoRepository.save(quiz);
-
-        //User u1 = new User("Victor");
-        //User u2 = new User("Gabor");
-
-//		userMongoRepository.save(u1);
-//		userMongoRepository.save(u2);
-
-
-        try {
-            connect(); //Very simple STOMPClient test
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            connect(quiz.getId()); //Very simple STOMPClient test
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 
-    public void connect() throws InterruptedException, ExecutionException, TimeoutException, IOException {
+    public void connect(String quizID) throws InterruptedException, ExecutionException, TimeoutException, IOException {
 
         List<Transport> transports = new ArrayList<>(1);
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         WebSocketClient transport = new SockJsClient(transports);
         WebSocketStompClient stompClient = new WebSocketStompClient(transport);
+
         stompClient.setMessageConverter(new MappingJackson2MessageConverter()); //later if we want to use other classes than plaintext we should switch to MappingJackson2MessageConverter
+        //stompClient.setMessageConverter(new StringMessageConverter());
+
 
         String url = "ws://localhost:8080/ws";
-        StompSessionHandler sessionHandler = new MyStompSessionHandler();
+        StompSessionHandler sessionHandler = new MyStompSessionHandler(quizID);
         System.out.println("Trying to connect");
         StompSession stompSession = stompClient.connect(url, sessionHandler).get(10, TimeUnit.SECONDS);
         System.out.println("Connection was successful");
 
-        stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //Demo quiz
+        stompSession.subscribe("/user/queue/reply", sessionHandler); // connecting to private channel
 
-//        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-//        for (; ; ) {
-//            String line = in.readLine();
-//            if (line == null) break;
-//            if (line.length() == 0) continue;
 
-//            System.out.println("Enter GameID:");
-//            line = in.readLine();
-//            stompSession.send("/api/join" + line, new User("Mark"));
-//        }
+//        Thread.sleep(10); //wait some time to let sockets start up
+//        stompSession.send("/game/join/5f918f6b894d6016707a019f", "Victor"); //First make invalid request
+//
+//        System.out.println("OLD GAME");
+//        Thread.sleep(10); //wait some time to let sockets start up
+//        stompSession.send("/game/join/5fb30e4f3070b14d537cad3b", "Victor"); //Make request for old GAME
+//
+//        System.out.println("Not existing GAME");
+//        Thread.sleep(10); //wait some time to let sockets start up
+//        stompSession.send("/game/join/5fb3037cad3b", "Victor"); //
+//
+//        System.out.println("Null GAME");
+//        Thread.sleep(10); //wait some time to let sockets start up
+//        stompSession.send("/game/join/", "Victor"); //Make request for null GAME
+//
+//        Thread.sleep(1000); //wait to see difference in console
+//        stompSession.send("/game/join/" + quizID, "Victor"); //Second invalid request as game didn´t start
+
+
+        Thread.sleep(5000); //wait some time to let the game start
+        System.out.println("########################################################################");
+        System.out.println("Trying to join 4 times: ");
+        stompSession.send("/game/join/" + quizID, "Victor"); //Valid request as the game should move to activeGames
+//        Thread.sleep(10);
+//        stompSession.send("/game/join/" + quizID, "Victor"); // Should be rejected
+//        Thread.sleep(10);
+//        stompSession.send("/game/join/" + quizID, "Pascal"); // Should be rejected
+//        Thread.sleep(10);
+//        stompSession.send("/game/join/" + quizID, "Pascal"); // Should be rejected
+
+        stompSession.subscribe("/results/room/" + quizID, sessionHandler); // subscribe to Channel for the questions
+        System.out.println("Join room id: /results/room/" + quizID);
+
 
     }
 }
 
 class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
+    private String id;
+    private StompSession actSession;
+
+    public MyStompSessionHandler(String quizID) {
+        this.id = quizID;
+    }
+
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+        this.actSession = session;
+
         System.out.println("Executed after successful connection...");
 
-        session.subscribe("/results/joined", this);
+        //session.subscribe("/user/queue/reply", this); // connecting to private channel
 
+
+        //session.subscribe("/results/room/" + this.id, this);
+        //System.out.println("Join room id: /results/room/" + this.id);
         System.out.println("New session opened: " + session.getSessionId());
     }
 
@@ -126,13 +184,53 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public Type getPayloadType(StompHeaders headers) {
         System.out.println("Received Header by STOMPClient " + headers.toString());
-        return byte[].class;
+        return Object.class;
     }
 
+    @SneakyThrows
     @Override
     public void handleFrame(StompHeaders headers, @Nullable Object payload) {
+
         System.out.println("Received Frame by STOMPClient");
-        System.out.println("Received: " + (payload.toString()));
+        LinkedHashMap content = (LinkedHashMap) payload;
+
+        System.out.println(content.toString());
+
+        if(content.size() == 5){
+            //GameJoinResponse
+            GameJoinResponse translate = new GameJoinResponse((String) content.get("code"), (boolean) content.get("correct"), LocalDateTime.parse((String) content.get("startingTime")), (String) content.get("quizTitle"), (String) content.get("quizDescription"));
+            System.out.println(translate.getCode());
+
+        }else if(content.size() == 2){
+            //Question
+            LinkedHashMap getQuestionContent = (LinkedHashMap) content.get("model");
+            MultipleChoicesModel finalQuestion = new MultipleChoicesModel((String) getQuestionContent.get("question"), (List<String>) getQuestionContent.get("answers"), null);
+
+            if (finalQuestion.getQuestion().equals("Which one is Letter A?")){
+                return;
+            }
+
+
+            System.out.println("Answering Questions with 1");
+            this.actSession.send("/game/answer/" + this.id, List.of(1,2)); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, List.of(1,2,3,4)); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, List.of(1)); // Send it multiple times to see if it can handle this
+            Thread.sleep(10);
+            this.actSession.send("/game/answer/" + this.id, List.of(2,4)); // Send it multiple times to see if it can handle this
+
+        }else if(content.size() == 4){
+            //result
+            PlayerScore result = new PlayerScore((String) content.get("sessionID"), LocalDateTime.parse((String) content.get("connectAt")));
+            result.setAnswers((ArrayList<SavedAnswer>) content.get("answers"));
+            result.setNickname((String) content.get("nickname"));
+
+        }else if(content.size() == 1){
+            //QuizEnded
+            QuizEndedResponse end = new QuizEndedResponse((String) content.get("message"));
+        }
+
     }
 
 

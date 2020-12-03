@@ -2,8 +2,7 @@ package com.quizmaster.backend.entities;
 
 
 import lombok.Data;
-import nonapi.io.github.classgraph.json.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,12 +31,24 @@ public class Quiz {
         this.questions = questions;
     }
 
-    public void setCreatedAt(LocalDateTime creatingTime){
+    public void setCreatedAt(LocalDateTime creatingTime) {
         this.createdAt = creatingTime;
     }
 
-    public LocalDateTime getCreatedAt(){
+    public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
+    public LocalDateTime getStartingTime() {
+        return this.startingTime;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+
+    public List<Question> getQuestions() {
+        return this.questions;
+    }
 }
