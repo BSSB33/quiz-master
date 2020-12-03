@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Clipboard} from "@angular/cdk/clipboard";
 
 @Component({
   selector: 'app-quiz-overview',
@@ -30,7 +31,12 @@ export class QuizOverviewComponent implements OnInit {
   @Input() model;
   @Input() index;
 
-  constructor() {
+  copy = {
+    timeout: undefined,
+    copied: false
+  }
+
+  constructor(private clipboard: Clipboard) {
     this.quizColor = QuizOverviewComponent.colors[Math.floor(Math.random() * QuizOverviewComponent.colors.length)];
   }
 
@@ -39,5 +45,13 @@ export class QuizOverviewComponent implements OnInit {
 
   getDate(date: string) {
     return new Date(date).toLocaleString();
+  }
+
+  copyUrlOfQuiz() {
+    window.clearTimeout(this.copy.timeout);
+    const url = window.location.href.replace('quizzes', 'game/' + this.model.id);
+    this.clipboard.copy(url);
+    this.copy.copied = true;
+    this.copy.timeout = window.setTimeout( () => this.copy.copied = false, 2000);
   }
 }

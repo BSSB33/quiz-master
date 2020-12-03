@@ -153,4 +153,17 @@ export class GameComponent implements OnInit, OnDestroy {
       this.gameService.submitAnswer(this.gameObject.answer);
     }
   }
+
+  getLabel(isCorrect: string) {
+    switch (isCorrect) {
+      case 'CORRECT':
+        return 'correct';
+      case 'INCORRECT':
+        return 'incorrect';
+      case 'NOTANSWERED':
+        return 'not answered';
+      default:
+        return isCorrect;
+    }
+  }
 }

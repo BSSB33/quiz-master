@@ -55,6 +55,7 @@ $custom-typography: mat-typography-config(
   height: calc(var(--vh, 1vh) * 100); //intentionally overwriting
 }
 
+
 .flex-column {
   display: flex;
   flex-direction: column;
@@ -188,4 +189,34 @@ body {
   &:hover {
     background-color: rgba(0, 38, 255, 0.2);
   }
+}
+
+.qm-correct {
+  padding: 15px;
+  margin: 10px;
+  background-color: #87e784;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(4, 109, 27, 0.75);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(4, 109, 27, 0.75);
+  box-shadow: 0px 0px 5px 1px rgba(4, 109, 27, 0.75);
+}
+
+.qm-incorrect {
+  padding: 15px;
+  margin: 10px;
+  background-color: #e78484;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+}
+
+.qm-not-answered {
+  padding: 15px;
+  margin: 10px;
+  background-color: #e7ba84;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
 }

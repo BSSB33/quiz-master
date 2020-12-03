@@ -9,7 +9,7 @@
     {{model.description}}
   </mat-card-content>
   <mat-card-footer>
-    <mat-card-actions class="flex-row" style="display: flex; margin: 0 10px">
+    <mat-card-actions class="flex-row" style="display: flex; margin: 0 10px; align-items: center;">
       <!--      delete quiz -->
       <button mat-mini-fab color="warn" (click)="delete.emit(model.id)" matTooltip="Delete Quiz. ">
         <mat-icon>
@@ -17,6 +17,18 @@
         </mat-icon>
       </button>
       <div style="flex: 1 1"></div>
+
+      <!--      copied text -->
+
+      <div style="margin-right: 8px;" *ngIf="copy.copied">
+        copied!
+      </div>
+      <!--      copy button -->
+      <button mat-mini-fab color="primary" style="margin-right: 8px;" (click)="copyUrlOfQuiz()" matTooltip="Copy url of the quiz. ">
+        <mat-icon>
+          content_copy
+        </mat-icon>
+      </button>
       <!--      edit button -->
       <button mat-mini-fab color="primary" style="margin-right: 8px;" [routerLink]="['edit', model.id]" matTooltip="Edit Quiz. ">
         <mat-icon>

@@ -86,13 +86,19 @@ export class AppModule {
 function load(auth: AuthService, httpHandler: HttpBackend, config: ConfigService): (() => Promise<boolean>) {
   const http = new HttpClient(httpHandler);
   return (): Promise<boolean> => {
+    console.log('asd');
     return new Promise<boolean>((resolve: (a: boolean) => void): void => {
       http.get('./assets/config.json')
         .pipe(
           map((x: any) => {
             INIT_CONFIG_JSON = x;
+            console.log('asd');
             auth.initSocialAuth(INIT_CONFIG_JSON.google_client_id);
+
+            console.log('dsa');
             config.provideConfig(INIT_CONFIG_JSON);
+
+            console.log('ddd');
             // wait for it to initialize now:
             auth.sauthService.initState.toPromise().finally(() => resolve(true))
           }),

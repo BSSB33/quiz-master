@@ -1,25 +1,25 @@
 <ng-container *ngIf="!(gameObject.joined) && !results">
-  <div class="fullscreen">
+  <div class="with-header full-height-width-header">
     <div class="flex-column" style="height: 100%">
       <div style="flex: 5 5 0"></div>
-      <!--    row1-->
+
       <div class="flex-row" style="flex: 0 1 0;">
-        <div style="flex: 5 9 200px;"></div>
-        <div style="flex: 1 1 200px;">
-          <img [src]="'assets/vectors/logo.svg' | imgCache | async | sanitize:'resourceUrl'" style="max-width: 100%;" alt="Logo of Quiz Master"></div>
-        <div style="flex: 5 9 200px;"></div>
+        <div style="flex: 1 0;"></div>
+        <h2 style="flex: 3 0 0; text-align: center">
+          Please provide a valid quiz ID and a unique nickname!
+        </h2>
+        <div style="flex: 1 0;"></div>
       </div>
+
       <div style="flex: 1 1 0"></div>
-
-
-      <!--    row2-->
+      <!--    row1-->
       <div class="flex-row" style="flex: 0 1 0;">
         <div style="flex: 1 0;"></div>
         <app-quiz-id-input [(value)]="joinDetails.gameId.value" [error]="joinDetails.gameId.error"></app-quiz-id-input>
         <div style="flex: 1 0;"></div>
       </div>
 
-
+      <!--    row2-->
       <div class="flex-row" style="flex: 0 1 0;">
         <div style="flex: 1 0;"></div>
         <app-user-nickname-input [(value)]="joinDetails.nickname.value" [error]="joinDetails.nickname.error"></app-user-nickname-input>
@@ -28,10 +28,21 @@
       <div style="flex: 1 1 0"></div>
 
       <!--    row3-->
-      <div style="flex: 0 1 0; text-align: center;">
-        <button mat-raised-button [disabled]="joinDetails.nickname.value === '' || joinDetails.gameId.value === ''" color="primary" aria-label="Play button" (click)="joinGame();">
-          Join
-        </button>
+      <div style="flex: 0 1 0; text-align: center;" class="flex-row">
+
+        <div style="flex: 1 0;"></div>
+        <div style="flex: 0 1 250px;" class="flex-row">
+          <button mat-raised-button color="warn" aria-label="Back button" routerLink="/">
+            Back to Home
+          </button>
+
+          <div style="flex: 1 0;"></div>
+          <button mat-raised-button [disabled]="joinDetails.nickname.value === '' || joinDetails.gameId.value === ''" color="primary" aria-label="Play button" (click)="joinGame();">
+            Join
+          </button>
+        </div>
+        <div style="flex: 1 0;"></div>
+
       </div>
 
       <div style="flex: 5 5 0"></div>
@@ -48,8 +59,8 @@
            [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
            class="flex-column">
 
-        <div *ngFor="let res of results">
-          Question {{res.questionNumber + 1}} --> {{res.isCorrect}}
+        <div *ngFor="let res of results" [ngClass]="{ 'qm-correct': res.isCorrect === 'CORRECT', 'qm-incorrect': res.isCorrect === 'INCORRECT', 'qm-not-answered': res.isCorrect === 'NOTANSWERED' }" matTooltip="The question is {{getLabel(res.isCorrect)}}">
+          Question {{res.questionNumber + 1}}
         </div>
 
       </div>
@@ -57,7 +68,7 @@
     </div>
   </div>
   <div style="position: absolute; bottom: 5px; width: 100%;" class="flex-row" *ngIf="true">
-    <button style="margin-right: 10px;" mat-raised-button color="primary" (click)="results = undefined">
+    <button style="margin-right: 10px; margin-left: 10px;" mat-raised-button color="primary" (click)="results = undefined">
       back
     </button>
     <div style="flex: 1 1 0;"></div>
@@ -101,9 +112,12 @@
   </div>
   <div style="position: absolute; bottom: 5px; width: 100%;" class="flex-row" *ngIf="true">
     <div style="flex: 1 1 0;"></div>
-    <button style="margin-right: 10px;" mat-raised-button color="primary" *ngIf="gameObject.joined && gameObject.question" [disabled]="gameObject.sent || !gameObject.answer" (click)="submitAnswer()">
+    <button style="margin-right: 10px;" mat-raised-button color="primary" *ngIf="gameObject.joined && gameObject.question && !gameObject.sent" [disabled]="!gameObject.answer" (click)="submitAnswer()">
       Send
     </button>
+    <span style="margin-right: 10px;" *ngIf="gameObject.joined && gameObject.question && gameObject.sent">
+      Answer saved!
+    </span>
   </div>
 </ng-container>
 

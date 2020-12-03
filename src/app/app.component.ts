@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ConfigService} from "./modules/shared/services/config.service";
 import {AuthService} from "./modules/shared/services/auth.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,7 @@ import {AuthService} from "./modules/shared/services/auth.service";
 export class AppComponent implements OnInit {
   title = 'quiz-master-frontend';
 
-  constructor(public auth: AuthService) {
+  constructor(public auth: AuthService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -21,6 +22,10 @@ export class AppComponent implements OnInit {
       let vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     });
+  }
+
+  get isGame(): boolean {
+    return this.router.url.indexOf('/game') === 0;
   }
 
 
