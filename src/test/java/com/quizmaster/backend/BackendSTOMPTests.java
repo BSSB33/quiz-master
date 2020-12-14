@@ -2,6 +2,8 @@ package com.quizmaster.backend;
 
 import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +45,7 @@ public class BackendSTOMPTests {
 	private final long TIMEWINDOW = 300; // in Seconds
 	private final String QUIZPLAYERNAME = "Victor";
 	private final String QUIZTITLE = "RhLp6E8vvfQgX24uwAy5rmwnHfT8fSdalsNPZYJa";
-	private final String QUIZDESC = "This is a very nice development quiz that should only existis during some live testing";
+	private final String QUIZDESC = "This is a very nice development quiz that should only exist during some live testing";
 	private final long QUIZSTARTDELAY = 10; //Quiz startingTime from now
 
 	String WEBSOCKET_URI;
@@ -223,30 +225,15 @@ public class BackendSTOMPTests {
 		assert result != null;
 		assertEquals("Quiz ended", result.get("message"));
 
+
 		Thread.sleep(100);
 		//Results should be here
 		result = blockingQueue.poll(2, SECONDS);
 		assert result != null;
-		assertEquals(QUIZPLAYERNAME, result.get("nickname"));
-		//check if diff between joiningTime local and on backend is not too big
-		long seconds = ChronoUnit.SECONDS.between(joiningTime, LocalDateTime.parse((String) result.get("connectAt")).truncatedTo(ChronoUnit.SECONDS));
-		boolean smalldiff = false;
-		if(seconds == 0 || seconds == 1){
-			smalldiff = true;
-		}
-		assertTrue(smalldiff);
-		//Check SessionID
-		boolean sameSessionID = false;
-		String resultID = (String) result.get("sessionID");
-		if (stompHandler.getSTOMPHaderSessionID().startsWith(resultID) && resultID.length() > 8){
-			sameSessionID = true;
-		}
-		assertTrue(sameSessionID);
-		ArrayList<LinkedHashMap> savedAnswers = (ArrayList<LinkedHashMap>) result.get("answers");
-		assertEquals(0, savedAnswers.get(0).get("questionNumber"));
-		assertEquals(Answer.NOTANSWERED.toString(), savedAnswers.get(0).get("isCorrect"));
-		//make sure only one question is contained in the results
-		assertEquals(1, savedAnswers.size());
+
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.NOTANSWERED);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
 
 		Thread.sleep(2000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
@@ -322,26 +309,10 @@ public class BackendSTOMPTests {
 		//Results should be here
 		result = blockingQueue.poll(2, SECONDS);
 		assert result != null;
-		assertEquals(QUIZPLAYERNAME, result.get("nickname"));
-		//check if diff between joiningTime local and on backend is not too big
-		long seconds = ChronoUnit.SECONDS.between(joiningTime, LocalDateTime.parse((String) result.get("connectAt")).truncatedTo(ChronoUnit.SECONDS));
-		boolean smalldiff = false;
-		if(seconds == 0 || seconds == 1){
-			smalldiff = true;
-		}
-		assertTrue(smalldiff);
-		//Check SessionID
-		boolean sameSessionID = false;
-		String resultID = (String) result.get("sessionID");
-		if (stompHandler.getSTOMPHaderSessionID().startsWith(resultID) && resultID.length() > 8){
-			sameSessionID = true;
-		}
-		assertTrue(sameSessionID);
-		ArrayList<LinkedHashMap> savedAnswers = (ArrayList<LinkedHashMap>) result.get("answers");
-		assertEquals(0, savedAnswers.get(0).get("questionNumber"));
-		assertEquals(Answer.INCORRECT.toString(), savedAnswers.get(0).get("isCorrect"));
-		//make sure only one question is contained in the results
-		assertEquals(1, savedAnswers.size());
+		//list expected scores
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.INCORRECT);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
 
 		Thread.sleep(2000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
@@ -397,7 +368,7 @@ public class BackendSTOMPTests {
 		assertEquals(List.of("A","B","C","D"), question.get("answers"));
 
 		Thread.sleep(100);
-		session.send("/game/answer/" + quiz.getId(), List.of(1));
+		session.send("/game/answer/" + quiz.getId(), List.of());
 		Thread.sleep(100);
 
 		//Receive Conformation for Answer
@@ -417,28 +388,12 @@ public class BackendSTOMPTests {
 		//Results should be here
 		result = blockingQueue.poll(2, SECONDS);
 		assert result != null;
-		assertEquals(QUIZPLAYERNAME, result.get("nickname"));
-		//check if diff between joiningTime local and on backend is not too big
-		long seconds = ChronoUnit.SECONDS.between(joiningTime, LocalDateTime.parse((String) result.get("connectAt")).truncatedTo(ChronoUnit.SECONDS));
-		boolean smalldiff = false;
-		if(seconds == 0 || seconds == 1){
-			smalldiff = true;
-		}
-		assertTrue(smalldiff);
-		//Check SessionID
-		boolean sameSessionID = false;
-		String resultID = (String) result.get("sessionID");
-		if (stompHandler.getSTOMPHaderSessionID().startsWith(resultID) && resultID.length() > 8){
-			sameSessionID = true;
-		}
-		assertTrue(sameSessionID);
-		ArrayList<LinkedHashMap> savedAnswers = (ArrayList<LinkedHashMap>) result.get("answers");
-		assertEquals(0, savedAnswers.get(0).get("questionNumber"));
-		assertEquals(Answer.INCORRECT.toString(), savedAnswers.get(0).get("isCorrect"));
-		//make sure only one question is contained in the results
-		assertEquals(1, savedAnswers.size());
+		//list expected scores
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.INCORRECT);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
 
-		Thread.sleep(2000);
+		Thread.sleep(10000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
 		assertNull(result);
 
@@ -512,28 +467,12 @@ public class BackendSTOMPTests {
 		//Results should be here
 		result = blockingQueue.poll(2, SECONDS);
 		assert result != null;
-		assertEquals(QUIZPLAYERNAME, result.get("nickname"));
-		//check if diff between joiningTime local and on backend is not too big
-		long seconds = ChronoUnit.SECONDS.between(joiningTime, LocalDateTime.parse((String) result.get("connectAt")).truncatedTo(ChronoUnit.SECONDS));
-		boolean smalldiff = false;
-		if(seconds == 0 || seconds == 1){
-			smalldiff = true;
-		}
-		assertTrue(smalldiff);
-		//Check SessionID
-		boolean sameSessionID = false;
-		String resultID = (String) result.get("sessionID");
-		if (stompHandler.getSTOMPHaderSessionID().startsWith(resultID) && resultID.length() > 8){
-			sameSessionID = true;
-		}
-		assertTrue(sameSessionID);
-		ArrayList<LinkedHashMap> savedAnswers = (ArrayList<LinkedHashMap>) result.get("answers");
-		assertEquals(0, savedAnswers.get(0).get("questionNumber"));
-		assertEquals(Answer.CORRECT.toString(), savedAnswers.get(0).get("isCorrect"));
-		//make sure only one question is contained in the results
-		assertEquals(1, savedAnswers.size());
+		//list expected scores
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.CORRECT);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
 
-		Thread.sleep(2000);
+		Thread.sleep(10000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
 		assertNull(result);
 	}
@@ -591,7 +530,7 @@ public class BackendSTOMPTests {
 
 
 		//no Results should be received because we did not join the QuizGame
-		Thread.sleep(2000);
+		Thread.sleep(10000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
 		assertNull(result);
 	}
@@ -747,38 +686,16 @@ public class BackendSTOMPTests {
 		//Results should be here
 		result = blockingQueue.poll(10, SECONDS);
 		assert result != null;
-		assertEquals(QUIZPLAYERNAME, result.get("nickname"));
-		//check if diff between joiningTime local and on backend is not too big
-		long seconds = ChronoUnit.SECONDS.between(joiningTime, LocalDateTime.parse((String) result.get("connectAt")).truncatedTo(ChronoUnit.SECONDS));
-		boolean smalldiff = false;
-		if(seconds == 0 || seconds == 1){
-			smalldiff = true;
-		}
-		assertTrue(smalldiff);
-		//Check SessionID
-		boolean sameSessionID = false;
-		String resultID = (String) result.get("sessionID");
-		if (stompHandler.getSTOMPHaderSessionID().startsWith(resultID) && resultID.length() > 8){
-			sameSessionID = true;
-		}
-		assertTrue(sameSessionID);
-		ArrayList<LinkedHashMap> savedAnswers = (ArrayList<LinkedHashMap>) result.get("answers");
-		//first Question should be NOTANSWERED
-		assertEquals(0, savedAnswers.get(0).get("questionNumber"));
-		assertEquals(Answer.NOTANSWERED.toString(), savedAnswers.get(0).get("isCorrect"));
-		//second Question should be INCORRECT
-		assertEquals(1, savedAnswers.get(1).get("questionNumber"));
-		assertEquals(Answer.INCORRECT.toString(), savedAnswers.get(1).get("isCorrect"));
-		//third Question should be CORRECT
-		assertEquals(2, savedAnswers.get(2).get("questionNumber"));
-		assertEquals(Answer.CORRECT.toString(), savedAnswers.get(2).get("isCorrect"));
-		//fourth Question should be CORRECT
-		assertEquals(3, savedAnswers.get(3).get("questionNumber"));
-		assertEquals(Answer.NOTANSWERED.toString(), savedAnswers.get(3).get("isCorrect"));
-		//check if only 4 questions are contained in result
-		assertEquals(4, savedAnswers.size());
+		//list expected scores
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.NOTANSWERED);
+		expectedResults.add(Answer.INCORRECT);
+		expectedResults.add(Answer.CORRECT);
+		expectedResults.add(Answer.NOTANSWERED);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
 
-		Thread.sleep(2000);
+
+		Thread.sleep(10000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
 		Assert.assertNull(result);
 	}
@@ -868,6 +785,58 @@ public class BackendSTOMPTests {
 		assert result != null;
 		assertEquals("You did not join correctly to the game", result.get("code"));
 		assertEquals(false, result.get("correct"));
+
+	}
+
+
+	@Contract("null, _, _, _ -> fail")
+	private void checkResult(Quiz quiz, @NotNull LinkedHashMap serverResponse, LocalDateTime joiningTime, MyStompSessionHandler stompHandler, List<Answer> expectedScore){
+
+		//first check individual player score
+		assert quiz != null;
+		assert serverResponse != null;
+		PlayerScore score = (PlayerScore) serverResponse.get("individualResult");
+		assert score != null;
+
+		assertEquals(QUIZPLAYERNAME, score.getNickname());
+		//check if diff between joiningTime local and on backend is not too big
+		long seconds = ChronoUnit.SECONDS.between(joiningTime, score.getConnectAt().truncatedTo(ChronoUnit.SECONDS));
+		boolean smalldiff = false;
+		if(seconds == 0 || seconds == 1){
+			smalldiff = true;
+		}
+		assertTrue(smalldiff);
+		//Check SessionID
+		boolean sameSessionID = false;
+
+		if (stompHandler.getSTOMPHaderSessionID().startsWith(score.getSessionID()) && score.getSessionID().length() > 8){
+			sameSessionID = true;
+		}
+		assertTrue(sameSessionID);
+
+		//control if expectedResults is correct
+		for (int j = 0; j < expectedScore.size(); j++){
+			assertEquals(expectedScore.get(j).toString(), score.getAnswers().get(j).getIsCorrect());
+			assertEquals(j, score.getAnswers().get(j).getQuestionNumber());
+		}
+
+
+		//now check if public question content is correct
+		List<Question> infos = (List<Question>) serverResponse.get("publicQuestions");
+
+		//check if both lists are holding the same amount of questions
+		assertEquals(quiz.getQuestions().size(), infos.size());
+
+		for (int i = 0; i< quiz.getQuestions().size(); i++){
+			assertEquals(quiz.getQuestions().get(i).getType(), infos.get(i).getType());
+
+			MultipleChoicesModel actQuestions = (MultipleChoicesModel) quiz.getQuestions().get(0).getModel();
+			MultipleChoicesModel receivedQuestions = (MultipleChoicesModel) infos.get(0).getModel();
+
+			assertEquals(actQuestions.getQuestion(), receivedQuestions.getQuestion());
+			assertEquals(actQuestions.getAnswers(), receivedQuestions.getAnswers());
+			assertEquals(actQuestions.getCorrectAnswers(), receivedQuestions.getCorrectAnswers());
+		}
 
 	}
 

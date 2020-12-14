@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 @Data
@@ -73,5 +75,10 @@ public class QuizGame {
     public Quiz getQuiz() {
         return this.quiz;
     }
+
+    public List<Question> getAllQuestions() {
+        return this.quiz.getQuestions();
+    }
+
 
 }

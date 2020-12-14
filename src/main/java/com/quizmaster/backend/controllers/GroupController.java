@@ -54,16 +54,9 @@ public class GroupController {
         //TODO: every minute a loop should check whether the quiz can be started or not, if the date comes the quizGame should be started -> add it to activeGames array before 5 minutes
         //TODO create socket connection for ID -> like in webSocketConfig
 
-        System.out.println("####################################################### New Iteration of checking for activeGames");
+//        System.out.println("####################################################### New Iteration of checking for activeGames");
 
         for (Quiz act : quizMongoRepository.findAll()) {
-
-//            System.out.println("Quiz " + act.getTitle() + " found, StartingTime is:" + act.getStartingTime());
-//            System.out.println("LocalTime is: " + LocalDateTime.now());
-//            LocalDateTime tempDateTime = LocalDateTime.from( LocalDateTime.now() );
-//            long seconds = tempDateTime.until(act.getStartingTime(), ChronoUnit.SECONDS );
-//            System.out.println("It should start in X seconds from now: " + seconds);
-
 
             if (act.getStartingTime().isAfter(LocalDateTime.now()) && act.getStartingTime().minusSeconds(TIMEWINDOW).isBefore(LocalDateTime.now())) {
                 boolean containsId = false;
@@ -75,7 +68,7 @@ public class GroupController {
                 }
                 if (!containsId){
                     // check if quiz time is after now() and before next iteration now()
-                    System.out.println("Quiz added " + act.getId());
+//                    System.out.println("Quiz added " + act.getId());
                     activeGames.add(new QuizGame(act));
                 }
             }
@@ -133,7 +126,8 @@ public class GroupController {
             userResult.fillUnanswered(act.getQuestionNumber());
 
             System.out.println("Found finished game and sending results");
-            template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", userResult, createHeaders(userResult.getSessionID()));
+            ResultResponse sendToPlayer = new ResultResponse(userResult, act.getAllQuestions());
+            template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", sendToPlayer, createHeaders(userResult.getSessionID()));
         }
     }
 
