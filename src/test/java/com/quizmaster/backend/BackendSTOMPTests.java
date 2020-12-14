@@ -564,9 +564,8 @@ public class BackendSTOMPTests {
 
 
 		//wait some time until QuizGame starts
-		Thread.sleep(QUIZSTARTDELAY*1000);
+		Thread.sleep(QUIZSTARTDELAY*1000+100);
 		//wait some time for the seconds question to come
-		Thread.sleep(QUESTIONTIME*1000 - 1000);
 
 		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
 		LocalDateTime joiningTime = LocalDateTime.now();
@@ -824,11 +823,14 @@ public class BackendSTOMPTests {
 		for (int i = 0; i< quiz.getQuestions().size(); i++){
 			assertEquals(quiz.getQuestions().get(i).getType(), publicQuestions.get(i).get("type"));
 
+			//get model content/questions
+			LinkedHashMap questionContent = (LinkedHashMap) publicQuestions.get(i).get("model");
+
 			MultipleChoicesModel actQuestions = (MultipleChoicesModel) quiz.getQuestions().get(i).getModel();
 
-			assertEquals(actQuestions.getQuestion(), publicQuestions.get(i).get("question"));
-			assertEquals(actQuestions.getAnswers(), publicQuestions.get(i).get("answers"));
-			assertEquals(actQuestions.getCorrectAnswers().toString(), publicQuestions.get(i).get("correctAnswers"));
+			assertEquals(actQuestions.getQuestion(), questionContent.get("question"));
+			assertEquals(actQuestions.getAnswers(), questionContent.get("answers"));
+			assertEquals(actQuestions.getCorrectAnswers(), questionContent.get("correctAnswers"));
 		}
 
 	}
