@@ -2,8 +2,6 @@ package com.quizmaster.backend;
 
 import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -789,8 +787,7 @@ public class BackendSTOMPTests {
 	}
 
 
-	@Contract("null, _, _, _ -> fail")
-	private void checkResult(Quiz quiz, @NotNull LinkedHashMap serverResponse, LocalDateTime joiningTime, MyStompSessionHandler stompHandler, List<Answer> expectedScore){
+	private void checkResult(Quiz quiz, LinkedHashMap serverResponse, LocalDateTime joiningTime, MyStompSessionHandler stompHandler, List<Answer> expectedScore){
 
 		//first check individual player score
 		assert quiz != null;
