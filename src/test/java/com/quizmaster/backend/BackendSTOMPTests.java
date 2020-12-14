@@ -787,17 +787,17 @@ public class BackendSTOMPTests {
 	}
 
 
-	private void checkResult(Quiz quiz, LinkedHashMap serverResponse, LocalDateTime joiningTime, MyStompSessionHandler stompHandler, List<Answer> expectedScore){
+	public void checkResult(Quiz quiz,  LinkedHashMap serverResponse, LocalDateTime joiningTime, MyStompSessionHandler stompHandler, List<Answer> expectedScore){
 
 		//first check individual player score
 		assert quiz != null;
 		assert serverResponse != null;
-		PlayerScore score = (PlayerScore) serverResponse.get("individualResult");
-		assert score != null;
 
-		assertEquals(QUIZPLAYERNAME, score.getNickname());
+		LinkedHashMap individualResults = (LinkedHashMap) serverResponse.get("individualResults");
+
+		assertEquals(QUIZPLAYERNAME, individualResults.get("Nickname"));
 		//check if diff between joiningTime local and on backend is not too big
-		long seconds = ChronoUnit.SECONDS.between(joiningTime, score.getConnectAt().truncatedTo(ChronoUnit.SECONDS));
+		long seconds = ChronoUnit.SECONDS.between(joiningTime, ((LocalDateTime) individualResults.get("connectAt")).truncatedTo(ChronoUnit.SECONDS));
 		boolean smalldiff = false;
 		if(seconds == 0 || seconds == 1){
 			smalldiff = true;
@@ -805,34 +805,36 @@ public class BackendSTOMPTests {
 		assertTrue(smalldiff);
 		//Check SessionID
 		boolean sameSessionID = false;
-
-		if (stompHandler.getSTOMPHaderSessionID().startsWith(score.getSessionID()) && score.getSessionID().length() > 8){
+		String serverSessionID = (String) individualResults.get("sessionID");
+		if (stompHandler.getSTOMPHaderSessionID().startsWith(serverSessionID) && serverSessionID.length() > 8){
 			sameSessionID = true;
 		}
 		assertTrue(sameSessionID);
 
+		ArrayList<LinkedHashMap> savedAnswers = (ArrayList<LinkedHashMap>) individualResults.get("answers");
+
 		//control if expectedResults is correct
 		for (int j = 0; j < expectedScore.size(); j++){
-			assertEquals(expectedScore.get(j).toString(), score.getAnswers().get(j).getIsCorrect());
-			assertEquals(j, score.getAnswers().get(j).getQuestionNumber());
+			assertEquals(expectedScore.get(j).toString(), savedAnswers.get(j).get("isCorrect"));
+			assertEquals(j, savedAnswers.get(j).get("questionNumber"));
 		}
 
 
 		//now check if public question content is correct
-		List<Question> infos = (List<Question>) serverResponse.get("publicQuestions");
+
+		ArrayList<LinkedHashMap> publicQuestions = (ArrayList<LinkedHashMap>) serverResponse.get("publicQuestions");
 
 		//check if both lists are holding the same amount of questions
-		assertEquals(quiz.getQuestions().size(), infos.size());
+		assertEquals(quiz.getQuestions().size(), publicQuestions.size());
 
 		for (int i = 0; i< quiz.getQuestions().size(); i++){
-			assertEquals(quiz.getQuestions().get(i).getType(), infos.get(i).getType());
+			assertEquals(quiz.getQuestions().get(i).getType(), publicQuestions.get(i).get("type"));
 
-			MultipleChoicesModel actQuestions = (MultipleChoicesModel) quiz.getQuestions().get(0).getModel();
-			MultipleChoicesModel receivedQuestions = (MultipleChoicesModel) infos.get(0).getModel();
+			MultipleChoicesModel actQuestions = (MultipleChoicesModel) quiz.getQuestions().get(i).getModel();
 
-			assertEquals(actQuestions.getQuestion(), receivedQuestions.getQuestion());
-			assertEquals(actQuestions.getAnswers(), receivedQuestions.getAnswers());
-			assertEquals(actQuestions.getCorrectAnswers(), receivedQuestions.getCorrectAnswers());
+			assertEquals(actQuestions.getQuestion(), publicQuestions.get(i).get("question"));
+			assertEquals(actQuestions.getAnswers(), publicQuestions.get(i).get("answers"));
+			assertEquals(actQuestions.getCorrectAnswers().toString(), publicQuestions.get(i).get("correctAnswers"));
 		}
 
 	}
