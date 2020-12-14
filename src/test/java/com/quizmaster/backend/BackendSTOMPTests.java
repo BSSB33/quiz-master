@@ -793,7 +793,7 @@ public class BackendSTOMPTests {
 		assert quiz != null;
 		assert serverResponse != null;
 
-		LinkedHashMap individualResults = (LinkedHashMap) serverResponse.get("individualResults");
+		LinkedHashMap individualResults = (LinkedHashMap) serverResponse.get("individualResult");
 
 		assertEquals(QUIZPLAYERNAME, individualResults.get("Nickname"));
 		//check if diff between joiningTime local and on backend is not too big
