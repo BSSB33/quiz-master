@@ -562,9 +562,8 @@ public class BackendSTOMPTests {
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1, q2, q3, q4));
 		quizMongoRepository.save(quiz);
 
-
 		//wait some time until QuizGame starts
-		Thread.sleep(QUIZSTARTDELAY*1000+100);
+		Thread.sleep(QUIZSTARTDELAY*1000+1000);
 		//wait some time for the seconds question to come
 
 		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
@@ -591,7 +590,7 @@ public class BackendSTOMPTests {
 		//Answer question incorrectly
 		session.send("/game/answer/" + quiz.getId(), List.of(1));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(5, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -600,7 +599,7 @@ public class BackendSTOMPTests {
 		//Answer question correctly
 		session.send("/game/answer/" + quiz.getId(), List.of(2));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(5, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -609,7 +608,7 @@ public class BackendSTOMPTests {
 		//Answer question incorrectly
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(5, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -626,7 +625,7 @@ public class BackendSTOMPTests {
 		//Answer question correct
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(5, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -635,7 +634,7 @@ public class BackendSTOMPTests {
 		//Answer question incorrect
 		session.send("/game/answer/" + quiz.getId(), List.of(1,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(5, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -644,7 +643,7 @@ public class BackendSTOMPTests {
 		//Answer question incorrect
 		session.send("/game/answer/" + quiz.getId(), List.of(2));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(5, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -653,7 +652,7 @@ public class BackendSTOMPTests {
 		//Answer question correct
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(5, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -809,7 +808,7 @@ public class BackendSTOMPTests {
 		//control if expectedResults is correct
 		for (int j = 0; j < expectedScore.size(); j++){
 			assertEquals(expectedScore.get(j).toString(), savedAnswers.get(j).get("isCorrect"));
-			assertEquals(j, savedAnswers.get(j).get("questionNumber"));
+			assertEquals(j, (int) savedAnswers.get(j).get("questionNumber"));
 		}
 
 
