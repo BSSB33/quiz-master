@@ -572,7 +572,7 @@ public class BackendSTOMPTests {
 		LocalDateTime joiningTime = LocalDateTime.now();
 		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
 
-		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		LinkedHashMap result = blockingQueue.poll(10, SECONDS);
 		assert result != null;
 		assertEquals("You were added", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -582,7 +582,7 @@ public class BackendSTOMPTests {
 
 
 		//Second question should be reached
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		LinkedHashMap question = (LinkedHashMap) result.get("model");
@@ -592,7 +592,7 @@ public class BackendSTOMPTests {
 		//Answer question incorrectly
 		session.send("/game/answer/" + quiz.getId(), List.of(1));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(1, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -601,7 +601,7 @@ public class BackendSTOMPTests {
 		//Answer question correctly
 		session.send("/game/answer/" + quiz.getId(), List.of(2));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(1, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -610,16 +610,14 @@ public class BackendSTOMPTests {
 		//Answer question incorrectly
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(1, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
 
 
-		Thread.sleep(QUESTIONTIME*1000);
-
 		//Third question should be reached
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		question = (LinkedHashMap) result.get("model");
@@ -629,7 +627,7 @@ public class BackendSTOMPTests {
 		//Answer question correct
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(1, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -638,7 +636,7 @@ public class BackendSTOMPTests {
 		//Answer question incorrect
 		session.send("/game/answer/" + quiz.getId(), List.of(1,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(1, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -647,7 +645,7 @@ public class BackendSTOMPTests {
 		//Answer question incorrect
 		session.send("/game/answer/" + quiz.getId(), List.of(2));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(1, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
@@ -656,16 +654,14 @@ public class BackendSTOMPTests {
 		//Answer question correct
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
 		//Receive Conformation for Answer
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(1, SECONDS);
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
 
 
-
-		Thread.sleep(QUESTIONTIME*1000);
 		//Fourth question should be reached
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		question = (LinkedHashMap) result.get("model");
@@ -673,14 +669,12 @@ public class BackendSTOMPTests {
 		assertEquals(List.of("A","B","C","D"), question.get("answers"));
 
 
-		Thread.sleep(QUESTIONTIME*1000);
 		//Quiz Ended should be received
-		result = blockingQueue.poll(10, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("Quiz ended", result.get("message"));
 
 
-		Thread.sleep(100);
 		//Results should be here
 		result = blockingQueue.poll(10, SECONDS);
 		assert result != null;
@@ -693,7 +687,6 @@ public class BackendSTOMPTests {
 		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
 
 
-		Thread.sleep(10000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
 		Assert.assertNull(result);
 	}
@@ -797,7 +790,8 @@ public class BackendSTOMPTests {
 
 		assertEquals(QUIZPLAYERNAME, individualResults.get("Nickname"));
 		//check if diff between joiningTime local and on backend is not too big
-		long seconds = ChronoUnit.SECONDS.between(joiningTime, ((LocalDateTime) individualResults.get("connectAt")).truncatedTo(ChronoUnit.SECONDS));
+		String serverTime = (String) individualResults.get("connectAt");
+		long seconds = ChronoUnit.SECONDS.between(joiningTime, LocalDateTime.parse(serverTime).truncatedTo(ChronoUnit.SECONDS));
 		boolean smalldiff = false;
 		if(seconds == 0 || seconds == 1){
 			smalldiff = true;
