@@ -561,7 +561,7 @@ public class BackendSTOMPTests {
 		quizMongoRepository.save(quiz);
 
 		//wait some time until QuizGame starts
-		Thread.sleep(QUIZSTARTDELAY*1000+1000);
+		Thread.sleep(QUIZSTARTDELAY*1000+2000);
 		//wait some time for the seconds question to come
 
 		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
@@ -588,6 +588,7 @@ public class BackendSTOMPTests {
 		assertEquals("Which one is Letter B?", question.get("question"));
 		assertEquals(List.of("A","B","C","D"), question.get("answers"));
 
+		Thread.sleep(200);
 		//Answer question incorrectly
 		session.send("/game/answer/" + quiz.getId(), List.of(1));
 		//Receive Conformation for Answer
@@ -595,7 +596,7 @@ public class BackendSTOMPTests {
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
-		Thread.sleep(100);
+		Thread.sleep(200);
 
 		//Answer question correctly
 		session.send("/game/answer/" + quiz.getId(), List.of(2));
@@ -604,7 +605,7 @@ public class BackendSTOMPTests {
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
-		Thread.sleep(100);
+		Thread.sleep(200);
 
 		//Answer question incorrectly
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
@@ -622,7 +623,7 @@ public class BackendSTOMPTests {
 		question = (LinkedHashMap) result.get("model");
 		assertEquals("Which one is Letter A,B,C,D?", question.get("question"));
 		assertEquals(List.of("A","B","C","D"), question.get("answers"));
-		Thread.sleep(100);
+		Thread.sleep(200);
 
 		//Answer question correct
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
@@ -631,7 +632,7 @@ public class BackendSTOMPTests {
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
-		Thread.sleep(100);
+		Thread.sleep(200);
 
 		//Answer question incorrect
 		session.send("/game/answer/" + quiz.getId(), List.of(1,4));
@@ -640,7 +641,7 @@ public class BackendSTOMPTests {
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
-		Thread.sleep(100);
+		Thread.sleep(200);
 
 		//Answer question incorrect
 		session.send("/game/answer/" + quiz.getId(), List.of(2));
@@ -649,7 +650,7 @@ public class BackendSTOMPTests {
 		assert result != null;
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
-		Thread.sleep(100);
+		Thread.sleep(200);
 
 		//Answer question correct
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
