@@ -621,6 +621,7 @@ public class BackendSTOMPTests {
 		question = (LinkedHashMap) result.get("model");
 		assertEquals("Which one is Letter A,B,C,D?", question.get("question"));
 		assertEquals(List.of("A","B","C","D"), question.get("answers"));
+		Thread.sleep(100);
 
 		//Answer question correct
 		session.send("/game/answer/" + quiz.getId(), List.of(1,2,3,4));
@@ -807,8 +808,8 @@ public class BackendSTOMPTests {
 
 		//control if expectedResults is correct
 		for (int j = 0; j < expectedScore.size(); j++){
-			assertEquals(expectedScore.get(j).toString(), savedAnswers.get(j).get("isCorrect"));
-			assertEquals(j, (int) savedAnswers.get(j).get("questionNumber"));
+			assertTrue(expectedScore.get(j).toString().equals(savedAnswers.get(j).get("isCorrect")));
+			assertTrue(j == (int) savedAnswers.get(j).get("questionNumber"));
 		}
 
 
