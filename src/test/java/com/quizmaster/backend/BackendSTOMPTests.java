@@ -366,7 +366,7 @@ public class BackendSTOMPTests {
 		assertEquals(List.of("A","B","C","D"), question.get("answers"));
 
 		Thread.sleep(100);
-		session.send("/game/answer/" + quiz.getId(), List.of());
+		session.send("/game/answer/" + quiz.getId(), List.of(1));
 		Thread.sleep(100);
 
 		//Receive Conformation for Answer
@@ -375,23 +375,21 @@ public class BackendSTOMPTests {
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
 
-		Thread.sleep(QUESTIONTIME*1000);
 
 		//Quiz Ended should be received
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("Quiz ended", result.get("message"));
 
 		Thread.sleep(100);
 		//Results should be here
-		result = blockingQueue.poll(2, SECONDS);
+		result = blockingQueue.poll(10, SECONDS);
 		assert result != null;
 		//list expected scores
 		List<Answer> expectedResults = new ArrayList<Answer>();
 		expectedResults.add(Answer.INCORRECT);
 		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
 
-		Thread.sleep(10000);
 		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
 		assertNull(result);
 
