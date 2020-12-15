@@ -74,462 +74,462 @@ public class BackendSTOMPTests {
 		}
 	}
 
-//	/*
-//		Try to join a non existing QuizGame
-//	 */
-//	@Test
-//	void joiningNotExistingGameID() throws InterruptedException, TimeoutException, ExecutionException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {})
-//				.get(1, SECONDS);
-//
-//		session.subscribe("/user/queue/reply", new MyStompSessionHandler()); // connecting to private channel
-//
-//		session.send("/game/join/999999", "Victor"); //Valid request as the game should move to activeGames
-//
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Quiz not found", result.get("code"));
-//		assertEquals(false, result.get("correct"));
-//		assertNull(result.get("startingTime"));
-//		assertNull(result.get("quizTitle"));
-//		assertNull(result.get("quizDescription"));
-//	}
-//
-//
-//	/*
-//		Try to join an existing QuizGame, but it has not started already and there is no lobby open.
-//	 */
-//	@Test
-//	void joiningTooEarlyExistingGame() throws InterruptedException, TimeoutException, ExecutionException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {})
-//				.get(1, SECONDS);
-//
-//		session.subscribe("/user/queue/reply", new MyStompSessionHandler()); // connecting to private channel
-//
-//		//Generating Quiz
-//		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-//		Question q1 = new Question("qm.multiple_choice", m1);
-//
-//		//set the startinTime before the TIMEWINDOW
-//		// in Seconds
-//		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(TIMEWINDOW +100);
-//		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
-//		quizMongoRepository.save(quiz);
-//
-//		Thread.sleep(100);
-//		session.send("/game/join/" + quiz.getId(), "Victor"); //Valid request as the game should move to activeGames
-//
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Quiz will start", result.get("code"));
-//		assertEquals(false, result.get("correct"));
-//		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
-//		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
-//		assertEquals(this.QUIZDESC, result.get("quizDescription"));
-//
-//	}
-//
-//
-//	/*
-//		Join a QuizGame that exists and where the lobby is open
-//	 */
-//	@Test
-//	void joiningActualGame() throws InterruptedException, TimeoutException, ExecutionException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {})
-//				.get(1, SECONDS);
-//
-//		session.subscribe("/user/queue/reply", new MyStompSessionHandler()); // connecting to private channel
-//
-//		//Generating Quiz
-//		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-//		Question q1 = new Question("qm.multiple_choice", m1);
-//
-//		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
-//		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
-//		quizMongoRepository.save(quiz);
-//
-//		Thread.sleep(SCHEDULERATE*1000); //waitingTime
-//		session.send("/game/join/" + quiz.getId(), "Victor"); //Valid request as the game should move to activeGames
-//
-//
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("You were added", Objects.requireNonNull(result).get("code"));
-//		assertEquals(true, result.get("correct"));
-//		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
-//		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
-//		assertEquals(this.QUIZDESC, result.get("quizDescription"));
-//
-//	}
-//
-//
-//	/*
-//		Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
-//		During that the Client sends no answers.
-//	 */
-//	@Test
-//	void joiningAndParticipatingWholeRoundWithoutAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, stompHandler)
-//				.get(1, SECONDS);
-//		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
-//
-//		//Generating Quiz
-//		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-//		Question q1 = new Question("qm.multiple_choice", m1);
-//
-//		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
-//		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
-//		quizMongoRepository.save(quiz);
-//
-//		Thread.sleep(1000); //waitingTime
-//		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
-//
-//		LocalDateTime joiningTime = LocalDateTime.now();
-//		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
-//
-//
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("You were added", Objects.requireNonNull(result).get("code"));
-//		assertEquals(true, result.get("correct"));
-//		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
-//		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
-//		assertEquals(this.QUIZDESC, result.get("quizDescription"));
-//
-//		Thread.sleep(QUIZSTARTDELAY*1000);
-//
-//		//First question should be reached
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("qm.multiple_choice", result.get("type"));
-//		LinkedHashMap question = (LinkedHashMap) result.get("model");
-//		assertEquals("Which one is Letter C?", question.get("question"));
-//		assertEquals(List.of("A","B","C","D"), question.get("answers"));
-//
-//
-//		Thread.sleep(QUESTIONTIME*1000);
-//
-//		//Quiz Ended should be received
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Quiz ended", result.get("message"));
-//
-//
-//		Thread.sleep(100);
-//		//Results should be here
-//		result = blockingQueue.poll(2, SECONDS);
-//		assert result != null;
-//
-//		List<Answer> expectedResults = new ArrayList<Answer>();
-//		expectedResults.add(Answer.NOTANSWERED);
-//		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
-//
-//		Thread.sleep(2000);
-//		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
-//		Assert.assertNull(result);
-//
-//	}
-//
-//
-//	/*
-//		Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
-//		During that the Client sends wrong answers.
-//	 */
-//	@Test
-//	void joiningAndParticipatingWholeRoundWithWrongAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, stompHandler)
-//				.get(1, SECONDS);
-//		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
-//
-//		//Generating Quiz
-//		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-//		Question q1 = new Question("qm.multiple_choice", m1);
-//
-//		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
-//		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
-//		quizMongoRepository.save(quiz);
-//
-//		Thread.sleep(1000); //waitingTime
-//		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
-//
-//		LocalDateTime joiningTime = LocalDateTime.now();
-//		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
-//
-//
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("You were added", result.get("code"));
-//		assertEquals(true, result.get("correct"));
-//		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
-//		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
-//		assertEquals(this.QUIZDESC, result.get("quizDescription"));
-//
-//		Thread.sleep(QUIZSTARTDELAY*1000);
-//
-//		//First question should be reached
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("qm.multiple_choice", result.get("type"));
-//		LinkedHashMap question = (LinkedHashMap) result.get("model");
-//		assertEquals("Which one is Letter C?", question.get("question"));
-//		assertEquals(List.of("A","B","C","D"), question.get("answers"));
-//
-//		Thread.sleep(100);
-//		session.send("/game/answer/" + quiz.getId(), List.of(1));
-//		Thread.sleep(100);
-//
-//		//Receive Conformation for Answer
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Thanks for your answer", result.get("code"));
-//		assertEquals(true, result.get("correct"));
-//
-//		Thread.sleep(QUESTIONTIME*1000);
-//
-//		//Quiz Ended should be received
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Quiz ended", result.get("message"));
-//
-//		Thread.sleep(100);
-//		//Results should be here
-//		result = blockingQueue.poll(2, SECONDS);
-//		assert result != null;
-//		//list expected scores
-//		List<Answer> expectedResults = new ArrayList<Answer>();
-//		expectedResults.add(Answer.INCORRECT);
-//		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
-//
-//		Thread.sleep(2000);
-//		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
-//		assertNull(result);
-//
-//	}
-//
-//
-//	/*
-//    Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
-//    During that the Client sends empty answers. The empty answer should be recognized as INCORRECT
-//	 */
-//	@Test
-//	void joiningAndParticipatingWholeRoundWithEmptyAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, stompHandler)
-//				.get(1, SECONDS);
-//		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
-//
-//		//Generating Quiz
-//		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of());
-//		Question q1 = new Question("qm.multiple_choice", m1);
-//
-//		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
-//		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
-//		quizMongoRepository.save(quiz);
-//
-//		Thread.sleep(1000); //waitingTime
-//		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
-//
-//		LocalDateTime joiningTime = LocalDateTime.now();
-//		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
-//
-//
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("You were added", result.get("code"));
-//		assertEquals(true, result.get("correct"));
-//		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
-//		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
-//		assertEquals(this.QUIZDESC, result.get("quizDescription"));
-//
-//		Thread.sleep(QUIZSTARTDELAY*1000);
-//
-//		//First question should be reached
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("qm.multiple_choice", result.get("type"));
-//		LinkedHashMap question = (LinkedHashMap) result.get("model");
-//		assertEquals("Which one is Letter C?", question.get("question"));
-//		assertEquals(List.of("A","B","C","D"), question.get("answers"));
-//
-//		Thread.sleep(100);
-//		session.send("/game/answer/" + quiz.getId(), List.of(1));
-//		Thread.sleep(100);
-//
-//		//Receive Conformation for Answer
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Thanks for your answer", result.get("code"));
-//		assertEquals(true, result.get("correct"));
-//
-//
-//		//Quiz Ended should be received
-//		result = blockingQueue.poll(25, SECONDS);
-//		assert result != null;
-//		assertEquals("Quiz ended", result.get("message"));
-//
-//		Thread.sleep(100);
-//		//Results should be here
-//		result = blockingQueue.poll(10, SECONDS);
-//		assert result != null;
-//		//list expected scores
-//		List<Answer> expectedResults = new ArrayList<Answer>();
-//		expectedResults.add(Answer.INCORRECT);
-//		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
-//
-//		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
-//		assertNull(result);
-//
-//	}
-//
-//
-//	/*
-//		Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
-//		During that the Client sends correct answers.
-//	 */
-//	@Test
-//	void joiningAndParticipatingWholeRoundWithRightAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, stompHandler)
-//				.get(1, SECONDS);
-//		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
-//
-//		//Generating Quiz
-//		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-//		Question q1 = new Question("qm.multiple_choice", m1);
-//
-//		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
-//		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
-//		quizMongoRepository.save(quiz);
-//
-//		Thread.sleep(1000); //waitingTime
-//		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
-//
-//		LocalDateTime joiningTime = LocalDateTime.now();
-//		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
-//
-//
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("You were added", result.get("code"));
-//		assertEquals(true, result.get("correct"));
-//		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
-//		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
-//		assertEquals(this.QUIZDESC, result.get("quizDescription"));
-//
-//		Thread.sleep(QUIZSTARTDELAY*1000);
-//
-//		//First question should be reached
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("qm.multiple_choice", result.get("type"));
-//		LinkedHashMap question = (LinkedHashMap) result.get("model");
-//		assertEquals("Which one is Letter C?", question.get("question"));
-//		assertEquals(List.of("A","B","C","D"), question.get("answers"));
-//
-//		Thread.sleep(100);
-//		session.send("/game/answer/" + quiz.getId(), List.of(3));
-//		Thread.sleep(100);
-//
-//		//Receive Conformation for Answer
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Thanks for your answer", result.get("code"));
-//		assertEquals(true, result.get("correct"));
-//
-//		Thread.sleep(QUESTIONTIME*1000);
-//
-//		//Quiz Ended should be received
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Quiz ended", result.get("message"));
-//
-//		Thread.sleep(100);
-//		//Results should be here
-//		result = blockingQueue.poll(2, SECONDS);
-//		assert result != null;
-//		//list expected scores
-//		List<Answer> expectedResults = new ArrayList<Answer>();
-//		expectedResults.add(Answer.CORRECT);
-//		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
-//
-//		Thread.sleep(10000);
-//		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
-//		assertNull(result);
-//	}
-//
-//
-//	/*
-//		Try to participate in a active QuizGame without joining before.
-//	 */
-//	@Test
-//	void participatingWithoutJoining() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
-//		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
-//		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
-//		StompSession session = stompClient
-//				.connect(WEBSOCKET_URI, stompHandler)
-//				.get(1, SECONDS);
-//		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
-//
-//		//Generating Quiz
-//		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-//		Question q1 = new Question("qm.multiple_choice", m1);
-//
-//		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
-//		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
-//		quizMongoRepository.save(quiz);
-//
-//		Thread.sleep(1000); //waitingTime
-//		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
-//
-//		Thread.sleep(QUIZSTARTDELAY*1000);
-//
-//		//First question should be reached
-//		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("qm.multiple_choice", result.get("type"));
-//		LinkedHashMap question = (LinkedHashMap) result.get("model");
-//		assertEquals("Which one is Letter C?", question.get("question"));
-//		assertEquals(List.of("A","B","C","D"), question.get("answers"));
-//
-//		Thread.sleep(100);
-//		session.send("/game/answer/" + quiz.getId(), List.of(3));
-//		Thread.sleep(100);
-//
-//		//Receive Error for not joining the game
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("You did not join correctly to the game", result.get("code"));
-//		assertEquals(false, result.get("correct"));
-//
-//		Thread.sleep(QUESTIONTIME*1000);
-//
-//		//Quiz Ended should be received
-//		result = blockingQueue.poll(1, SECONDS);
-//		assert result != null;
-//		assertEquals("Quiz ended", result.get("message"));
-//
-//
-//		//no Results should be received because we did not join the QuizGame
-//		Thread.sleep(10000);
-//		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
-//		assertNull(result);
-//	}
+	/*
+		Try to join a non existing QuizGame
+	 */
+	@Test
+	void joiningNotExistingGameID() throws InterruptedException, TimeoutException, ExecutionException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {})
+				.get(1, SECONDS);
+
+		session.subscribe("/user/queue/reply", new MyStompSessionHandler()); // connecting to private channel
+
+		session.send("/game/join/999999", "Victor"); //Valid request as the game should move to activeGames
+
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Quiz not found", result.get("code"));
+		assertEquals(false, result.get("correct"));
+		assertNull(result.get("startingTime"));
+		assertNull(result.get("quizTitle"));
+		assertNull(result.get("quizDescription"));
+	}
+
+
+	/*
+		Try to join an existing QuizGame, but it has not started already and there is no lobby open.
+	 */
+	@Test
+	void joiningTooEarlyExistingGame() throws InterruptedException, TimeoutException, ExecutionException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {})
+				.get(1, SECONDS);
+
+		session.subscribe("/user/queue/reply", new MyStompSessionHandler()); // connecting to private channel
+
+		//Generating Quiz
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+		Question q1 = new Question("qm.multiple_choice", m1);
+
+		//set the startinTime before the TIMEWINDOW
+		// in Seconds
+		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(TIMEWINDOW +100);
+		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quizMongoRepository.save(quiz);
+
+		Thread.sleep(100);
+		session.send("/game/join/" + quiz.getId(), "Victor"); //Valid request as the game should move to activeGames
+
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Quiz will start", result.get("code"));
+		assertEquals(false, result.get("correct"));
+		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
+		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
+		assertEquals(this.QUIZDESC, result.get("quizDescription"));
+
+	}
+
+
+	/*
+		Join a QuizGame that exists and where the lobby is open
+	 */
+	@Test
+	void joiningActualGame() throws InterruptedException, TimeoutException, ExecutionException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, new StompSessionHandlerAdapter() {})
+				.get(1, SECONDS);
+
+		session.subscribe("/user/queue/reply", new MyStompSessionHandler()); // connecting to private channel
+
+		//Generating Quiz
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+		Question q1 = new Question("qm.multiple_choice", m1);
+
+		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
+		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quizMongoRepository.save(quiz);
+
+		Thread.sleep(SCHEDULERATE*1000); //waitingTime
+		session.send("/game/join/" + quiz.getId(), "Victor"); //Valid request as the game should move to activeGames
+
+
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("You were added", Objects.requireNonNull(result).get("code"));
+		assertEquals(true, result.get("correct"));
+		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
+		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
+		assertEquals(this.QUIZDESC, result.get("quizDescription"));
+
+	}
+
+
+	/*
+		Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
+		During that the Client sends no answers.
+	 */
+	@Test
+	void joiningAndParticipatingWholeRoundWithoutAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, stompHandler)
+				.get(1, SECONDS);
+		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
+
+		//Generating Quiz
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+		Question q1 = new Question("qm.multiple_choice", m1);
+
+		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
+		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quizMongoRepository.save(quiz);
+
+		Thread.sleep(1000); //waitingTime
+		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
+
+		LocalDateTime joiningTime = LocalDateTime.now();
+		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
+
+
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("You were added", Objects.requireNonNull(result).get("code"));
+		assertEquals(true, result.get("correct"));
+		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
+		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
+		assertEquals(this.QUIZDESC, result.get("quizDescription"));
+
+		Thread.sleep(QUIZSTARTDELAY*1000);
+
+		//First question should be reached
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("qm.multiple_choice", result.get("type"));
+		LinkedHashMap question = (LinkedHashMap) result.get("model");
+		assertEquals("Which one is Letter C?", question.get("question"));
+		assertEquals(List.of("A","B","C","D"), question.get("answers"));
+
+
+		Thread.sleep(QUESTIONTIME*1000);
+
+		//Quiz Ended should be received
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Quiz ended", result.get("message"));
+
+
+		Thread.sleep(100);
+		//Results should be here
+		result = blockingQueue.poll(2, SECONDS);
+		assert result != null;
+
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.NOTANSWERED);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
+
+		Thread.sleep(2000);
+		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
+		Assert.assertNull(result);
+
+	}
+
+
+	/*
+		Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
+		During that the Client sends wrong answers.
+	 */
+	@Test
+	void joiningAndParticipatingWholeRoundWithWrongAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, stompHandler)
+				.get(1, SECONDS);
+		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
+
+		//Generating Quiz
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+		Question q1 = new Question("qm.multiple_choice", m1);
+
+		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
+		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quizMongoRepository.save(quiz);
+
+		Thread.sleep(1000); //waitingTime
+		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
+
+		LocalDateTime joiningTime = LocalDateTime.now();
+		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
+
+
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("You were added", result.get("code"));
+		assertEquals(true, result.get("correct"));
+		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
+		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
+		assertEquals(this.QUIZDESC, result.get("quizDescription"));
+
+		Thread.sleep(QUIZSTARTDELAY*1000);
+
+		//First question should be reached
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("qm.multiple_choice", result.get("type"));
+		LinkedHashMap question = (LinkedHashMap) result.get("model");
+		assertEquals("Which one is Letter C?", question.get("question"));
+		assertEquals(List.of("A","B","C","D"), question.get("answers"));
+
+		Thread.sleep(100);
+		session.send("/game/answer/" + quiz.getId(), List.of(1));
+		Thread.sleep(100);
+
+		//Receive Conformation for Answer
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Thanks for your answer", result.get("code"));
+		assertEquals(true, result.get("correct"));
+
+		Thread.sleep(QUESTIONTIME*1000);
+
+		//Quiz Ended should be received
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Quiz ended", result.get("message"));
+
+		Thread.sleep(100);
+		//Results should be here
+		result = blockingQueue.poll(2, SECONDS);
+		assert result != null;
+		//list expected scores
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.INCORRECT);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
+
+		Thread.sleep(2000);
+		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
+		assertNull(result);
+
+	}
+
+
+	/*
+    Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
+    During that the Client sends empty answers. The empty answer should be recognized as INCORRECT
+	 */
+	@Test
+	void joiningAndParticipatingWholeRoundWithEmptyAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, stompHandler)
+				.get(1, SECONDS);
+		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
+
+		//Generating Quiz
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of());
+		Question q1 = new Question("qm.multiple_choice", m1);
+
+		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
+		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quizMongoRepository.save(quiz);
+
+		Thread.sleep(1000); //waitingTime
+		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
+
+		LocalDateTime joiningTime = LocalDateTime.now();
+		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
+
+
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("You were added", result.get("code"));
+		assertEquals(true, result.get("correct"));
+		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
+		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
+		assertEquals(this.QUIZDESC, result.get("quizDescription"));
+
+		Thread.sleep(QUIZSTARTDELAY*1000);
+
+		//First question should be reached
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("qm.multiple_choice", result.get("type"));
+		LinkedHashMap question = (LinkedHashMap) result.get("model");
+		assertEquals("Which one is Letter C?", question.get("question"));
+		assertEquals(List.of("A","B","C","D"), question.get("answers"));
+
+		Thread.sleep(100);
+		session.send("/game/answer/" + quiz.getId(), List.of(1));
+		Thread.sleep(100);
+
+		//Receive Conformation for Answer
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Thanks for your answer", result.get("code"));
+		assertEquals(true, result.get("correct"));
+
+
+		//Quiz Ended should be received
+		result = blockingQueue.poll(25, SECONDS);
+		assert result != null;
+		assertEquals("Quiz ended", result.get("message"));
+
+		Thread.sleep(100);
+		//Results should be here
+		result = blockingQueue.poll(10, SECONDS);
+		assert result != null;
+		//list expected scores
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.INCORRECT);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
+
+		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
+		assertNull(result);
+
+	}
+
+
+	/*
+		Join a QuizGame that exists and where the lobby is open and wait until it plays through and sends the results.
+		During that the Client sends correct answers.
+	 */
+	@Test
+	void joiningAndParticipatingWholeRoundWithRightAnswers() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, stompHandler)
+				.get(1, SECONDS);
+		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
+
+		//Generating Quiz
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+		Question q1 = new Question("qm.multiple_choice", m1);
+
+		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
+		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quizMongoRepository.save(quiz);
+
+		Thread.sleep(1000); //waitingTime
+		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
+
+		LocalDateTime joiningTime = LocalDateTime.now();
+		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
+
+
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("You were added", result.get("code"));
+		assertEquals(true, result.get("correct"));
+		assertEquals(startingTime.truncatedTo(ChronoUnit.MILLIS), LocalDateTime.parse((String) result.get("startingTime")).truncatedTo(ChronoUnit.MILLIS));
+		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
+		assertEquals(this.QUIZDESC, result.get("quizDescription"));
+
+		Thread.sleep(QUIZSTARTDELAY*1000);
+
+		//First question should be reached
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("qm.multiple_choice", result.get("type"));
+		LinkedHashMap question = (LinkedHashMap) result.get("model");
+		assertEquals("Which one is Letter C?", question.get("question"));
+		assertEquals(List.of("A","B","C","D"), question.get("answers"));
+
+		Thread.sleep(100);
+		session.send("/game/answer/" + quiz.getId(), List.of(3));
+		Thread.sleep(100);
+
+		//Receive Conformation for Answer
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Thanks for your answer", result.get("code"));
+		assertEquals(true, result.get("correct"));
+
+		Thread.sleep(QUESTIONTIME*1000);
+
+		//Quiz Ended should be received
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Quiz ended", result.get("message"));
+
+		Thread.sleep(100);
+		//Results should be here
+		result = blockingQueue.poll(2, SECONDS);
+		assert result != null;
+		//list expected scores
+		List<Answer> expectedResults = new ArrayList<Answer>();
+		expectedResults.add(Answer.CORRECT);
+		checkResult(quiz, result, joiningTime, stompHandler, expectedResults);
+
+		Thread.sleep(10000);
+		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
+		assertNull(result);
+	}
+
+
+	/*
+		Try to participate in a active QuizGame without joining before.
+	 */
+	@Test
+	void participatingWithoutJoining() throws InterruptedException, TimeoutException, ExecutionException, NullPointerException {
+		WEBSOCKET_URI = "ws://localhost:"+ this.port + "/ws";
+		MyStompSessionHandler stompHandler = new MyStompSessionHandler();
+		StompSession session = stompClient
+				.connect(WEBSOCKET_URI, stompHandler)
+				.get(1, SECONDS);
+		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
+
+		//Generating Quiz
+		Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
+		Question q1 = new Question("qm.multiple_choice", m1);
+
+		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
+		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quizMongoRepository.save(quiz);
+
+		Thread.sleep(1000); //waitingTime
+		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
+
+		Thread.sleep(QUIZSTARTDELAY*1000);
+
+		//First question should be reached
+		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("qm.multiple_choice", result.get("type"));
+		LinkedHashMap question = (LinkedHashMap) result.get("model");
+		assertEquals("Which one is Letter C?", question.get("question"));
+		assertEquals(List.of("A","B","C","D"), question.get("answers"));
+
+		Thread.sleep(100);
+		session.send("/game/answer/" + quiz.getId(), List.of(3));
+		Thread.sleep(100);
+
+		//Receive Error for not joining the game
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("You did not join correctly to the game", result.get("code"));
+		assertEquals(false, result.get("correct"));
+
+		Thread.sleep(QUESTIONTIME*1000);
+
+		//Quiz Ended should be received
+		result = blockingQueue.poll(1, SECONDS);
+		assert result != null;
+		assertEquals("Quiz ended", result.get("message"));
+
+
+		//no Results should be received because we did not join the QuizGame
+		Thread.sleep(10000);
+		result = blockingQueue.poll(QUESTIONTIME+1, SECONDS);
+		assertNull(result);
+	}
 
 
 	/*
