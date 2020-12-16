@@ -1,6 +1,7 @@
 package com.quizmaster.backend.controllers;
 
 import com.quizmaster.backend.entities.*;
+import com.quizmaster.backend.repositories.QuizGameMongoRepository;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import com.quizmaster.services.GameIdGenerator;
@@ -44,16 +45,15 @@ public class GroupController {
     private QuizMongoRepository quizMongoRepository;
 
     @Autowired
+    private QuizGameMongoRepository quizGameMongoRepository;
+
+    @Autowired
     private UserMongoRepository userMongoRepository;
 
     ArrayList<QuizGame> activeGames = new ArrayList<>();
 
     @Scheduled(fixedRate = SCHEDULERATE * 1000)
     public void createGame() {
-        //TODO assigned to: Pascal
-        //TODO: every minute a loop should check whether the quiz can be started or not, if the date comes the quizGame should be started -> add it to activeGames array before 5 minutes
-        //TODO create socket connection for ID -> like in webSocketConfig
-
 //        System.out.println("####################################################### New Iteration of checking for activeGames");
 
         for (Quiz act : quizMongoRepository.findAll()) {
@@ -79,8 +79,6 @@ public class GroupController {
     }
 
     public void sendNextQuestion() {
-        //TODO assigned to: Pascal
-        //TODO with all the students joined to the game, at the point of the given timestamp, the game can be started -> this is the point wehere we send the first question to everyone
 
         List<QuizGame> itemsToRemove = new ArrayList<QuizGame>();
 
@@ -97,7 +95,7 @@ public class GroupController {
                         QuizEndedResponse toSend = new QuizEndedResponse("Quiz ended");
                         template.convertAndSend("/results/room/" + act.getQuiz().getId(), toSend);
                         System.out.println("sent out--------------------------------------");
-                        //TODO Save Results for Teacher
+                        quizGameMongoRepository.save(act); // Save Results for Teacher
                         sendResults(act);
                     } else { //game still has more questions
                         System.out.println("Sending out question");
@@ -188,8 +186,6 @@ public class GroupController {
                 PlayerScore userInfo = Act.getPlayer(sessionId);
                 if (userInfo != null) { //already joined
 
-                    //TODO Compare multiple answers
-                    //only possible when client can send a list with answers
                     List<Integer> correctAnswer = Act.getActQuestion().getModel().getCorrectAnswers();
                     Collections.sort(correctAnswer);
                     Collections.sort(answerChoice);

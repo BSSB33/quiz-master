@@ -47,6 +47,13 @@ public class Quiz {
         return this.id;
     }
 
+    public String getOwnerId(){
+        return this.ownerId;
+    }
+
+    public void setOwnerId(String id){
+        this.ownerId = id;
+    }
 
     public List<Question> getQuestions() {
         return this.questions;

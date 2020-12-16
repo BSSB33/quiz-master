@@ -42,6 +42,7 @@ public class BackendSTOMPTests {
 	private final long SCHEDULERATE = 1; // in Seconds
 	private final long TIMEWINDOW = 300; // in Seconds
 	private final String QUIZPLAYERNAME = "Victor";
+	private final String QUIZOWNERNAME = "hxns9bZEv5Kh5Qe1LerTvo5ggcFmgoWn";
 	private final String QUIZTITLE = "RhLp6E8vvfQgX24uwAy5rmwnHfT8fSdalsNPZYJa";
 	private final String QUIZDESC = "This is a very nice development quiz that should only exist during some live testing";
 	private final long QUIZSTARTDELAY = 10; //Quiz startingTime from now
@@ -118,6 +119,7 @@ public class BackendSTOMPTests {
 		// in Seconds
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(TIMEWINDOW +100);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(100);
@@ -152,6 +154,7 @@ public class BackendSTOMPTests {
 
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(SCHEDULERATE*1000); //waitingTime
@@ -188,6 +191,7 @@ public class BackendSTOMPTests {
 
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(1000); //waitingTime
@@ -259,6 +263,7 @@ public class BackendSTOMPTests {
 
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(1000); //waitingTime
@@ -338,6 +343,7 @@ public class BackendSTOMPTests {
 
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(1000); //waitingTime
@@ -415,6 +421,7 @@ public class BackendSTOMPTests {
 
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(1000); //waitingTime
@@ -492,6 +499,7 @@ public class BackendSTOMPTests {
 
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(1000); //waitingTime
@@ -558,6 +566,7 @@ public class BackendSTOMPTests {
 
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1, q2, q3, q4));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		//wait some time until QuizGame starts
