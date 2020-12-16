@@ -44,7 +44,23 @@ export class GameComponent implements OnInit, OnDestroy {
     timeRemaining: 0
   }
 
-  results: any[] = undefined;
+  results: {
+    individualResult: {
+      sessionID: string,
+      connectAt: string,
+      nickname: string,
+      answers: {
+        questionNumber: number,
+        isCorrect: 'CORRECT' | 'INCORRECT' | 'NOTANSWERED'
+      }[]
+    },
+    publicQuestions: {
+      model: {
+        question: string
+      },
+      type: string
+    }[]
+  } = undefined;
   // joined = false;
   // question: any;
   // questionInd = -1;
@@ -63,10 +79,10 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   initGameService() {
-    this.gameService.joinEvents.subscribe( (str) => {
+    this.gameService.joinEvents.subscribe((str) => {
       this.joinMessageReceived(str);
     });
-    this.gameService.gameEvents.subscribe( (str) => {
+    this.gameService.gameEvents.subscribe((str) => {
       this.gameMessageReceived(str);
     });
     this.gameService.init();
@@ -80,10 +96,14 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameService.joinGame(this.joinDetails.gameId.value, this.joinDetails.nickname.value);
   }
 
+  /**
+   * @param message, usually a JSON object
+   * when message comes to the public channel via websockets
+   */
   joinMessageReceived(message: any) {
     this.joinDetails.gameId.error = '';
     this.joinDetails.nickname.error = '';
-    if(message.hasOwnProperty('code') && message.code === 'Already joined') {
+    if (message.hasOwnProperty('code') && message.code === 'Already joined') {
       // todo:
     } else if (message.hasOwnProperty('code') && message.code === 'You were added') {
       this.gameObject = {
@@ -98,11 +118,11 @@ export class GameComponent implements OnInit, OnDestroy {
       }
 
       const func = () => {
-        this.countDown.timeRemaining = (this.gameObject && this.gameObject.start) ? Math.round((this.gameObject.start.getTime() - Date.now())/1000) : NaN;
+        this.countDown.timeRemaining = (this.gameObject && this.gameObject.start) ? Math.round((this.gameObject.start.getTime() - Date.now()) / 1000) : NaN;
       }
       func();
       this.countDown.interval = window.setInterval(() => {
-        if (isNaN(this.countDown.timeRemaining) ||  this.countDown.timeRemaining <= 0) {
+        if (isNaN(this.countDown.timeRemaining) || this.countDown.timeRemaining <= 0) {
           window.clearInterval(this.countDown.interval);
         } else {
           func();
@@ -115,8 +135,8 @@ export class GameComponent implements OnInit, OnDestroy {
     } else if (message.hasOwnProperty('code') && message.code === 'Nickname already given out') {
       this.joinDetails.nickname.error = message.code;
       this.gameObject.joined = false;
-    } else if (message.hasOwnProperty('answers')) {
-      this.results = message.answers;
+    } else if (message.hasOwnProperty('individualResult') && message.hasOwnProperty('publicQuestions')) {
+      this.results = message;
       this.gameObject.joined = false;
     } else {
       if (message.hasOwnProperty('code')) {
@@ -132,6 +152,10 @@ export class GameComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @param message -- JSON object
+   * The backend is sending the questions over this function. (via websockets)
+   */
   gameMessageReceived(message: any) {
     if (this.gameObject.joined) {
       if (message.hasOwnProperty('type') && message.hasOwnProperty('model')) {
@@ -143,17 +167,26 @@ export class GameComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * @param answer -- inherited from the specific component
+   */
   changeAnswer(answer) {
-    console.log({answer})
     this.gameObject.answer = answer;
   }
 
+  /**
+   * submit the answer via websockets
+   */
   submitAnswer() {
     if (this.gameObject && this.gameObject.answer && !this.gameObject.sent) {
       this.gameService.submitAnswer(this.gameObject.answer);
     }
   }
 
+  /**
+   * @param isCorrect - inherited from the results object (by websockets)
+   * returns - a human readable string.
+   */
   getLabel(isCorrect: string) {
     switch (isCorrect) {
       case 'CORRECT':
@@ -165,5 +198,36 @@ export class GameComponent implements OnInit, OnDestroy {
       default:
         return isCorrect;
     }
+  }
+
+  getQuizColor(isCorrect: "CORRECT" | "INCORRECT" | "NOTANSWERED") {
+    switch (isCorrect) {
+      case "CORRECT":
+        return '#a0ff78'
+      case "INCORRECT":
+        return '#ff7f7f'
+      case "NOTANSWERED":
+        return '#ffb67f'
+    }
+  }
+
+  getRightAnswers(publicQuestion: { model: { question: string }; type: string }): string {
+    let returnText = 'UNKNOWN';
+    switch (publicQuestion.type) {
+      case 'qm.multiple_choice':
+        const corrAnswers = [];
+        for (const correctAns of (publicQuestion.model as any).correctAnswers) {
+          if ((publicQuestion.model as any).answers.length > correctAns) {
+            corrAnswers.push((publicQuestion.model as any).answers[correctAns]);
+          }
+        }
+        if (corrAnswers.length > 0) {
+          returnText = corrAnswers.join(', ');
+        }
+        break;
+      default:
+        break;
+    }
+    return returnText;
   }
 }

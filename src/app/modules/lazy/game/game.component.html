@@ -22,7 +22,8 @@
       <!--    row2-->
       <div class="flex-row" style="flex: 0 1 0;">
         <div style="flex: 1 0;"></div>
-        <app-user-nickname-input [(value)]="joinDetails.nickname.value" [error]="joinDetails.nickname.error"></app-user-nickname-input>
+        <app-user-nickname-input [(value)]="joinDetails.nickname.value"
+                                 [error]="joinDetails.nickname.error"></app-user-nickname-input>
         <div style="flex: 1 0;"></div>
       </div>
       <div style="flex: 1 1 0"></div>
@@ -37,7 +38,8 @@
           </button>
 
           <div style="flex: 1 0;"></div>
-          <button mat-raised-button [disabled]="joinDetails.nickname.value === '' || joinDetails.gameId.value === ''" color="primary" aria-label="Play button" (click)="joinGame();">
+          <button mat-raised-button [disabled]="joinDetails.nickname.value === '' || joinDetails.gameId.value === ''"
+                  color="primary" aria-label="Play button" (click)="joinGame();">
             Join
           </button>
         </div>
@@ -59,22 +61,34 @@
            [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
            class="flex-column">
 
-        <div *ngFor="let res of results" [ngClass]="{ 'qm-correct': res.isCorrect === 'CORRECT', 'qm-incorrect': res.isCorrect === 'INCORRECT', 'qm-not-answered': res.isCorrect === 'NOTANSWERED' }" matTooltip="The question is {{getLabel(res.isCorrect)}}">
-          Question {{res.questionNumber + 1}}
-        </div>
-
+        <mat-card *ngFor="let ans of results.individualResult.answers"
+                  matTooltip="The question is {{getLabel(ans.isCorrect)}}"
+                  [ngClass]="{ 'qm-correct': ans.isCorrect === 'CORRECT', 'qm-incorrect': ans.isCorrect === 'INCORRECT', 'qm-not-answered': ans.isCorrect === 'NOTANSWERED' }">
+          <mat-card-header class="flex-row" style="align-items: center">
+            <div mat-card-avatar style="width: 60px; height: 60px;line-height: 60px; text-align: center;
+            vertical-align: middle; background-color: #eeeeee;">
+              #{{ans.questionNumber + 1}}</div>
+            <div class="qm-result-question">
+              {{results.publicQuestions[ans.questionNumber].model.question}}
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <b>Right answers: </b><br>
+            {{getRightAnswers(results.publicQuestions[ans.questionNumber])}}
+          </mat-card-content>
+        </mat-card>
       </div>
       <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
     </div>
   </div>
   <div style="position: absolute; bottom: 5px; width: 100%;" class="flex-row" *ngIf="true">
-    <button style="margin-right: 10px; margin-left: 10px;" mat-raised-button color="primary" (click)="results = undefined">
+    <button style="margin-right: 10px; margin-left: 10px;" mat-raised-button color="primary"
+            (click)="results = undefined">
       back
     </button>
     <div style="flex: 1 1 0;"></div>
   </div>
 </ng-container>
-
 
 
 <ng-container *ngIf="gameObject.joined">
@@ -102,7 +116,8 @@
         <ng-container *ngIf="gameObject.question !== undefined">
           <ng-container [ngSwitch]="gameObject.question.type">
             <ng-container *ngSwitchCase="'qm.multiple_choice'">
-              <app-multiple-choices [index]="gameObject.questionInd" type="game" [gameModel]="gameObject.question.model" (answer)="changeAnswer($event)"></app-multiple-choices>
+              <app-multiple-choices [index]="gameObject.questionInd" type="game" [gameModel]="gameObject.question.model"
+                                    (answer)="changeAnswer($event)"></app-multiple-choices>
             </ng-container>
           </ng-container>
         </ng-container>
@@ -112,7 +127,9 @@
   </div>
   <div style="position: absolute; bottom: 5px; width: 100%;" class="flex-row" *ngIf="true">
     <div style="flex: 1 1 0;"></div>
-    <button style="margin-right: 10px;" mat-raised-button color="primary" *ngIf="gameObject.joined && gameObject.question && !gameObject.sent" [disabled]="!gameObject.answer" (click)="submitAnswer()">
+    <button style="margin-right: 10px;" mat-raised-button color="primary"
+            *ngIf="gameObject.joined && gameObject.question && !gameObject.sent" [disabled]="!gameObject.answer"
+            (click)="submitAnswer()">
       Send
     </button>
     <span style="margin-right: 10px;" *ngIf="gameObject.joined && gameObject.question && gameObject.sent">

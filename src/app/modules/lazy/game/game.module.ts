@@ -8,18 +8,20 @@ import {MatButtonModule} from "@angular/material/button";
 import {SharedModule} from "../../shared/shared.module";
 import {MatIconModule} from "@angular/material/icon";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatCardModule} from "@angular/material/card";
 
 
 @NgModule({
   declarations: [GameComponent],
-  imports: [
-    CommonModule,
-    GameRoutingModule,
-    MatInputModule,
-    MatButtonModule,
-    SharedModule,
-    MatIconModule,
-    MatTooltipModule
-  ]
+    imports: [
+        CommonModule,
+        GameRoutingModule,
+        MatInputModule,
+        MatButtonModule,
+        SharedModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatCardModule
+    ]
 })
 export class GameModule { }
