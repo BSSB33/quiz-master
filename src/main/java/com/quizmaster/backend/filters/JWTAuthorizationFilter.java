@@ -62,6 +62,44 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String var_name = environment.getProperty("DisabledSec");
 
         if(var_name.equals("true")){
+            SecurityContext context = SecurityContextHolder.getContext();
+
+            context.setAuthentication(new Authentication() {
+                @Override
+                public Collection<? extends GrantedAuthority> getAuthorities() {
+                    return null;
+                }
+
+                @Override
+                public Object getCredentials() {
+                    return null;
+                }
+
+                @Override
+                public Object getDetails() {
+                    return null;
+                }
+
+                @Override
+                public Object getPrincipal() {
+                    return null;
+                }
+
+                @Override
+                public boolean isAuthenticated() {
+                    return false;
+                }
+
+                @Override
+                public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+
+                }
+
+                @Override
+                public String getName() {
+                    return "hxns9bZEv5Kh5Qe1LerTvo5ggcFmgoWn";
+                }
+            });
             chain.doFilter(request, response);
             return;
         }
