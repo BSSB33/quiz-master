@@ -4,22 +4,45 @@ import com.quizmaster.backend.entities.Quiz;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/quizzes")
 public class QuizController {
+
 
     @Autowired
     private QuizMongoRepository quizMongoRepository;
 
     @GetMapping("") //For testing
     public ResponseEntity getById() {
-        return ResponseEntity.ok(quizMongoRepository.findAll());
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String username = authentication.getName();
+
+        List<Quiz> collect = new ArrayList<Quiz>();
+
+        for (Quiz act : quizMongoRepository.findAll()){
+            if (act.getOwnerId().equals(username)){
+                collect.add(act);
+            }
+        }
+
+        return ResponseEntity.ok(collect);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable String id) {
+
+
+
         if (quizMongoRepository.existsById(id)) {
             return ResponseEntity.ok(quizMongoRepository.getById(id));
         }
@@ -34,6 +57,12 @@ public class QuizController {
         if(!nullChecker(quiz)){
             return ResponseEntity.noContent().build();
         }
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String username = authentication.getName();
+
+        quiz.setOwnerId(username);
         return ResponseEntity.ok(quizMongoRepository.save(quiz));
     }
 
@@ -46,6 +75,7 @@ public class QuizController {
             quizToSave.setId(id);
             Quiz oldQuiz = quizMongoRepository.getById(id);
             quizToSave.setCreatedAt(oldQuiz.getCreatedAt());
+
             return ResponseEntity.ok(quizMongoRepository.save(quizToSave));
         }
         if(quizToSave.getCreatedAt() == null) return ResponseEntity.noContent().build();
