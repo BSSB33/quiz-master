@@ -20,17 +20,13 @@ public class QuizController {
     @Autowired
     private QuizMongoRepository quizMongoRepository;
 
-    @GetMapping("") //For testing
+    @GetMapping("") //lists all quizzes for certain user
     public ResponseEntity getById() {
-
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        String username = authentication.getName();
 
         List<Quiz> collect = new ArrayList<Quiz>();
 
         for (Quiz act : quizMongoRepository.findAll()){
-            if (act.getOwnerId().equals(username)){
+            if (act.getOwnerId().equals(getUsername())){
                 collect.add(act);
             }
         }
@@ -41,10 +37,12 @@ public class QuizController {
     @GetMapping("/{id}")
     public ResponseEntity getById(@PathVariable String id) {
 
-
-
         if (quizMongoRepository.existsById(id)) {
-            return ResponseEntity.ok(quizMongoRepository.getById(id));
+            Quiz toRetrieve = quizMongoRepository.getById(id);
+            if (toRetrieve.getOwnerId().equals(getUsername())){
+                return ResponseEntity.ok(toRetrieve);
+            }
+            return ResponseEntity.status(403).build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -58,11 +56,7 @@ public class QuizController {
             return ResponseEntity.noContent().build();
         }
 
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        String username = authentication.getName();
-
-        quiz.setOwnerId(username);
+        quiz.setOwnerId(getUsername());
         return ResponseEntity.ok(quizMongoRepository.save(quiz));
     }
 
@@ -71,12 +65,19 @@ public class QuizController {
         if(!nullChecker(quizToSave)){
             return ResponseEntity.noContent().build();
         }
-        if (quizMongoRepository.existsById(id)) {
-            quizToSave.setId(id);
-            Quiz oldQuiz = quizMongoRepository.getById(id);
-            quizToSave.setCreatedAt(oldQuiz.getCreatedAt());
 
-            return ResponseEntity.ok(quizMongoRepository.save(quizToSave));
+        if (quizMongoRepository.existsById(id)) {
+            Quiz retrieved =  quizMongoRepository.getById(id);
+
+            if (retrieved.getOwnerId().equals(getUsername())){
+                quizToSave.setId(id);
+                Quiz oldQuiz = quizMongoRepository.getById(id);
+                quizToSave.setCreatedAt(oldQuiz.getCreatedAt());
+                quizToSave.setOwnerId(getUsername());
+                return ResponseEntity.ok(quizMongoRepository.save(quizToSave));
+            }else{
+                return ResponseEntity.status(403).build();
+            }
         }
         if(quizToSave.getCreatedAt() == null) return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
@@ -85,16 +86,29 @@ public class QuizController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(@PathVariable String id) {
         if (quizMongoRepository.existsById(id)) {
-            quizMongoRepository.deleteById(id);
-            return ResponseEntity.ok().build();
+            Quiz retrieved =  quizMongoRepository.getById(id);
+
+            if (retrieved.getOwnerId().equals(getUsername())){
+                quizMongoRepository.deleteById(id);
+                return ResponseEntity.ok().build();
+            }else{
+                return ResponseEntity.status(403).build();
+            }
         }
         return ResponseEntity.notFound().build();
     }
 
-    public Boolean nullChecker(Quiz quiz){
+    private Boolean nullChecker(Quiz quiz){
         if(quiz.getTitle()== null || quiz.getDescription()== null || quiz.getCreatedAt()== null ||quiz.getStartingTime()== null || quiz.getNotes()== null || quiz.getQuestions()== null){
             return false;
         }
         return true;
+    }
+
+    private String getUsername(){
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String username = authentication.getName();
+        return username;
     }
 }
