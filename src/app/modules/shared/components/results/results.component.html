@@ -1,0 +1,21 @@
+<mat-card *ngFor="let ans of results.individualResult.answers"
+          matTooltip="The question is {{getLabel(ans.isCorrect)}}"
+          [ngClass]="{ 'qm-correct': ans.isCorrect === 'CORRECT', 'qm-incorrect': ans.isCorrect === 'INCORRECT', 'qm-not-answered': ans.isCorrect === 'NOTANSWERED' }">
+  <mat-card-header class="flex-row" style="align-items: center">
+    <div mat-card-avatar style="width: 60px; height: 60px;line-height: 60px; text-align: center;
+            vertical-align: middle; background-color: #eeeeee;">
+      #{{ans.questionNumber + 1}}</div>
+    <div class="qm-result-question">
+      {{results.publicQuestions[ans.questionNumber].model.question}}
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+    <b>Right answer(s): </b><br>
+    {{getRightAnswers(results.publicQuestions[ans.questionNumber])}}
+    <ng-container *ngIf="ans.hasOwnProperty('givenAnswer')">
+      <br>
+      <b>Given answer(s): </b> <br>
+      {{joinArray(ans.givenAnswer)}}
+    </ng-container>
+  </mat-card-content>
+</mat-card>

@@ -22,6 +22,11 @@ const routes: Routes = [
   {
     path: 'game',
     loadChildren: () => import('./modules/lazy/game/game.module').then(m => m.GameModule)
+  },
+  {
+    path: 'history',
+    loadChildren: () => import('./modules/lazy/history/history.module').then(m => m.HistoryModule),
+    canActivate: [AuthGuard]
   }
 ];
 

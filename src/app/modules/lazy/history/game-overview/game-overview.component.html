@@ -1,0 +1,53 @@
+<div class="with-header">
+  <h1 style="text-align: center" class="title-font">
+    Ranking
+  </h1>
+  <div class="flex-row">
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+    <div style="flex: 3 1; text-align: center;" [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
+         class="flex-column">
+      <ng-container *ngIf="isLoading">
+        <div>
+          Loading history...
+        </div>
+        <div>
+          <mat-icon class="rotate">
+            sync
+          </mat-icon>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="history !== undefined">
+
+
+        <mat-card style="text-align: start; margin: 10px;">
+          <mat-card-title>
+            Ranking of the quiz
+          </mat-card-title>
+          <mat-card-content style="margin-top: 20px;">
+            <div *ngFor="let score of getPlayerScores()" class="qm-player-score" routerLink="{{score.nickname}}">
+              <div style="width: 20%; display: inline-block">
+                points: {{score.points}}
+              </div>
+              <div style="width: 80%; display: inline-block">
+                {{score.nickname}}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!--      bottom -->
+        <div style="align-items: center; padding: 0 10px; width: 100%; margin-top: 25px; margin-bottom: 25px" class="flex-row">
+          <button mat-fab color="warn" routerLink="../" matTooltip="Back to the quiz list. " style="text-align: center">
+            <mat-icon>
+              navigate_before
+            </mat-icon>
+          </button>
+          <div style="flex: 1 0"></div>
+        </div>
+      </ng-container>
+
+
+    </div>
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+  </div>
+</div>

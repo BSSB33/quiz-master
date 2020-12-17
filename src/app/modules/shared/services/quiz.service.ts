@@ -8,7 +8,8 @@ import {HttpClient} from "@angular/common/http";
 })
 export class QuizService {
   private static endPoints = {
-    quizzes: '/quizzes'
+    quizzes: '/quizzes',
+    result: '/result'
   }
 
 
@@ -35,4 +36,31 @@ export class QuizService {
   async deleteQuiz(id: string) {
     return this.httpClient.delete(this.apiUrl + QuizService.endPoints.quizzes + '/' + id).toPromise();
   }
+
+  getAllHistory() {
+    return this.httpClient.get(this.apiUrl + QuizService.endPoints.result).toPromise().catch(e => console.error(e));
+  }
+
+  getHistory(id: string) {
+    return this.httpClient.get(this.apiUrl + QuizService.endPoints.result + '/' + id).toPromise().catch(e => console.error(e));
+  }
+
+  async getHistoryForPlayer(id: string, player: string) {
+    const result: any = {};
+    const res: any = await this.getHistory(id);
+    if (res.hasOwnProperty('quiz') && res.quiz.hasOwnProperty('questions')) {
+      result.publicQuestions = res.quiz.questions;
+    }
+
+    if (res.hasOwnProperty('player')) {
+      result.individualResult = (res.player as any[]).find( pl => pl.ID === player);
+    }
+    console.log(res.player);
+    return result;
+  }
+
+  async deleteHistory(id: string) {
+    return this.httpClient.delete(this.apiUrl + QuizService.endPoints.result + '/' + id).toPromise().catch(e => console.error(e));
+  }
+
 }

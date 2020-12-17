@@ -1,3 +1,4 @@
+<!--before game - join-->
 <ng-container *ngIf="!(gameObject.joined) && !results">
   <div class="with-header full-height-width-header">
     <div class="flex-column" style="height: 100%">
@@ -52,6 +53,8 @@
   </div>
 </ng-container>
 
+
+<!--results-->
 <ng-container *ngIf="!gameObject.joined && results">
 
   <div class="with-header full-height-width-header">
@@ -60,23 +63,8 @@
       <div style="flex: 3 1; text-align: center; max-width: 100%;"
            [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
            class="flex-column">
-
-        <mat-card *ngFor="let ans of results.individualResult.answers"
-                  matTooltip="The question is {{getLabel(ans.isCorrect)}}"
-                  [ngClass]="{ 'qm-correct': ans.isCorrect === 'CORRECT', 'qm-incorrect': ans.isCorrect === 'INCORRECT', 'qm-not-answered': ans.isCorrect === 'NOTANSWERED' }">
-          <mat-card-header class="flex-row" style="align-items: center">
-            <div mat-card-avatar style="width: 60px; height: 60px;line-height: 60px; text-align: center;
-            vertical-align: middle; background-color: #eeeeee;">
-              #{{ans.questionNumber + 1}}</div>
-            <div class="qm-result-question">
-              {{results.publicQuestions[ans.questionNumber].model.question}}
-            </div>
-          </mat-card-header>
-          <mat-card-content>
-            <b>Right answers: </b><br>
-            {{getRightAnswers(results.publicQuestions[ans.questionNumber])}}
-          </mat-card-content>
-        </mat-card>
+        <app-results [results]="results">
+        </app-results>
       </div>
       <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
     </div>
@@ -91,6 +79,7 @@
 </ng-container>
 
 
+<!--game-->
 <ng-container *ngIf="gameObject.joined">
 
   <div class="with-header full-height-width-header">

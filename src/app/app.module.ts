@@ -9,8 +9,6 @@ import {MatInputModule} from "@angular/material/input";
 import {HTTP_INTERCEPTORS, HttpBackend, HttpClient, HttpClientModule} from "@angular/common/http";
 import {
   SocialLoginModule,
-  SocialAuthServiceConfig,
-  GoogleLoginProvider, SocialAuthService,
 } from "angularx-social-login";
 import {ConfigService} from "./modules/shared/services/config.service";
 import {SharedModule} from "./modules/shared/shared.module";
@@ -19,12 +17,7 @@ import {MAT_TOOLTIP_DEFAULT_OPTIONS} from "@angular/material/tooltip";
 import {GoogleTokenInterceptor} from "./modules/shared/interceptors/google-token.interceptor";
 import {catchError, map} from "rxjs/operators";
 import {Observable, ObservableInput, of} from "rxjs";
-import {StoreModule} from '@ngrx/store';
-import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {environment} from '../environments/environment';
 import {AuthService} from "./modules/shared/services/auth.service";
-import {Router} from "@angular/router";
-import {JSON_CONFIG_FILENAME} from "tslint/lib/configuration";
 import {GameService} from "./modules/shared/services/game.service";
 
 @NgModule({

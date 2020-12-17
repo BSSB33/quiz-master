@@ -50,7 +50,7 @@ export class GameComponent implements OnInit, OnDestroy {
     individualResult: {
       sessionID: string,
       connectAt: string,
-      nickname: string,
+      ID: string,
       answers: {
         questionNumber: number,
         isCorrect: 'CORRECT' | 'INCORRECT' | 'NOTANSWERED'
@@ -195,53 +195,5 @@ export class GameComponent implements OnInit, OnDestroy {
     if (this.gameObject && this.gameObject.answer && !this.gameObject.sent) {
       this.gameService.submitAnswer(this.gameObject.answer);
     }
-  }
-
-  /**
-   * @param isCorrect - inherited from the results object (by websockets)
-   * returns - a human readable string.
-   */
-  getLabel(isCorrect: string) {
-    switch (isCorrect) {
-      case 'CORRECT':
-        return 'correct';
-      case 'INCORRECT':
-        return 'incorrect';
-      case 'NOTANSWERED':
-        return 'not answered';
-      default:
-        return isCorrect;
-    }
-  }
-
-  getQuizColor(isCorrect: "CORRECT" | "INCORRECT" | "NOTANSWERED") {
-    switch (isCorrect) {
-      case "CORRECT":
-        return '#a0ff78'
-      case "INCORRECT":
-        return '#ff7f7f'
-      case "NOTANSWERED":
-        return '#ffb67f'
-    }
-  }
-
-  getRightAnswers(publicQuestion: { model: { question: string }; type: string }): string {
-    let returnText = 'UNKNOWN';
-    switch (publicQuestion.type) {
-      case 'qm.multiple_choice':
-        const corrAnswers = [];
-        for (const correctAns of (publicQuestion.model as any).correctAnswers) {
-          if ((publicQuestion.model as any).answers.length > correctAns) {
-            corrAnswers.push((publicQuestion.model as any).answers[correctAns]);
-          }
-        }
-        if (corrAnswers.length > 0) {
-          returnText = corrAnswers.join(', ');
-        }
-        break;
-      default:
-        break;
-    }
-    return returnText;
   }
 }
