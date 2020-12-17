@@ -21,11 +21,11 @@ public class PlayerScore {
     String sessionID;
 
     @JsonCreator
-    public PlayerScore(@JsonProperty("ID") String ID, @JsonProperty("created") LocalDateTime created) {
-        this.sessionID = ID;
+    public PlayerScore(@JsonProperty("ID") String nickname, @JsonProperty("created") LocalDateTime created) {
+        this.sessionID = nickname;
         this.connectAt = created;
         this.answers = new ArrayList<SavedAnswer>();
-        this.nickname = ID;
+        this.nickname = nickname;
     }
 
     public void setNickname(String nickname) {
