@@ -561,7 +561,7 @@ public class BackendSTOMPTests {
 		quizMongoRepository.save(quiz);
 
 		//wait some time until QuizGame starts
-		Thread.sleep(QUIZSTARTDELAY*1000+2000);
+		Thread.sleep(QUIZSTARTDELAY*1000+20000);
 		//wait some time for the seconds question to come
 
 		session.subscribe("/user/queue/reply", stompHandler); // connecting to private channel
@@ -751,7 +751,7 @@ public class BackendSTOMPTests {
 
 		secondSession.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
 		//wait until QuizGame should send questions out
-		
+
 		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
