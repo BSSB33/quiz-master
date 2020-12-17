@@ -23,7 +23,7 @@ public class PlayerScore {
     String sessionID;
 
     @JsonCreator
-    public PlayerScore(@JsonProperty("ID") String nickname, @JsonProperty("created") LocalDateTime connectAt) {
+    public PlayerScore(@JsonProperty("nickname") String nickname, @JsonProperty("created") LocalDateTime connectAt) {
         this.sessionID = nickname;
         this.connectAt = connectAt;
         this.answers = new ArrayList<>();
