@@ -798,9 +798,9 @@ public class BackendSTOMPTests {
 
 		LinkedHashMap individualResults = (LinkedHashMap) serverResponse.get("individualResult");
 
-		assertEquals(QUIZPLAYERNAME, individualResults.get("nickname"));
+		assertEquals(QUIZPLAYERNAME, individualResults.get("ID"));
 		//check if diff between joiningTime local and on backend is not too big
-		String serverTime = (String) individualResults.get("connectAt");
+		String serverTime = (String) individualResults.get("created");
 		long seconds = ChronoUnit.SECONDS.between(joiningTime, LocalDateTime.parse(serverTime).truncatedTo(ChronoUnit.SECONDS));
 		boolean smalldiff = false;
 		if(seconds == 0 || seconds == 1){
