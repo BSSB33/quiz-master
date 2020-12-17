@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.quizmaster.backend.services.QuestionDeserializer;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 @JsonDeserialize(using = QuestionDeserializer.class)
 @Data
 public class PlayerScore {
+    @Id
     String nickname;
     LocalDateTime connectAt;
     ArrayList<SavedAnswer> answers;
@@ -32,14 +34,15 @@ public class PlayerScore {
         this.nickname = nickname;
     }
 
-    public void addAnswer(int questionNumber, Answer stateAnswer) {
+    public void addAnswer(int questionNumber, Answer stateAnswer, List<Integer> givenAnswer) {
         for (SavedAnswer temp : this.answers) {
             if (temp.getQuestionNumber() == questionNumber) {
+                temp.setGivenAnswer(givenAnswer);
                 temp.setCorrect(stateAnswer);
                 return;
             }
         }
-        this.answers.add(new SavedAnswer(questionNumber, stateAnswer));
+        this.answers.add(new SavedAnswer(questionNumber, stateAnswer, givenAnswer));
     }
 
     public void fillUnanswered(int questionAmount){
@@ -61,7 +64,7 @@ public class PlayerScore {
         }
 
         for (Integer notIncluded : unanswered){
-            addAnswer(notIncluded, Answer.NOTANSWERED);
+            addAnswer(notIncluded, Answer.NOTANSWERED, List.of());
         }
         Collections.sort(this.answers);
     }

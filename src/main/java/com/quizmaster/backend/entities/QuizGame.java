@@ -23,6 +23,7 @@ public class QuizGame {
         this.quiz = quiz;
         this.Player = new ArrayList<PlayerScore>();
         this.actQuestion = -1;
+        this.lastQuestionSend = LocalDateTime.now();
     }
 
     public void addPlayer(PlayerScore newUser) {

@@ -4,22 +4,30 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 public class SavedAnswer implements Comparable<SavedAnswer>{
 
     int questionNumber;
     Answer isCorrect;
+    List<Integer> givenAnswer;
+
     @JsonCreator
-    public SavedAnswer(@JsonProperty("questionNumber") int questionNumber, @JsonProperty("isCorrect") Answer isCorrect) {
+    public SavedAnswer(@JsonProperty("questionNumber") int questionNumber, @JsonProperty("isCorrect") Answer isCorrect, @JsonProperty("givenAnswer") List<Integer> givenAnswer) {
         this.questionNumber = questionNumber;
         this.isCorrect = isCorrect;
+        this.givenAnswer = givenAnswer;
     }
 
     public void setCorrect(Answer stateAnswer) {
         this.isCorrect = stateAnswer;
     }
 
-
+    public void setGivenAnswer(List<Integer> answer){
+        this.givenAnswer = answer;
+    }
 
     @Override
     public int compareTo(SavedAnswer o) {

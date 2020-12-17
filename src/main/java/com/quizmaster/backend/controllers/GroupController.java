@@ -95,8 +95,6 @@ public class GroupController {
                         QuizEndedResponse toSend = new QuizEndedResponse("Quiz ended");
                         template.convertAndSend("/results/room/" + act.getQuiz().getId(), toSend);
                         System.out.println("sent out--------------------------------------");
-                        saveResults(act); // Save Results for Teacher
-
                         sendResults(act);
                     } else { //game still has more questions
                         System.out.println("Sending out question");
@@ -115,14 +113,12 @@ public class GroupController {
     }
 
     private void saveResults(QuizGame result){
-        if (!quizGameMongoRepository.exists(result)){
-            quizGameMongoRepository.save(result);
-        }
+        quizGameMongoRepository.save(result);
     }
 
     private void sendResults(QuizGame act) {
         try {
-            Thread.sleep(1000); //wait some time to let clients receive Quiz ended first
+            Thread.sleep(100); //wait some time to let clients receive Quiz ended first
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -134,6 +130,7 @@ public class GroupController {
             ResultResponse sendToPlayer = new ResultResponse(userResult, act.getAllQuestions());
             template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", sendToPlayer, createHeaders(userResult.getSessionID()));
         }
+        saveResults(act);// Save Results for Teacher
     }
 
     private MessageHeaders createHeaders(String sessionId) {
@@ -200,10 +197,10 @@ public class GroupController {
                     System.out.println("Comparing given and correct answers");
 
                     if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers())) {
-                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.CORRECT);
+                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.CORRECT, answerChoice);
                         System.out.println("Provided answer is correct");
                     } else {
-                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT);
+                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT, answerChoice);
                         System.out.println("Provided answer is incorrect");
                     }
                     return new GameReceiveAnswerResponse("Thanks for your answer",true);
