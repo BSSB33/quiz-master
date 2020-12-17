@@ -31,18 +31,18 @@ export class ResultsComponent implements OnInit {
     }
   }
 
-  getRightAnswers(publicQuestion: { model: { question: string }; type: string }): string {
+  getRightAnswers(type: string, answers: any[], arr: any[]): string {
     let returnText = 'UNKNOWN';
-    switch (publicQuestion.type) {
+    switch (type) {
       case 'qm.multiple_choice':
         const corrAnswers = [];
-        for (const correctAns of (publicQuestion.model as any).correctAnswers) {
-          if ((publicQuestion.model as any).answers.length > correctAns) {
-            corrAnswers.push((publicQuestion.model as any).answers[correctAns]);
+        for (const correctAns of arr) {
+          if (answers.length > correctAns) {
+            corrAnswers.push(answers[correctAns]);
           }
         }
         if (corrAnswers.length > 0) {
-          returnText = this.joinArray(corrAnswers);
+          returnText = corrAnswers.join(', ');
         }
         break;
       default:
@@ -51,9 +51,6 @@ export class ResultsComponent implements OnInit {
     return returnText;
   }
 
-  joinArray(arr: any[]) {
-    return arr.join(', ');
-  }
 
 
 }
