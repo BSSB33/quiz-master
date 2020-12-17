@@ -197,13 +197,12 @@ public class GroupController {
                     System.out.println("Comparing given and correct answers");
 
                     if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers())) {
-                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.CORRECT);
+                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.CORRECT, answerChoice);
                         System.out.println("Provided answer is correct");
                     } else {
-                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT);
+                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT, answerChoice);
                         System.out.println("Provided answer is incorrect");
                     }
-                    userInfo.addGivenAnswer(Act.getQuestionNumber(), answerChoice);
                     return new GameReceiveAnswerResponse("Thanks for your answer",true);
                 } else {
                     return new GameReceiveAnswerResponse("You did not join correctly to the game", false);

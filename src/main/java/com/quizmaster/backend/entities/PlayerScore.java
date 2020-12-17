@@ -34,24 +34,15 @@ public class PlayerScore {
         this.nickname = nickname;
     }
 
-    public void addAnswer(int questionNumber, Answer stateAnswer) {
+    public void addAnswer(int questionNumber, Answer stateAnswer, List<Integer> givenAnswer) {
         for (SavedAnswer temp : this.answers) {
             if (temp.getQuestionNumber() == questionNumber) {
+                temp.setGivenAnswer(givenAnswer);
                 temp.setCorrect(stateAnswer);
                 return;
             }
         }
-        this.answers.add(new SavedAnswer(questionNumber, stateAnswer));
-    }
-
-    public void addGivenAnswer(int questionNumber, List<Integer> givenAnswer) {
-        for (SavedAnswer temp : this.answers) {
-            if (temp.getQuestionNumber() == questionNumber) {
-                temp.setGivenAnswer(givenAnswer);
-                return;
-            }
-        }
-        this.answers.add(new SavedAnswer(questionNumber, stateAnswer));
+        this.answers.add(new SavedAnswer(questionNumber, stateAnswer, givenAnswer));
     }
 
     public void fillUnanswered(int questionAmount){
@@ -73,7 +64,7 @@ public class PlayerScore {
         }
 
         for (Integer notIncluded : unanswered){
-            addAnswer(notIncluded, Answer.NOTANSWERED);
+            addAnswer(notIncluded, Answer.NOTANSWERED, List.of());
         }
         Collections.sort(this.answers);
     }

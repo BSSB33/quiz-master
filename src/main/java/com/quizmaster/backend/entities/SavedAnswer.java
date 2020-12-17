@@ -15,10 +15,10 @@ public class SavedAnswer implements Comparable<SavedAnswer>{
     List<Integer> givenAnswer;
 
     @JsonCreator
-    public SavedAnswer(@JsonProperty("questionNumber") int questionNumber, @JsonProperty("isCorrect") Answer isCorrect) {
+    public SavedAnswer(@JsonProperty("questionNumber") int questionNumber, @JsonProperty("isCorrect") Answer isCorrect, @JsonProperty("givenAnswer") List<Integer> givenAnswer) {
         this.questionNumber = questionNumber;
         this.isCorrect = isCorrect;
-        this.givenAnswer = new ArrayList<>();
+        this.givenAnswer = givenAnswer;
     }
 
     public void setCorrect(Answer stateAnswer) {
