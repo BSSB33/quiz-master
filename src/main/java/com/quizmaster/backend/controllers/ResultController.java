@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/result")
+@CrossOrigin
 public class ResultController {
 
 

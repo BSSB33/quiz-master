@@ -1,5 +1,6 @@
 package com.quizmaster.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -52,6 +53,7 @@ public class QuizGame {
         return null;
     }
 
+    @JsonIgnore
     public Question getActQuestion() {
         return this.quiz.getQuestions().get(this.actQuestion);
     }
