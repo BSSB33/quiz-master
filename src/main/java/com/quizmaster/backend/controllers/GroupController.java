@@ -203,6 +203,7 @@ public class GroupController {
                         userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT);
                         System.out.println("Provided answer is incorrect");
                     }
+                    userInfo.addGivenAnswer(Act.getQuestionNumber(), answerChoice);
                     return new GameReceiveAnswerResponse("Thanks for your answer",true);
                 } else {
                     return new GameReceiveAnswerResponse("You did not join correctly to the game", false);

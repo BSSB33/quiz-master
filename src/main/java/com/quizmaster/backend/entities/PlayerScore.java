@@ -44,6 +44,16 @@ public class PlayerScore {
         this.answers.add(new SavedAnswer(questionNumber, stateAnswer));
     }
 
+    public void addGivenAnswer(int questionNumber, List<Integer> givenAnswer) {
+        for (SavedAnswer temp : this.answers) {
+            if (temp.getQuestionNumber() == questionNumber) {
+                temp.setGivenAnswer(givenAnswer);
+                return;
+            }
+        }
+        this.answers.add(new SavedAnswer(questionNumber, stateAnswer));
+    }
+
     public void fillUnanswered(int questionAmount){
         System.out.println("amount of questions " + questionAmount);
 
