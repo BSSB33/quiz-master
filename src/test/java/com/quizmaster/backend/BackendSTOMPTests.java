@@ -1,6 +1,7 @@
 package com.quizmaster.backend;
 
 import com.quizmaster.backend.entities.*;
+import com.quizmaster.backend.repositories.QuizGameMongoRepository;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
@@ -55,6 +56,9 @@ public class BackendSTOMPTests {
 	@Autowired
 	private QuizMongoRepository quizMongoRepository;
 
+	@Autowired
+	private QuizGameMongoRepository quizGameMongoRepository;
+
 	BlockingQueue<LinkedHashMap> blockingQueue = new LinkedBlockingDeque<LinkedHashMap>();
 	WebSocketStompClient stompClient;
 
@@ -71,6 +75,11 @@ public class BackendSTOMPTests {
 		for (Quiz act : quizMongoRepository.findAll()) {
 			if (act.getTitle().equals(QUIZTITLE)) {
 				quizMongoRepository.deleteById(act.getId());
+			}
+		}
+		for (QuizGame act : quizGameMongoRepository.findAll()){
+			if (act.getQuiz().getOwnerId().equals(QUIZOWNERNAME)){
+				quizGameMongoRepository.deleteById(act.getId());
 			}
 		}
 	}
