@@ -1,5 +1,6 @@
 package com.quizmaster.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
@@ -8,35 +9,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 @Data
 public class QuizGame {
 
     @Id
     private String id;
     private Quiz quiz;
-    private ArrayList<PlayerScore> Player;
+    private ArrayList<PlayerScore> player;
     private int actQuestion;
     private LocalDateTime lastQuestionSend;
 
     public QuizGame(Quiz quiz) {
         this.quiz = quiz;
-        this.Player = new ArrayList<PlayerScore>();
+        this.player = new ArrayList<>();
         this.actQuestion = -1;
         this.lastQuestionSend = LocalDateTime.now().minusDays(1);
     }
 
     public void addPlayer(PlayerScore newUser) {
-        Player.add(newUser);
+        player.add(newUser);
     }
 
     public ArrayList<PlayerScore> getPlayer() {
-        return this.Player;
+        return this.player;
     }
 
     public boolean isNicknameAlreadyUsed(String nickname) {
-        for (PlayerScore user : this.Player) {
-            if (user.getNickname().toLowerCase().equals(nickname.toLowerCase())) {
+        for (PlayerScore user : this.player) {
+            if (user.getNickname().equalsIgnoreCase(nickname)) {
                 return true;
             }
         }
@@ -44,7 +44,7 @@ public class QuizGame {
     }
 
     public PlayerScore getPlayer(String sessionID) {
-        for (PlayerScore user : this.Player) {
+        for (PlayerScore user : this.player) {
             if (user.getSessionID().equals(sessionID)) {
                 return user;
             }
@@ -52,11 +52,12 @@ public class QuizGame {
         return null;
     }
 
-    public Question getActQuestion() {
-        return this.quiz.getQuestions().get(this.actQuestion);
+    @JsonIgnore
+    public Question getActualQuestion() {
+        return quiz.getQuestions().get(actQuestion);
     }
 
-    public int getQuestionNumber() {
+    public int getActQuestion() {
         return this.actQuestion;
     }
 
@@ -65,7 +66,7 @@ public class QuizGame {
     }
 
     public boolean isNextQuestion() {
-        if (this.actQuestion < this.quiz.getQuestions().size()) {
+        if (this.actQuestion < quiz.getQuestions().size()) {
             return true;
         } else {
             return false;
@@ -73,7 +74,7 @@ public class QuizGame {
     }
 
     public Quiz getQuiz() {
-        return this.quiz;
+        return quiz;
     }
 
     public List<Question> getAllQuestions() {

@@ -100,12 +100,12 @@ public class GroupController {
                     } else { //game still has more questions
                         System.out.println("Sending out question");
                         System.out.println("Sending out to room: results/room/" + act.getQuiz().getId());
-                        System.out.println("Content of Questions is: " + act.getActQuestion().toString());
+                        System.out.println("Content of Questions is: " + act.getActualQuestion().toString());
 
-                        List<Integer> temp = act.getActQuestion().getModel().getCorrectAnswers();
-                        act.getActQuestion().getModel().setCorrectAnswers(null);
-                        template.convertAndSend("/results/room/" + act.getQuiz().getId(), act.getActQuestion());
-                        act.getActQuestion().getModel().setCorrectAnswers(temp);
+                        List<Integer> temp = act.getActualQuestion().getModel().getCorrectAnswers();
+                        act.getActualQuestion().getModel().setCorrectAnswers(null);
+                        template.convertAndSend("/results/room/" + act.getQuiz().getId(), act.getActualQuestion());
+                        act.getActualQuestion().getModel().setCorrectAnswers(temp);
                     }
                 }
             }
@@ -121,7 +121,7 @@ public class GroupController {
         }
         System.out.println("printing results");
         for (PlayerScore userResult : act.getPlayer()) {
-            userResult.fillUnanswered(act.getQuestionNumber());
+            userResult.fillUnanswered(act.getActQuestion());
 
             System.out.println("Found finished game and sending results");
             ResultResponse sendToPlayer = new ResultResponse(userResult, act.getAllQuestions());
@@ -186,17 +186,17 @@ public class GroupController {
                 PlayerScore userInfo = Act.getPlayer(sessionId);
                 if (userInfo != null) { //already joined
 
-                    List<Integer> correctAnswer = Act.getActQuestion().getModel().getCorrectAnswers();
+                    List<Integer> correctAnswer = Act.getActualQuestion().getModel().getCorrectAnswers();
                     Collections.sort(correctAnswer);
                     Collections.sort(answerChoice);
 
                     System.out.println("Comparing given and correct answers");
 
-                    if (answerChoice.equals(Act.getActQuestion().getModel().getCorrectAnswers())) {
-                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.CORRECT);
+                    if (answerChoice.equals(Act.getActualQuestion().getModel().getCorrectAnswers())) {
+                        userInfo.addAnswer(Act.getActQuestion(), Answer.CORRECT);
                         System.out.println("Provided answer is correct");
                     } else {
-                        userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT);
+                        userInfo.addAnswer(Act.getActQuestion(), Answer.INCORRECT);
                         System.out.println("Provided answer is incorrect");
                     }
                     return new GameReceiveAnswerResponse("Thanks for your answer",true);
