@@ -35,8 +35,10 @@ export class GameComponent implements OnInit, OnDestroy {
     sent: false,
     answer: undefined,
     title: '',
-    description: ''
-
+    description: '',
+    percent: 100,
+    interval: -1,
+    qReceived: Date.now(),
   }
 
   countDown = {
@@ -114,7 +116,16 @@ export class GameComponent implements OnInit, OnDestroy {
         questionInd: -1,
         start: new Date(Date.parse(message.startingTime + 'Z')),
         title: message.quizTitle,
-        description: message.quizDescription
+        description: message.quizDescription,
+        interval: window.setInterval( () => {
+          const TIME_WINDOW = 20; // seconds
+          const now = Date.now();
+          const delta = now - this.gameObject.qReceived;
+          const minDelta = Math.min(delta, TIME_WINDOW * 1000);
+          this.gameObject.percent = (1 - (minDelta / (TIME_WINDOW * 1000))) * 100;
+        }, 100),
+        percent: 100,
+        qReceived: Date.now()
       }
 
       const func = () => {
@@ -136,6 +147,7 @@ export class GameComponent implements OnInit, OnDestroy {
       this.joinDetails.nickname.error = message.code;
       this.gameObject.joined = false;
     } else if (message.hasOwnProperty('individualResult') && message.hasOwnProperty('publicQuestions')) {
+      window.clearInterval(this.gameObject.interval);
       this.results = message;
       this.gameObject.joined = false;
     } else {
@@ -163,6 +175,8 @@ export class GameComponent implements OnInit, OnDestroy {
         this.gameObject.questionInd++;
         this.gameObject.answer = undefined;
         this.gameObject.sent = false;
+        this.gameObject.qReceived = Date.now();
+        this.gameObject.percent = 100;
       }
     }
   }

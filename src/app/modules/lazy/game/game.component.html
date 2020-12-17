@@ -125,8 +125,25 @@
       <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
     </div>
   </div>
-  <div style="position: absolute; bottom: 5px; width: 100%;" class="flex-row" *ngIf="true">
+  <div style="position: absolute; height: 50px; bottom: 5px; width: 100%; align-items: center" class="flex-row" >
     <div style="flex: 1 1 0;"></div>
+    <div style="flex: 0 0 35px; height: 100%; margin-right: 5px;" *ngIf="gameObject.joined && gameObject.question">
+      <circle-progress
+        [radius]="20"
+        [outerStrokeWidth]="4"
+        [innerStrokeWidth]="3"
+        [showTitle]="false"
+        [showSubtitle]="false"
+        [showUnits]="false"
+        [showBackground]="false"
+        [clockwise]="false"
+        [maxPercent]="100"
+        [responsive]="true"
+        [animation]="true"
+        [startFromZero]="false"
+        [animationDuration]="100"
+        [percent]="gameObject.percent"></circle-progress>
+    </div>
     <button style="margin-right: 10px;" mat-raised-button color="primary"
             *ngIf="gameObject.joined && gameObject.question && !gameObject.sent" [disabled]="!gameObject.answer"
             (click)="submitAnswer()">
