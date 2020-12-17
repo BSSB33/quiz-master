@@ -95,7 +95,6 @@ public class GroupController {
                         QuizEndedResponse toSend = new QuizEndedResponse("Quiz ended");
                         template.convertAndSend("/results/room/" + act.getQuiz().getId(), toSend);
                         System.out.println("sent out--------------------------------------");
-                        saveResults(act);// Save Results for Teacher
                         sendResults(act);
                     } else { //game still has more questions
                         System.out.println("Sending out question");
@@ -135,6 +134,7 @@ public class GroupController {
             ResultResponse sendToPlayer = new ResultResponse(userResult, act.getAllQuestions());
             template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", sendToPlayer, createHeaders(userResult.getSessionID()));
         }
+        saveResults(act);// Save Results for Teacher
     }
 
     private MessageHeaders createHeaders(String sessionId) {
