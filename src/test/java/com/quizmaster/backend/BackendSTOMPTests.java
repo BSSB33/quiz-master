@@ -201,7 +201,7 @@ public class BackendSTOMPTests {
 		session.send("/game/join/" + quiz.getId(), QUIZPLAYERNAME); //Valid request as the game should move to activeGames
 
 
-		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		LinkedHashMap result = blockingQueue.poll(2, SECONDS);
 		assert result != null;
 		assertEquals("You were added", Objects.requireNonNull(result).get("code"));
 		assertEquals(true, result.get("correct"));
@@ -209,10 +209,9 @@ public class BackendSTOMPTests {
 		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
 		assertEquals(this.QUIZDESC, result.get("quizDescription"));
 
-		Thread.sleep(QUIZSTARTDELAY*1000);
 
 		//First question should be reached
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		LinkedHashMap question = (LinkedHashMap) result.get("model");
@@ -220,10 +219,9 @@ public class BackendSTOMPTests {
 		assertEquals(List.of("A","B","C","D"), question.get("answers"));
 
 
-		Thread.sleep(QUESTIONTIME*1000);
 
 		//Quiz Ended should be received
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("Quiz ended", result.get("message"));
 
@@ -284,7 +282,7 @@ public class BackendSTOMPTests {
 		Thread.sleep(QUIZSTARTDELAY*1000);
 
 		//First question should be reached
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		LinkedHashMap question = (LinkedHashMap) result.get("model");
@@ -361,10 +359,9 @@ public class BackendSTOMPTests {
 		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
 		assertEquals(this.QUIZDESC, result.get("quizDescription"));
 
-		Thread.sleep(QUIZSTARTDELAY*1000);
 
 		//First question should be reached
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		LinkedHashMap question = (LinkedHashMap) result.get("model");
@@ -439,10 +436,9 @@ public class BackendSTOMPTests {
 		assertEquals(this.QUIZTITLE, result.get("quizTitle"));
 		assertEquals(this.QUIZDESC, result.get("quizDescription"));
 
-		Thread.sleep(QUIZSTARTDELAY*1000);
 
 		//First question should be reached
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		LinkedHashMap question = (LinkedHashMap) result.get("model");
@@ -459,10 +455,9 @@ public class BackendSTOMPTests {
 		assertEquals("Thanks for your answer", result.get("code"));
 		assertEquals(true, result.get("correct"));
 
-		Thread.sleep(QUESTIONTIME*1000);
 
 		//Quiz Ended should be received
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("Quiz ended", result.get("message"));
 
@@ -505,10 +500,8 @@ public class BackendSTOMPTests {
 		Thread.sleep(1000); //waitingTime
 		session.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
 
-		Thread.sleep(QUIZSTARTDELAY*1000);
-
 		//First question should be reached
-		LinkedHashMap result = blockingQueue.poll(1, SECONDS);
+		LinkedHashMap result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		LinkedHashMap question = (LinkedHashMap) result.get("model");
@@ -525,10 +518,8 @@ public class BackendSTOMPTests {
 		assertEquals("You did not join correctly to the game", result.get("code"));
 		assertEquals(false, result.get("correct"));
 
-		Thread.sleep(QUESTIONTIME*1000);
-
 		//Quiz Ended should be received
-		result = blockingQueue.poll(1, SECONDS);
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("Quiz ended", result.get("message"));
 
@@ -732,6 +723,7 @@ public class BackendSTOMPTests {
 		Question q1 = new Question("qm.multiple_choice", m1);
 		LocalDateTime startingTime = LocalDateTime.now().plusSeconds(QUIZSTARTDELAY);
 		Quiz quiz = new Quiz(this.QUIZTITLE, this.QUIZDESC, startingTime, "Random Note", List.of(q1));
+		quiz.setOwnerId(QUIZOWNERNAME);
 		quizMongoRepository.save(quiz);
 
 		Thread.sleep(1000); //waitingTime
@@ -759,8 +751,8 @@ public class BackendSTOMPTests {
 
 		secondSession.subscribe("/results/room/" + quiz.getId(), stompHandler); // subscribe to Game Channel
 		//wait until QuizGame should send questions out
-		Thread.sleep(QUIZSTARTDELAY*1000);
-		result = blockingQueue.poll(10, SECONDS);
+		
+		result = blockingQueue.poll(25, SECONDS);
 		assert result != null;
 		assertEquals("qm.multiple_choice", result.get("type"));
 		LinkedHashMap question = (LinkedHashMap) result.get("model");
