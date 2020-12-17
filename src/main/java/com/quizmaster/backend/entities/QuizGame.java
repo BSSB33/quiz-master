@@ -18,13 +18,13 @@ public class QuizGame {
     private Quiz quiz;
     private ArrayList<PlayerScore> Player;
     private int actQuestion;
-    private LocalDateTime lastQuestionsSend;
+    private LocalDateTime lastQuestionSend;
 
     public QuizGame(Quiz quiz) {
         this.quiz = quiz;
         this.Player = new ArrayList<PlayerScore>();
         this.actQuestion = -1;
-        this.lastQuestionsSend = LocalDateTime.now();
+        this.lastQuestionSend = LocalDateTime.now();
     }
 
     public void addPlayer(PlayerScore newUser) {

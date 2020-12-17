@@ -113,16 +113,12 @@ public class GroupController {
     }
 
     private void saveResults(QuizGame result){
-
-        if (!quizGameMongoRepository.exists(result)){
-            quizGameMongoRepository.save(result);
-        }
-
+        quizGameMongoRepository.save(result);
     }
 
     private void sendResults(QuizGame act) {
         try {
-            Thread.sleep(1000); //wait some time to let clients receive Quiz ended first
+            Thread.sleep(100); //wait some time to let clients receive Quiz ended first
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
