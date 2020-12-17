@@ -95,7 +95,8 @@ public class GroupController {
                         QuizEndedResponse toSend = new QuizEndedResponse("Quiz ended");
                         template.convertAndSend("/results/room/" + act.getQuiz().getId(), toSend);
                         System.out.println("sent out--------------------------------------");
-                        quizGameMongoRepository.save(act); // Save Results for Teacher
+                        saveResults(act); // Save Results for Teacher
+
                         sendResults(act);
                     } else { //game still has more questions
                         System.out.println("Sending out question");
@@ -111,6 +112,12 @@ public class GroupController {
             }
         }
         activeGames.removeAll(itemsToRemove);
+    }
+
+    private void saveResults(QuizGame result){
+        if (!quizGameMongoRepository.exists(result)){
+            quizGameMongoRepository.save(result);
+        }
     }
 
     private void sendResults(QuizGame act) {
