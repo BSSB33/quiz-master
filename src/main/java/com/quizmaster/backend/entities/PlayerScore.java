@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.quizmaster.backend.services.QuestionDeserializer;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,18 +15,17 @@ import java.util.List;
 @JsonDeserialize(using = QuestionDeserializer.class)
 @Data
 public class PlayerScore {
-    @Id
     String nickname;
-    LocalDateTime created;
+    LocalDateTime connectAt;
     ArrayList<SavedAnswer> answers;
     String sessionID;
 
     @JsonCreator
-    public PlayerScore(@JsonProperty("ID") String nickname, @JsonProperty("created") LocalDateTime created) {
-        this.nickname = nickname;
-        this.sessionID = nickname;
-        this.created = created;
-        this.answers = new ArrayList<>();
+    public PlayerScore(@JsonProperty("ID") String ID, @JsonProperty("created") LocalDateTime created) {
+        this.sessionID = ID;
+        this.connectAt = created;
+        this.answers = new ArrayList<SavedAnswer>();
+        this.nickname = ID;
     }
 
     public void setNickname(String nickname) {
