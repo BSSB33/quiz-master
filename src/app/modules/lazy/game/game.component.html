@@ -1,6 +1,6 @@
 <!--before game - join-->
 <ng-container *ngIf="!(gameObject.joined) && !results">
-  <div class="with-header full-height-width-header">
+  <div class="with-header full-height-width-header" style="overflow: auto;">
     <div class="flex-column" style="height: 100%">
       <div style="flex: 5 5 0"></div>
 
@@ -57,7 +57,7 @@
 <!--results-->
 <ng-container *ngIf="!gameObject.joined && results">
 
-  <div class="with-header full-height-width-header">
+  <div class="with-header full-height-width-header" style="overflow: auto;">
     <div class="flex-row" style="height: 100%">
       <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
       <div style="flex: 3 1; text-align: center; max-width: 100%;"

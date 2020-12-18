@@ -44,14 +44,15 @@ export class GameOverviewComponent implements OnInit {
   }
 
   public getPlayerScores(): { nickname: string, points: number}[] {
-    const ret: { nickname: string, points: number}[] = [];
+    let ret: { nickname: string, points: number}[] = [];
     const player = (this.history as any).player;
     for (const it of player) {
       ret.push({
-        nickname: it.ID,
+        nickname: it.nickname,
         points: (it.answers as any[]).filter( (itt) => itt.isCorrect === 'CORRECT').length
       })
     }
+    ret = ret.sort((a, b) => b.points - a.points);
     return ret;
   }
 }

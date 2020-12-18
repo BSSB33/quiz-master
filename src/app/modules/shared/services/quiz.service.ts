@@ -53,9 +53,8 @@ export class QuizService {
     }
 
     if (res.hasOwnProperty('player')) {
-      result.individualResult = (res.player as any[]).find( pl => pl.ID === player);
+      result.individualResult = (res.player as any[]).find( pl => pl.nickname === player);
     }
-    console.log(res.player);
     return result;
   }
 
