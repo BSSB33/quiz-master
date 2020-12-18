@@ -61,7 +61,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String var_name = environment.getProperty("DisabledSec");
 
-        if(var_name.equals("true")){
+        if (var_name.equals("true")) {
             SecurityContext context = SecurityContextHolder.getContext();
 
             context.setAuthentication(new Authentication() {

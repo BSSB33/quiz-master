@@ -25,8 +25,8 @@ public class QuizController {
 
         List<Quiz> collect = new ArrayList<Quiz>();
 
-        for (Quiz act : quizMongoRepository.findAll()){
-            if (act.getOwnerId().equals(getUsername())){
+        for (Quiz act : quizMongoRepository.findAll()) {
+            if (act.getOwnerId().equals(getUsername())) {
                 collect.add(act);
             }
         }
@@ -39,7 +39,7 @@ public class QuizController {
 
         if (quizMongoRepository.existsById(id)) {
             Quiz toRetrieve = quizMongoRepository.getById(id);
-            if (toRetrieve.getOwnerId().equals(getUsername())){
+            if (toRetrieve.getOwnerId().equals(getUsername())) {
                 return ResponseEntity.ok(toRetrieve);
             }
             return ResponseEntity.status(403).build();
@@ -52,7 +52,7 @@ public class QuizController {
         if (quiz.getId() != null && quizMongoRepository.existsById(quiz.getId())) { // ERROR: getId should not be called before save!
             return ResponseEntity.badRequest().body("ID Taken!");
         }
-        if(!nullChecker(quiz)){
+        if (!nullChecker(quiz)) {
             return ResponseEntity.noContent().build();
         }
 
@@ -62,50 +62,50 @@ public class QuizController {
 
     @PutMapping("/{id}")
     public ResponseEntity putById(@PathVariable String id, @RequestBody Quiz quizToSave) {
-        if(!nullChecker(quizToSave)){
+        if (!nullChecker(quizToSave)) {
             return ResponseEntity.noContent().build();
         }
 
         if (quizMongoRepository.existsById(id)) {
-            Quiz retrieved =  quizMongoRepository.getById(id);
+            Quiz retrieved = quizMongoRepository.getById(id);
 
-            if (retrieved.getOwnerId().equals(getUsername())){
+            if (retrieved.getOwnerId().equals(getUsername())) {
                 quizToSave.setId(id);
                 Quiz oldQuiz = quizMongoRepository.getById(id);
                 quizToSave.setCreatedAt(oldQuiz.getCreatedAt());
                 quizToSave.setOwnerId(getUsername());
                 return ResponseEntity.ok(quizMongoRepository.save(quizToSave));
-            }else{
+            } else {
                 return ResponseEntity.status(403).build();
             }
         }
-        if(quizToSave.getCreatedAt() == null) return ResponseEntity.noContent().build();
+        if (quizToSave.getCreatedAt() == null) return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(@PathVariable String id) {
         if (quizMongoRepository.existsById(id)) {
-            Quiz retrieved =  quizMongoRepository.getById(id);
+            Quiz retrieved = quizMongoRepository.getById(id);
 
-            if (retrieved.getOwnerId().equals(getUsername())){
+            if (retrieved.getOwnerId().equals(getUsername())) {
                 quizMongoRepository.deleteById(id);
                 return ResponseEntity.ok().build();
-            }else{
+            } else {
                 return ResponseEntity.status(403).build();
             }
         }
         return ResponseEntity.notFound().build();
     }
 
-    private Boolean nullChecker(Quiz quiz){
-        if(quiz.getTitle()== null || quiz.getDescription()== null || quiz.getCreatedAt()== null ||quiz.getStartingTime()== null || quiz.getNotes()== null || quiz.getQuestions()== null){
+    private Boolean nullChecker(Quiz quiz) {
+        if (quiz.getTitle() == null || quiz.getDescription() == null || quiz.getCreatedAt() == null || quiz.getStartingTime() == null || quiz.getNotes() == null || quiz.getQuestions() == null) {
             return false;
         }
         return true;
     }
 
-    private String getUsername(){
+    private String getUsername() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         String username = authentication.getName();

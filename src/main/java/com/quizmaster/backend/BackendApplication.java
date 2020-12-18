@@ -65,8 +65,8 @@ public class BackendApplication<data_type> implements CommandLineRunner {
 //
 //
 //
-//        System.out.println("=============== Users: ===============");
-//        userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() + " -> DB ID: " + user.getId()));
+        System.out.println("=============== Users: ===============");
+        userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() + " -> DB ID: " + user.getId()));
 //
 //        System.out.println("============== Quizzes: ==============");
 //        quizMongoRepository.findAll().forEach(qu -> System.out.println(qu.getTitle() + " -> " + qu.getId()));
@@ -196,37 +196,37 @@ class MyStompSessionHandler extends StompSessionHandlerAdapter {
 
         System.out.println(content.toString());
 
-        if(content.size() == 5){
+        if (content.size() == 5) {
             //GameJoinResponse
             GameJoinResponse translate = new GameJoinResponse((String) content.get("code"), (boolean) content.get("correct"), LocalDateTime.parse((String) content.get("startingTime")), (String) content.get("quizTitle"), (String) content.get("quizDescription"));
             System.out.println(translate.getCode());
 
-        }else if(content.size() == 2){
+        } else if (content.size() == 2) {
             //Question
             LinkedHashMap getQuestionContent = (LinkedHashMap) content.get("model");
             MultipleChoicesModel finalQuestion = new MultipleChoicesModel((String) getQuestionContent.get("question"), (List<String>) getQuestionContent.get("answers"), null);
 
-            if (finalQuestion.getQuestion().equals("Which one is Letter A?")){
+            if (finalQuestion.getQuestion().equals("Which one is Letter A?")) {
                 return;
             }
 
 
             System.out.println("Answering Questions with 1");
-            this.actSession.send("/game/answer/" + this.id, List.of(1,2)); // Send it multiple times to see if it can handle this
+            this.actSession.send("/game/answer/" + this.id, List.of(1, 2)); // Send it multiple times to see if it can handle this
             Thread.sleep(10);
-            this.actSession.send("/game/answer/" + this.id, List.of(1,2,3,4)); // Send it multiple times to see if it can handle this
+            this.actSession.send("/game/answer/" + this.id, List.of(1, 2, 3, 4)); // Send it multiple times to see if it can handle this
             Thread.sleep(10);
             this.actSession.send("/game/answer/" + this.id, List.of(1)); // Send it multiple times to see if it can handle this
             Thread.sleep(10);
-            this.actSession.send("/game/answer/" + this.id, List.of(2,4)); // Send it multiple times to see if it can handle this
+            this.actSession.send("/game/answer/" + this.id, List.of(2, 4)); // Send it multiple times to see if it can handle this
 
-        }else if(content.size() == 4){
+        } else if (content.size() == 4) {
             //result
             PlayerScore result = new PlayerScore((String) content.get("sessionID"), LocalDateTime.parse((String) content.get("connectAt")));
             result.setAnswers((ArrayList<SavedAnswer>) content.get("answers"));
             result.setNickname((String) content.get("nickname"));
 
-        }else if(content.size() == 1){
+        } else if (content.size() == 1) {
             //QuizEnded
             QuizEndedResponse end = new QuizEndedResponse((String) content.get("message"));
         }

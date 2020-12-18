@@ -10,7 +10,7 @@ public class GameReceiveAnswerResponse {
     boolean correct;
 
     @JsonCreator
-    public GameReceiveAnswerResponse(@JsonProperty("code") String code, @JsonProperty("correct") boolean correct){
+    public GameReceiveAnswerResponse(@JsonProperty("code") String code, @JsonProperty("correct") boolean correct) {
         this.code = code;
         this.correct = correct;
     }

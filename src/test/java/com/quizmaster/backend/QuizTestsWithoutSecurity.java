@@ -18,18 +18,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -43,8 +39,8 @@ public class QuizTestsWithoutSecurity {
     Question q1 = new Question("qm.multiple_choice", m1);
     Question q2 = new Question("qm.multiple_choice", m2);
 
-
-    private String workingQuizID = "5fa41dd32294816932ccc204";
+    //ENTER HERE A PROPER EXISTING QUIZ ID FOR TESTING
+    private String workingQuizID = "5fdcdd4f2e342f6f6b014386";
 
     @Autowired
     private Environment environment;
@@ -70,7 +66,7 @@ public class QuizTestsWithoutSecurity {
     }
 
 
-//    These test need to be run without security
+    //    These test need to be run without security
     @Test
     public void shouldGetQuizById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
@@ -108,7 +104,7 @@ public class QuizTestsWithoutSecurity {
     @Test
     public void shouldBeForbiddenNullTitle() throws Exception {
 
-        Quiz quiz = new Quiz(null,"test",LocalDateTime.now().plusMinutes(2),"Random Note",List.of(q1, q2));
+        Quiz quiz = new Quiz(null, "test", LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
                 .content(jsonToString(quiz))
@@ -116,10 +112,11 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldBeForbiddenNullDescription() throws Exception {
 
-        Quiz quiz = new Quiz("test",null,LocalDateTime.now().plusMinutes(2),"Random Note",List.of(q1, q2));
+        Quiz quiz = new Quiz("test", null, LocalDateTime.now().plusMinutes(2), "Random Note", List.of(q1, q2));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
                 .content(jsonToString(quiz))
@@ -131,7 +128,7 @@ public class QuizTestsWithoutSecurity {
     @Test
     public void shouldBeForbiddenNullDate() throws Exception {
 
-        Quiz quiz = new Quiz("test","test",null,"Random Note",List.of(q1, q2));
+        Quiz quiz = new Quiz("test", "test", null, "Random Note", List.of(q1, q2));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
                 .content(jsonToString(quiz))
@@ -139,10 +136,11 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldBeForbiddenNullNote() throws Exception {
 
-        Quiz quiz = new Quiz("test","test",LocalDateTime.now().plusMinutes(2),null,List.of(q1, q2));
+        Quiz quiz = new Quiz("test", "test", LocalDateTime.now().plusMinutes(2), null, List.of(q1, q2));
 
         mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
                 .content(jsonToString(quiz))
@@ -150,10 +148,11 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldBeForbiddenNullQuestion() throws Exception {
 
-        Quiz quiz = new Quiz("test","test",LocalDateTime.now().plusMinutes(2),"Random Note",null);
+        Quiz quiz = new Quiz("test", "test", LocalDateTime.now().plusMinutes(2), "Random Note", null);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/quizzes/5f92fc1dc14fbe24614fcd0d")
                 .content(jsonToString(quiz))
@@ -161,6 +160,7 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldGetRightQuestionAfterChange() throws Exception {
 
@@ -176,6 +176,7 @@ public class QuizTestsWithoutSecurity {
 
         assertThat(quizMongoRepository.getById(workingQuizID).getQuestions()).isEqualTo(List.of(q1, q2));
     }
+
     @Test
     public void shouldGetRightDescriptionAfterChange() throws Exception {
 
@@ -191,6 +192,7 @@ public class QuizTestsWithoutSecurity {
 
         assertThat(quizMongoRepository.getById(workingQuizID).getDescription().equals("change of description"));
     }
+
     @Test
     public void shouldGetRightNameAfterChange() throws Exception {
 
@@ -206,6 +208,7 @@ public class QuizTestsWithoutSecurity {
 
         assertThat(quizMongoRepository.getById(workingQuizID).getDescription().equals("change of name"));
     }
+
     @Test
     public void shouldGetRightNoteAfterChange() throws Exception {
 
@@ -225,7 +228,7 @@ public class QuizTestsWithoutSecurity {
     @Test
     public void deleteQuiz() throws Exception {
 
-        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation","test description",LocalDateTime.now().plusMinutes(2),"test Note",List.of(q1, q2));
+        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation", "test description", LocalDateTime.now().plusMinutes(2), "test Note", List.of(q1, q2));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/quizzes")
                 .content(jsonToString(quiz))
@@ -243,10 +246,11 @@ public class QuizTestsWithoutSecurity {
 
 
     }
+
     @Test
     public void CreateNewQuiz() throws Exception {
 
-        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation","test description",LocalDateTime.now().plusMinutes(2),"test Note",List.of(q1, q2));
+        Quiz quiz = new Quiz("HelloWorldForTestPurposesAndThatNeedsToBeLongEnoughForNoMisinterpretation", "test description", LocalDateTime.now().plusMinutes(2), "test Note", List.of(q1, q2));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/quizzes")
                 .content(jsonToString(quiz))
@@ -273,6 +277,7 @@ public class QuizTestsWithoutSecurity {
                 .delete("/quizzes/123123123"))
                 .andExpect(status().isNotFound());
     }
+
     @Test
     public void shouldFailChangeWithWrongId() throws Exception {
 
@@ -297,6 +302,7 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldFailPostEmptyDescription() throws Exception {
 
@@ -308,6 +314,7 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldFailPostEmptyStartingTime() throws Exception {
 
@@ -319,6 +326,7 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldFailPostEmptyNotes() throws Exception {
 
@@ -330,6 +338,7 @@ public class QuizTestsWithoutSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldFailPostEmptyQuestions() throws Exception {
 

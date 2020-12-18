@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class SavedAnswer implements Comparable<SavedAnswer>{
+public class SavedAnswer implements Comparable<SavedAnswer> {
 
     int questionNumber;
     Answer isCorrect;
@@ -25,17 +24,17 @@ public class SavedAnswer implements Comparable<SavedAnswer>{
         this.isCorrect = stateAnswer;
     }
 
-    public void setGivenAnswer(List<Integer> answer){
+    public void setGivenAnswer(List<Integer> answer) {
         this.givenAnswer = answer;
     }
 
     @Override
     public int compareTo(SavedAnswer o) {
-        if (this.questionNumber > o.getQuestionNumber()){
+        if (this.questionNumber > o.getQuestionNumber()) {
             return 1;
-        }else if(this.questionNumber < o.getQuestionNumber()){
+        } else if (this.questionNumber < o.getQuestionNumber()) {
             return -1;
-        }else if(this.questionNumber == o.getQuestionNumber()){
+        } else if (this.questionNumber == o.getQuestionNumber()) {
 
         }
 

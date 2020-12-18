@@ -1,10 +1,7 @@
 package com.quizmaster.backend.controllers;
 
-import com.quizmaster.backend.entities.Quiz;
 import com.quizmaster.backend.entities.QuizGame;
-import com.quizmaster.backend.entities.User;
 import com.quizmaster.backend.repositories.QuizGameMongoRepository;
-import com.quizmaster.backend.repositories.UserMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,8 +25,8 @@ public class ResultController {
     public ResponseEntity getAll() {
         List<QuizGame> collect = new ArrayList<QuizGame>();
 
-        for (QuizGame act : quizGameMongoRepository.findAll()){
-            if (act.getQuiz().getOwnerId().equals(getUsername())){
+        for (QuizGame act : quizGameMongoRepository.findAll()) {
+            if (act.getQuiz().getOwnerId().equals(getUsername())) {
                 collect.add(act);
             }
         }
@@ -41,7 +38,7 @@ public class ResultController {
 
         if (quizGameMongoRepository.existsById(id)) {
             QuizGame toRetrieve = quizGameMongoRepository.getById(id);
-            if (toRetrieve.getQuiz().getOwnerId().equals(getUsername())){
+            if (toRetrieve.getQuiz().getOwnerId().equals(getUsername())) {
                 return ResponseEntity.ok(toRetrieve);
             }
             return ResponseEntity.status(403).build();
@@ -52,19 +49,19 @@ public class ResultController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(@PathVariable String id) {
         if (quizGameMongoRepository.existsById(id)) {
-            QuizGame retrieved =  quizGameMongoRepository.getById(id);
+            QuizGame retrieved = quizGameMongoRepository.getById(id);
 
-            if (retrieved.getQuiz().getOwnerId().equals(getUsername())){
+            if (retrieved.getQuiz().getOwnerId().equals(getUsername())) {
                 quizGameMongoRepository.deleteById(id);
                 return ResponseEntity.ok().build();
-            }else{
+            } else {
                 return ResponseEntity.status(403).build();
             }
         }
         return ResponseEntity.notFound().build();
     }
 
-    private String getUsername(){
+    private String getUsername() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         String username = authentication.getName();

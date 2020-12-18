@@ -12,7 +12,7 @@ public class ResultResponse {
     List<Question> publicQuestions;
 
     @JsonCreator
-    public ResultResponse(@JsonProperty("score") PlayerScore score, @JsonProperty("questions") List<Question> questions){
+    public ResultResponse(@JsonProperty("score") PlayerScore score, @JsonProperty("questions") List<Question> questions) {
         this.individualResult = score;
         this.publicQuestions = questions;
     }

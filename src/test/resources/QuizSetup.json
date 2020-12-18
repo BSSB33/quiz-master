@@ -1,0 +1,128 @@
+{
+	"_id": {
+		"$oid": "5fdbb30d02541d7e08912dc7"
+	},
+	"title": "Quiz for the live Demo",
+	"description": "This is a demo Quiz for the live presentation for Software technology.",
+	"createdAt": {
+		"$date": {
+			"$numberLong": "1608233741125"
+		}
+	},
+	"startingTime": {
+		"$date": {
+			"$numberLong": "1608281340000"
+		}
+	},
+	"notes": "Subject: Software technology",
+	"ownerId": "100008550605135792628",
+	"questions": [
+		{
+			"type": "qm.multiple_choice",
+			"model": {
+				"question": "Are we using HTTPS on this web application?",
+				"answers": [
+					"Yes",
+					"No"
+				],
+				"correctAnswers": [
+					{
+						"$numberInt": "0"
+					}
+				],
+				"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+			}
+		},
+		{
+			"type": "qm.multiple_choice",
+			"model": {
+				"question": "What is today's date?",
+				"answers": [
+					"2020.12.17.",
+					"2020.12.18",
+					"2020.12.19",
+					"2020.12.24"
+				],
+				"correctAnswers": [
+					{
+						"$numberInt": "1"
+					}
+				],
+				"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+			}
+		},
+		{
+			"type": "qm.multiple_choice",
+			"model": {
+				"question": "Which of the following are mammals?",
+				"answers": [
+					"Zebra",
+					"Kangoroo",
+					"Whale",
+					"Chameleon",
+					"Dolphin"
+				],
+				"correctAnswers": [
+					{
+						"$numberInt": "0"
+					},
+					{
+						"$numberInt": "1"
+					},
+					{
+						"$numberInt": "2"
+					},
+					{
+						"$numberInt": "4"
+					}
+				],
+				"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+			}
+		},
+		{
+			"type": "qm.multiple_choice",
+			"model": {
+				"question": "Select the programing languages!",
+				"answers": [
+					"C++",
+					"Java",
+					"HTML",
+					"Python"
+				],
+				"correctAnswers": [
+					{
+						"$numberInt": "0"
+					},
+					{
+						"$numberInt": "1"
+					},
+					{
+						"$numberInt": "3"
+					}
+				],
+				"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+			}
+		},
+		{
+			"type": "qm.multiple_choice",
+			"model": {
+				"question": "What does IPA stand for?",
+				"answers": [
+					"International Phonetic Alphabet",
+					"International Protection of Alpaca",
+					"Indian Pale Ale",
+					"International Programming Algorithms"
+				],
+				"correctAnswers": [
+					{
+						"$numberInt": "0"
+					},
+					{
+						"$numberInt": "2"
+					}
+				],
+				"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+			}
+		}
+	]
+}

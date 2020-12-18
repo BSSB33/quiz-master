@@ -45,11 +45,11 @@ public class PlayerScore {
         this.answers.add(new SavedAnswer(questionNumber, stateAnswer, givenAnswer));
     }
 
-    public void fillUnanswered(int questionAmount){
+    public void fillUnanswered(int questionAmount) {
         System.out.println("amount of questions " + questionAmount);
 
-        List<Integer> unanswered =new ArrayList<Integer>();
-        for (int i = 0; i<questionAmount; i++){
+        List<Integer> unanswered = new ArrayList<Integer>();
+        for (int i = 0; i < questionAmount; i++) {
             unanswered.add(i);
         }
 
@@ -58,12 +58,12 @@ public class PlayerScore {
 
         for (SavedAnswer temp : this.answers) {
             System.out.println("remove " + temp.getQuestionNumber());
-            unanswered.remove( (Integer) temp.getQuestionNumber());
+            unanswered.remove((Integer) temp.getQuestionNumber());
             System.out.println("unanswered list: " + unanswered.toString());
             System.out.println("act List: " + this.answers.toString());
         }
 
-        for (Integer notIncluded : unanswered){
+        for (Integer notIncluded : unanswered) {
             addAnswer(notIncluded, Answer.NOTANSWERED, List.of());
         }
         Collections.sort(this.answers);

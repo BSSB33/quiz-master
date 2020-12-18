@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.quizmaster.backend.entities.*;
-import com.quizmaster.backend.repositories.QuizMongoRepository;
+import com.quizmaster.backend.entities.User;
 import com.quizmaster.backend.repositories.UserMongoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +15,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
-
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -104,27 +94,30 @@ public class UserTests {
             }
         });
     }
+
     @Test
     public void shouldFailWithNoGoogleId() throws Exception {
-        User noGoogleId = new User("qjkwebni@gmail.com",null);
+        User noGoogleId = new User("qjkwebni@gmail.com", null);
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                 .content(jsonToString(noGoogleId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldFailWithEmail() throws Exception {
-        User noEmailId = new User(null,"UltraFakeGoogleId");
+        User noEmailId = new User(null, "UltraFakeGoogleId");
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                 .content(jsonToString(noEmailId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
+
     @Test
     public void shouldFailWithEmailPut() throws Exception {
-        User noEmailId = new User(null,"UltraFakeGoogleId");
+        User noEmailId = new User(null, "UltraFakeGoogleId");
         mockMvc.perform(MockMvcRequestBuilders.put("/users/5fbe9974b9deee6a70f5649f")
                 .content(jsonToString(noEmailId))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -134,7 +127,7 @@ public class UserTests {
 
     @Test
     public void shouldFailWithGoogleIdPut() throws Exception {
-        User noGoogleId = new User("UltraFakeEmail@gmail.com",null);
+        User noGoogleId = new User("UltraFakeEmail@gmail.com", null);
         mockMvc.perform(MockMvcRequestBuilders.put("/users/5fbe9974b9deee6a70f5649f")
                 .content(jsonToString(noGoogleId))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -148,8 +141,6 @@ public class UserTests {
                 .get("/users/5fbe9974b9deee6a70f5649f"))
                 .andExpect(status().isOk());
     }
-
-
 
 
 }

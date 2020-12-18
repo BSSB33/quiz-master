@@ -66,7 +66,7 @@ public class GroupController {
                         break;
                     }
                 }
-                if (!containsId){
+                if (!containsId) {
                     // check if quiz time is after now() and before next iteration now()
 //                    System.out.println("Quiz added " + act.getId());
                     activeGames.add(new QuizGame(act));
@@ -148,31 +148,31 @@ public class GroupController {
             if (act.getQuiz().getId().equals(gameId)) { //quiz found
                 PlayerScore userInfo = act.getPlayer(sessionId);
                 if (userInfo != null) { //already joined
-                    return new GameJoinResponse("Already joined",false,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
+                    return new GameJoinResponse("Already joined", false, act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                 } else {
                     if (act.isNicknameAlreadyUsed(nickname)) { // If nickname already given out to someone
-                        return new GameJoinResponse("Nickname already given out",false,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
+                        return new GameJoinResponse("Nickname already given out", false, act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                     }
                     PlayerScore addUser = new PlayerScore(sessionId, LocalDateTime.now());
                     addUser.setNickname(nickname); // first 3 elements of sessionID are added to nickname to enable secure distribution of names
                     act.addPlayer(addUser);
-                    return new GameJoinResponse("You were added",true,act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
+                    return new GameJoinResponse("You were added", true, act.getQuiz().getStartingTime(), act.getQuiz().getTitle(), act.getQuiz().getDescription());
                 }
             }
         }
 
         for (Quiz act : quizMongoRepository.findAll()) {
-            if (act.getId().equals(gameId)){
-                if (act.getStartingTime().isBefore(LocalDateTime.now())){
-                    return new GameJoinResponse("Quiz already ended",false,act.getStartingTime(), act.getTitle(), act.getDescription());
+            if (act.getId().equals(gameId)) {
+                if (act.getStartingTime().isBefore(LocalDateTime.now())) {
+                    return new GameJoinResponse("Quiz already ended", false, act.getStartingTime(), act.getTitle(), act.getDescription());
                 }
-                if (act.getStartingTime().isAfter(LocalDateTime.now())){
-                    return new GameJoinResponse("Quiz will start",false,act.getStartingTime(), act.getTitle(), act.getDescription());
+                if (act.getStartingTime().isAfter(LocalDateTime.now())) {
+                    return new GameJoinResponse("Quiz will start", false, act.getStartingTime(), act.getTitle(), act.getDescription());
                 }
             }
         }
 
-        return new GameJoinResponse("Quiz not found",false,null,null,null);
+        return new GameJoinResponse("Quiz not found", false, null, null, null);
     }
 
     @MessageMapping("/answer/{gameId}")
@@ -199,7 +199,7 @@ public class GroupController {
                         userInfo.addAnswer(Act.getQuestionNumber(), Answer.INCORRECT, answerChoice);
                         System.out.println("Provided answer is incorrect");
                     }
-                    return new GameReceiveAnswerResponse("Thanks for your answer",true);
+                    return new GameReceiveAnswerResponse("Thanks for your answer", true);
                 } else {
                     return new GameReceiveAnswerResponse("You did not join correctly to the game", false);
                 }

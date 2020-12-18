@@ -9,7 +9,7 @@ public class QuizEndedResponse {
     String message;
 
     @JsonCreator
-    public QuizEndedResponse(@JsonProperty("message") String message){
+    public QuizEndedResponse(@JsonProperty("message") String message) {
         this.message = message;
     }
 
