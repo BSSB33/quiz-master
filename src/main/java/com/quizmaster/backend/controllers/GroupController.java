@@ -127,7 +127,6 @@ public class GroupController {
             ResultResponse sendToPlayer = new ResultResponse(userResult, act.getAllQuestions());
             template.convertAndSendToUser(userResult.getSessionID(), "/queue/reply", sendToPlayer, createHeaders(userResult.getSessionID()));
         }
-        saveResults(act);// Save Results for Teacher
     }
 
     private MessageHeaders createHeaders(String sessionId) {
