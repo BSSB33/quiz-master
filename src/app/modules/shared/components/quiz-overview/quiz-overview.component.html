@@ -1,0 +1,46 @@
+<mat-card *ngIf="model" style="text-align: left;">
+  <mat-card-header>
+    <div *ngIf="index" mat-card-avatar style="width: 60px; height: 60px;line-height: 60px; text-align: center;
+    vertical-align: middle; " [ngStyle]="{'background-color': this.quizColor}">#{{index}}</div>
+    <mat-card-title>{{model.title}}</mat-card-title>
+    <mat-card-subtitle>Created at {{getDate(model.createdAt)}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    {{model.description}}
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-card-actions class="flex-row" style="display: flex; margin: 0 10px; align-items: center;">
+      <!--      delete quiz -->
+      <button mat-mini-fab color="warn" (click)="delete.emit(model.id)" matTooltip="Delete Quiz. ">
+        <mat-icon>
+          delete
+        </mat-icon>
+      </button>
+      <div style="flex: 1 1"></div>
+
+      <!--      copied text -->
+
+      <div style="margin-right: 8px;" *ngIf="copy.copied">
+        copied!
+      </div>
+      <!--      copy button -->
+      <button mat-mini-fab color="primary" style="margin-right: 8px;" (click)="copyUrlOfQuiz()" matTooltip="Copy url of the quiz. ">
+        <mat-icon>
+          content_copy
+        </mat-icon>
+      </button>
+      <!--      edit button -->
+      <button mat-mini-fab color="primary" style="margin-right: 8px;" [routerLink]="['edit', model.id]" matTooltip="Edit Quiz. ">
+        <mat-icon>
+          edit
+        </mat-icon>
+      </button>
+<!--      preview button-->
+      <button mat-mini-fab color="primary" [routerLink]="['preview', model.id]" matTooltip="Preview Quiz. ">
+        <mat-icon>
+          remove_red_eye
+        </mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card-footer>
+</mat-card>

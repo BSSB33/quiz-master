@@ -1,0 +1,41 @@
+<button mat-mini-fab style="position: absolute; top: 10px; left: 10px" color="primary" (click)="backToHome()">
+  <mat-icon>
+    keyboard_backspace
+  </mat-icon>
+</button>
+<div class="fullscreen">
+  <div class="flex-column" style="height: 100%">
+    <div style="flex: 5 5 0"></div>
+    <!--    row1-->
+    <div class="flex-row" style="flex: 0 1 0;">
+      <div style="flex: 5 9 200px;"></div>
+      <div style="flex: 1 1 200px;">
+        <img [src]="'assets/vectors/logo.svg' | imgCache | async | sanitize:'resourceUrl'" style="max-width: 100%;" alt="Logo of Quiz Master"></div>
+      <div style="flex: 5 9 200px;"></div>
+    </div>
+    <div style="flex: 3 1 0"></div>
+    <!--    row2-->
+    <div class="flex-row" style="flex: 0 1 0;">
+      <div style="flex: 0 9 50px;"></div>
+      <div style="flex: 1 1 200px; text-align: center; font-size: 2.0em; line-height: 1.2em;" class="title-font">
+        In order to create Quizzes, you must log in first!
+      </div>
+      <div style="flex: 0 9 50px;"></div>
+    </div>
+    <div style="flex: 3 1 0"></div>
+    <!--    row3-->
+    <div class="flex-row" style="flex: 0 1 0;">
+      <div style="flex: 5 9 200px;"></div>
+      <div style="flex: 0 1 50px">
+        <button style="background-color: #ffffff6e;" mat-stroked-button color="primary" (click)="googleLogin()"> <img alt="Google logo" style="height: 2em; margin: 5px 5px 5px 0" src="assets/vectors/google-favicon.svg"> Login with Google</button>
+      </div>
+      <div style="flex: 5 9 200px;"></div>
+    </div>
+
+
+    <div class="flex-column" style="flex: 5 5 0;">
+    </div>
+  </div>
+</div>
+
+

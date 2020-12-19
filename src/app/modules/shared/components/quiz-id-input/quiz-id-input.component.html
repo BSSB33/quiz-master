@@ -1,0 +1,8 @@
+<mat-form-field class="quiz-id"  style="width: 100%;" appearance="outline" floatLabel="never">
+  <mat-label>Quiz ID</mat-label>
+  <input matInput type="text" placeholder="Quiz ID" autocomplete="off" [(ngModel)]="value" (ngModelChange)="valueChange.emit($event)">
+  <span matPrefix style="font-size: 1.5em"># &nbsp;</span>
+  <mat-hint *ngIf="error">
+    <span class="mat-error">{{error}}</span>
+  </mat-hint>
+</mat-form-field>

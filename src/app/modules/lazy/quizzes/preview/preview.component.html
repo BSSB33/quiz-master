@@ -1,0 +1,56 @@
+<div class="with-header full-height-width-header">
+  <div class="flex-row" style="height: 100%">
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+    <div style="flex: 3 1; text-align: center; max-width: 100%;"
+         [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
+         class="flex-column">
+      <ng-container *ngIf="!isLoading">
+        <!-- first page       -->
+        <ng-container *ngIf="currentIndex === 0">
+          <h1 *ngIf="!isLoading" style="text-align: center" class="title-font" matTooltip="Quiz {{id}}">
+            {{quizModel.title}}
+          </h1>
+          <h2>{{quizModel.description}}</h2>
+        </ng-container>
+        <!--        questions-->
+        <ng-container *ngIf="currentIndex !== 0">
+          <ng-container [ngSwitch]="quizModel.questions[currentIndex-1].type">
+            <ng-container *ngSwitchCase="'qm.multiple_choice'">
+              <app-multiple-choices [index]="currentIndex - 1" type="game" [gameModel]="quizModel.questions[currentIndex - 1].model"></app-multiple-choices>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isLoading">
+        Loading details...
+        <div>
+          <mat-icon class="rotate">
+            sync
+          </mat-icon>
+        </div>
+      </ng-container>
+    </div>
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+  </div>
+</div>
+<div style="position: absolute; bottom: 5px; width: 100%;" class="flex-row" *ngIf="!isLoading">
+<!--  navigate back to quizzes-->
+  <button *ngIf="currentIndex === 0" mat-icon-button color="warn" routerLink="../../" matTooltip="Back to quizzes">
+    <mat-icon class="big-icon">
+      undo
+    </mat-icon>
+  </button>
+<!--  back in the questions-->
+  <button *ngIf="currentIndex !== 0" mat-icon-button color="primary" (click)="pageChange(-1)">
+    <mat-icon class="big-icon">
+      navigate_before
+    </mat-icon>
+  </button>
+  <div style="flex: 1 1 0;"></div>
+  <button mat-icon-button color="primary" [disabled]="currentIndex === quizModel.questions.length"
+          (click)="pageChange(1)">
+    <mat-icon class="big-icon">
+      navigate_next
+    </mat-icon>
+  </button>
+</div>
