@@ -1,0 +1,38 @@
+{
+	"_id": {
+		"$oid": "5fdcdd4f2e342f6f6b014386"
+	},
+	"title": "Quiz For Testing",
+	"description": "Quiz For Testing",
+	"createdAt": {
+		"$date": {
+			"$numberLong": "1608310095251"
+		}
+	},
+	"startingTime": {
+		"$date": {
+			"$numberLong": "1608318000000"
+		}
+	},
+	"notes": "Quiz For Testing",
+	"ownerId": "hxns9bZEv5Kh5Qe1LerTvo5ggcFmgoWn",
+	"questions": [
+		{
+			"type": "qm.multiple_choice",
+			"model": {
+				"question": "?",
+				"answers": [
+					"A",
+					"B"
+				],
+				"correctAnswers": [
+					{
+						"$numberInt": "0"
+					}
+				],
+				"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+			}
+		}
+	],
+	"_class": "com.quizmaster.backend.entities.Quiz"
+}
