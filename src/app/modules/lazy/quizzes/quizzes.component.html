@@ -1,0 +1,47 @@
+<div class="with-header">
+  <h1 style="text-align: center" class="title-font">
+    My Quizzes
+  </h1>
+  <div class="flex-row">
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+    <div style="flex: 3 1; text-align: center;" [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
+         class="flex-column">
+      <ng-container *ngIf="isLoading">
+        <div>
+          Loading quizzes...
+        </div>
+        <div>
+          <mat-icon class="rotate">
+            sync
+          </mat-icon>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="myQuizzes !== undefined">
+
+        <div *ngIf="myQuizzes.length === 0">
+          You have no quizzes yet. Create one!
+        </div>
+
+        <div *ngFor="let quiz of myQuizzes; let i = index;" style="margin: 0 10px 20px 10px">
+          <app-quiz-overview [model]="quiz" [index]="i + 1" (delete)="deleteQuiz($event)">
+          </app-quiz-overview>
+        </div>
+
+        <!--      plus-->
+        <div style="align-items: center; padding: 0 10px; width: 100%; margin-top: 25px; margin-bottom: 25px" class="flex-row">
+          <button mat-flat-button color="primary" routerLink="/history" matTooltip="Review previously played quizzes. ">
+            History
+          </button>
+          <div style="flex: 1 0"></div>
+          <button mat-fab color="accent" [routerLink]="['edit', 'new']" matTooltip="Add new Quiz. ">
+            <mat-icon>
+              add
+            </mat-icon>
+          </button>
+        </div>
+      </ng-container>
+
+    </div>
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+  </div>
+</div>

@@ -1,0 +1,241 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/cdk/overlay-prebuilt.css';
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$quiz-master-frontend-primary: mat-palette($mat-indigo);
+$quiz-master-frontend-accent: mat-palette($mat-yellow, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$quiz-master-frontend-warn: mat-palette($mat-red);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$quiz-master-frontend-theme: mat-light-theme((
+  color: (
+    primary: $quiz-master-frontend-primary,
+    accent: $quiz-master-frontend-accent,
+    warn: $quiz-master-frontend-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($quiz-master-frontend-theme);
+$custom-typography: mat-typography-config(
+  $font-family: 'Open-sans, sans-serif',
+  $headline: mat-typography-level(32px, 48px, 700),
+  $body-1: mat-typography-level(16px, 24px, 500)
+);
+
+@include mat-base-typography($custom-typography);
+.title-font {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.fullscreen {
+  width: 100vw;
+  height: 100vh; // fallback
+  height: calc(var(--vh, 1vh) * 100); //intentionally overwriting
+}
+
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.outline-no-floating {
+  .mat-form-field-infix {
+    padding-top: 0.5em;
+  }
+}
+
+.quiz-id {
+  .mat-form-field-label {
+    margin-top: 0;
+  }
+}
+
+.user-overlay {
+  background-color: #eeeeee;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px #5b5b5b solid;
+  -webkit-box-shadow: 0px 0px 58px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 58px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 58px 0px rgba(0, 0, 0, 0.75);
+  text-align: right;
+}
+
+.app-header {
+  background-color: #f5f5f5;
+  -webkit-box-shadow: 0px 0px 58px 0px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0px 0px 58px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 58px 0px rgba(0, 0, 0, 0.25);
+  position: fixed;
+  position: -ms-device-fixed;
+  z-index: 999;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  background-color: #eeeeee;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='218' height='218' viewBox='0 0 120 120'%3E%3Cpolygon fill='%23ffffff' fill-opacity='0.16' points='120 0 120 60 90 30 60 0 0 0 0 0 60 60 0 120 60 120 90 90 120 60 120 0'/%3E%3C/svg%3E");
+
+}
+
+.with-header {
+  top: 6em;
+  position: absolute;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.full-height-width-header {
+  height: calc(100% - 6em);
+}
+
+.rotate {
+  animation: rotation 2s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.red-highlight {
+  background-color: rgba(255, 0, 0, 0.1);
+
+  &:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+  }
+}
+
+.green-highlight {
+  background-color: rgba(55, 255, 0, 0.1);
+
+  &:hover {
+    background-color: rgba(55, 255, 0, 0.2);
+  }
+}
+
+.row-separate {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.big-icon {
+  &.mat-icon {
+    font-size: 2.5em;
+    width: auto;
+  }
+}
+
+.row-selectable {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: none;
+
+  &:last-of-type {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+.row-selected {
+  cursor: pointer;
+  background-color: rgba(0, 38, 255, 0.1);
+  &:hover {
+    background-color: rgba(0, 38, 255, 0.2);
+  }
+}
+
+.qm-correct {
+  padding: 15px;
+  margin: 10px;
+  background-color: #87e784;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(4, 109, 27, 0.75);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(4, 109, 27, 0.75);
+  box-shadow: 0px 0px 5px 1px rgba(4, 109, 27, 0.75);
+}
+
+.qm-incorrect {
+  padding: 15px;
+  margin: 10px;
+  background-color: #e78484;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+}
+
+.qm-not-answered {
+  padding: 15px;
+  margin: 10px;
+  background-color: #e7ba84;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+  box-shadow: 0px 0px 5px 1px rgba(133, 9, 9, 0.75);
+}
+
+.qm-result-question {
+  text-align: start;
+  font-size: large;
+}
+
+.qm-player-score {
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f1f1f1;
+    -webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.3);
+  }
+}

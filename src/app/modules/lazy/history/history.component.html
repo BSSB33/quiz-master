@@ -1,0 +1,69 @@
+<div class="with-header">
+  <h1 style="text-align: center" class="title-font">
+    History
+  </h1>
+  <div class="flex-row">
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+    <div style="flex: 3 1; text-align: center;" [ngStyle]="{'flex-basis': common.isPhone ? '100%' : '20em'}"
+         class="flex-column">
+      <ng-container *ngIf="isLoading">
+        <div>
+          Loading history...
+        </div>
+        <div>
+          <mat-icon class="rotate">
+            sync
+          </mat-icon>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="history !== undefined">
+
+        <div *ngIf="history.length === 0">
+          You have no history yet. When a quiz is going to be played, you will have one. !
+        </div>
+
+        <div *ngFor="let hist of history; let i = index;" style="margin: 0 10px 20px 10px">
+          <mat-card style="text-align: start">
+<!--            <mat-card-title-group>-->
+              <mat-card-title>{{hist.quiz.title}}</mat-card-title>
+              <mat-card-subtitle>Started at: {{hist.quiz.startingTime}}</mat-card-subtitle>
+<!--            </mat-card-title-group>-->
+            <mat-card-content>
+              {{hist.quiz.description}}
+            </mat-card-content>
+
+            <mat-card-footer>
+              <mat-card-actions class="flex-row" style="display: flex; margin: 0 10px;">
+                <!--      delete history -->
+                <button mat-mini-fab color="warn" matTooltip="Delete history data. " (click)="deleteHistory(hist.id)">
+                  <mat-icon>
+                    delete
+                  </mat-icon>
+                </button>
+                <div style="flex: 1 1"></div>
+
+                <!--      preview button-->
+                <button mat-mini-fab color="primary" [routerLink]="[hist.id]" matTooltip="View results. ">
+                  <mat-icon>
+                    remove_red_eye
+                  </mat-icon>
+                </button>
+              </mat-card-actions>
+            </mat-card-footer>
+          </mat-card>
+        </div>
+
+        <!--      bottom -->
+        <div style="align-items: center; padding: 0 10px; width: 100%; margin-top: 25px; margin-bottom: 25px" class="flex-row">
+          <button mat-flat-button color="primary" routerLink="/quizzes" matTooltip="Back to the quiz list. ">
+            Quizzes
+          </button>
+          <div style="flex: 1 0"></div>
+        </div>
+      </ng-container>
+
+
+    </div>
+    <div style="flex: 5 5" *ngIf="!common.isPhone"></div>
+  </div>
+</div>

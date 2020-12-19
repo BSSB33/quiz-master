@@ -1,0 +1,102 @@
+<mat-card *ngIf="type === 'edit'">
+  <span>
+    <div class="flex-row" style="width: 100%; padding: 15px 5px; font-size: 1.5em;">
+<!--      status of question-->
+      <div style="flex: 0 0; margin-right: 8px;">
+        <mat-icon *ngIf="fc.valid" style="color: limegreen" matTooltip="The question is valid. ">
+          check
+        </mat-icon>
+        <mat-icon *ngIf="fc.invalid" style="color: orangered" matTooltip="The question is invalid.">
+          priority_high
+        </mat-icon>
+      </div>
+<!--      the question-->
+      <span>
+        Question {{visibleIndex !== undefined ? '#' + visibleIndex : ''}}
+      </span>
+<!--      growing space-->
+      <div style="flex: 1 1"></div>
+<!--      delete question icon-->
+      <div style="flex: 0 0; height: 24px;">
+        <mat-icon color="warn" style="cursor: pointer" (click)="delete.emit(index)" matTooltip="Remove question">
+          clear
+        </mat-icon>
+      </div>
+    </div>
+
+  </span>
+  <mat-card-content>
+    <mat-form-field style="width: 100%;" appearance="outline">
+      <mat-label>Question</mat-label>
+      <textarea rows="3" matInput type="text" placeholder="Type here the question" autocomplete="off"
+                style="resize: none" [(ngModel)]="fc.value.model.question"
+                (input)="updateValidity()"></textarea>
+    </mat-form-field>
+
+    <div *ngIf="fc.value.model.answers.length>0">
+      <div *ngFor="let answer of fc.value.model.answers; let i = index;" class="flex-row row-separate"
+           style="width: 100%; align-items: center; text-align: left; padding: 10px;"
+           [ngClass]="{'red-highlight': !isCorrectAnswer(i), 'green-highlight': isCorrectAnswer(i)}">
+        <div style="flex: 1 1; word-break: break-word;">
+          {{answer}}
+        </div>
+        <div style="flex: 0 0; height: 24px;">
+          <mat-icon color="warn" style="cursor: pointer" (click)="removeAnswer(i); updateValidity()" matTooltip="Remove option">
+            clear
+          </mat-icon>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="flex-row" style="margin-top: 15px;">
+      <div style="flex: 1 1">
+        <mat-form-field style="width: 100%; margin-top: 7px;" appearance="outline">
+          <mat-label>Add answer</mat-label>
+          <input #ans matInput type="text" placeholder="Add answer" autocomplete="off">
+        </mat-form-field>
+      </div>
+
+      <div style="flex: 0 1 10px"></div>
+      <div style="flex: 0 0">
+        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="primary" matTooltip="Add as correct answer. "
+                (click)="addCorrectAnswer(ans.value); ans.value = ''; updateValidity()">
+          correct
+        </button>
+        <button style="width: 100%;" [disabled]="ans.value === ''" mat-stroked-button color="warn" matTooltip="Add as wrong answer. "
+                (click)="addWrongAnswer(ans.value); ans.value = ''; updateValidity()">
+          wrong
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-footer *ngIf="fc.errors" style="margin-bottom: 10px;">
+    <div class="mat-error" *ngIf="fc.errors.emptyQuestion">
+      Question cannot be empty
+    </div>
+    <div class="mat-error" *ngIf="fc.errors.fewAnswers">
+      There should be at least 2 answer
+    </div>
+    <div class="mat-error" *ngIf="fc.errors.noCorrectAnswers">
+      There should be at least a good answer
+    </div>
+  </mat-card-footer>
+</mat-card>
+
+<mat-card *ngIf="type === 'game'">
+  <mat-card-header style="text-align: left;">
+    <mat-card-title>
+      {{gameModel.question}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      Question #{{visibleIndex}}
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let ans of gameModel?.answers; let ind = index;" (click)="answerClicked(ind)" style="cursor: pointer" class="row-selectable" [ngClass]="{'row-selected': selected.indexOf(ind) !== -1}">
+        {{ans}}
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
