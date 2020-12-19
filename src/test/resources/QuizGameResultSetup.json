@@ -1,0 +1,1203 @@
+{
+	"_id": {
+		"$oid": "5fdc6d6374b0df503dc210c8"
+	},
+	"quiz": {
+		"_id": {
+			"$oid": "5fdbb30d02541d7e08912dc7"
+		},
+		"title": "Quiz for the live Demo",
+		"description": "This is a demo Quiz for the live presentation for Software technology.",
+		"createdAt": {
+			"$date": {
+				"$numberLong": "1608233741125"
+			}
+		},
+		"startingTime": {
+			"$date": {
+				"$numberLong": "1608281340000"
+			}
+		},
+		"notes": "Subject: Software technology",
+		"ownerId": "100008550605135792628",
+		"questions": [
+			{
+				"type": "qm.multiple_choice",
+				"model": {
+					"question": "Are we using HTTPS on this web application?",
+					"answers": [
+						"Yes",
+						"No"
+					],
+					"correctAnswers": [
+						{
+							"$numberInt": "0"
+						}
+					],
+					"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+				}
+			},
+			{
+				"type": "qm.multiple_choice",
+				"model": {
+					"question": "What is today's date?",
+					"answers": [
+						"2020.12.17.",
+						"2020.12.18",
+						"2020.12.19",
+						"2020.12.24"
+					],
+					"correctAnswers": [
+						{
+							"$numberInt": "1"
+						}
+					],
+					"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+				}
+			},
+			{
+				"type": "qm.multiple_choice",
+				"model": {
+					"question": "Which of the following are mammals?",
+					"answers": [
+						"Zebra",
+						"Kangoroo",
+						"Whale",
+						"Chameleon",
+						"Dolphin"
+					],
+					"correctAnswers": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "4"
+						}
+					],
+					"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+				}
+			},
+			{
+				"type": "qm.multiple_choice",
+				"model": {
+					"question": "Select the programing languages!",
+					"answers": [
+						"C++",
+						"Java",
+						"HTML",
+						"Python"
+					],
+					"correctAnswers": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "3"
+						}
+					],
+					"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+				}
+			},
+			{
+				"type": "qm.multiple_choice",
+				"model": {
+					"question": "What does IPA stand for?",
+					"answers": [
+						"International Phonetic Alphabet",
+						"International Protection of Alpaca",
+						"Indian Pale Ale",
+						"International Programming Algorithms"
+					],
+					"correctAnswers": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "2"
+						}
+					],
+					"_class": "com.quizmaster.backend.entities.MultipleChoicesModel"
+				}
+			}
+		]
+	},
+	"Player": [
+		{
+			"_id": "Victor Schmit",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281237724"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "4"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "3"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "2"
+						}
+					]
+				}
+			],
+			"sessionID": "cz5aqcbp"
+		},
+		{
+			"_id": "Gábor Vitrai",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281237839"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "4"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "2"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "2"
+						}
+					]
+				}
+			],
+			"sessionID": "w4limjfz"
+		},
+		{
+			"_id": "hoi",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281243320"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "3"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "4"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "2"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "3"
+						}
+					]
+				}
+			],
+			"sessionID": "oaz1hxlh"
+		},
+		{
+			"_id": "testt",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281243335"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "3"
+						}
+					]
+				}
+			],
+			"sessionID": "zw4opyot"
+		},
+		{
+			"_id": "Sanyi",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281249122"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "3"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "3"
+						}
+					]
+				}
+			],
+			"sessionID": "o5sxzejr"
+		},
+		{
+			"_id": "T",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281251793"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "0iukns01"
+		},
+		{
+			"_id": "Adam",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281256825"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "3"
+						},
+						{
+							"$numberInt": "4"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "3"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "2"
+						}
+					]
+				}
+			],
+			"sessionID": "e130jixi"
+		},
+		{
+			"_id": "Fury",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281258620"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "klambreb"
+		},
+		{
+			"_id": "bkunii",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281260781"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "3"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "2"
+						}
+					]
+				}
+			],
+			"sessionID": "xzbo3rtq"
+		},
+		{
+			"_id": "Balint",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281269500"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "5c3rzasb"
+		},
+		{
+			"_id": "Optimist",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281273003"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "4"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "3"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "pn5tlwrm"
+		},
+		{
+			"_id": "majd",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281284169"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "0qarq5n3"
+		},
+		{
+			"_id": "Jeni",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281307996"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "4"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "2"
+						}
+					]
+				}
+			],
+			"sessionID": "lbonpdmz"
+		},
+		{
+			"_id": "Asdasd",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281329034"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "CORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "1"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "3"
+						},
+						{
+							"$numberInt": "4"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "INCORRECT",
+					"givenAnswer": [
+						{
+							"$numberInt": "0"
+						},
+						{
+							"$numberInt": "1"
+						},
+						{
+							"$numberInt": "2"
+						},
+						{
+							"$numberInt": "3"
+						}
+					]
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "ramw5ryt"
+		},
+		{
+			"_id": "p",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281402002"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "syrlhbff"
+		},
+		{
+			"_id": "pascal",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281410834"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "lwdbziry"
+		},
+		{
+			"_id": "5",
+			"connectAt": {
+				"$date": {
+					"$numberLong": "1608281423764"
+				}
+			},
+			"answers": [
+				{
+					"questionNumber": {
+						"$numberInt": "0"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "1"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "2"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "3"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				},
+				{
+					"questionNumber": {
+						"$numberInt": "4"
+					},
+					"isCorrect": "NOTANSWERED",
+					"givenAnswer": []
+				}
+			],
+			"sessionID": "n5au3yvi"
+		}
+	],
+	"actQuestion": {
+		"$numberInt": "5"
+	},
+	"lastQuestionSend": {
+		"$date": {
+			"$numberLong": "1608281442985"
+		}
+	},
+	"_class": "com.quizmaster.backend.entities.QuizGame"
+}

@@ -1,0 +1,38 @@
+image: gradle:jdk11
+
+stages:
+  - build
+  - test
+  - deploy
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+build:
+  stage: build
+  script:
+    - ./gradlew assemble
+  artifacts:
+    paths:
+      - build/libs/*.jar
+    expire_in: 1 week
+  only:
+    - develop
+
+test:
+  stage: test
+  script:
+    - ./gradlew check
+
+deploy:
+  stage: deploy
+  script:
+   - ./gradlew build
+  artifacts:
+    paths:
+     - build/libs/*.jar
+
+after_script:
+  - echo "End CI"
