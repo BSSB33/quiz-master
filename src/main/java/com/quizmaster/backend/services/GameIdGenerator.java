@@ -1,4 +1,4 @@
-package com.quizmaster.services;
+package com.quizmaster.backend.services;
 
 import java.security.SecureRandom;
 import java.util.Locale;
@@ -6,8 +6,6 @@ import java.util.Objects;
 import java.util.Random;
 
 public class GameIdGenerator {
-
-    //TODO: Get Existing Codes
 
     /**
      * Generate a random string.
@@ -36,23 +34,10 @@ public class GameIdGenerator {
         this.buf = new char[length];
     }
 
-    /**
-     * Create an alphanumeric string generator.
-     */
     public GameIdGenerator(int length, Random random) {
         this(length, random, alphanum);
     }
 
-//    /**
-//     * Create an alphanumeric strings from a secure generator.
-//     */
-//    public GameIdGenerator(int length) {
-//        this(length, new SecureRandom());
-//    }
-
-    /**
-     * Create session identifiers.
-     */
     public GameIdGenerator() {
         this(21);
     }

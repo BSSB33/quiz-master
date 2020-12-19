@@ -21,7 +21,7 @@ public class QuizGame {
 
     public QuizGame(Quiz quiz) {
         this.quiz = quiz;
-        this.Player = new ArrayList<PlayerScore>();
+        this.Player = new ArrayList<>();
         this.actQuestion = -1;
         this.lastQuestionSend = LocalDateTime.now().minusDays(1);
     }
@@ -36,7 +36,7 @@ public class QuizGame {
 
     public boolean isNicknameAlreadyUsed(String nickname) {
         for (PlayerScore user : this.Player) {
-            if (user.getNickname().toLowerCase().equals(nickname.toLowerCase())) {
+            if (user.getNickname().equalsIgnoreCase(nickname)) {
                 return true;
             }
         }

@@ -52,20 +52,18 @@ public class QuizController {
         if (quiz.getId() != null && quizMongoRepository.existsById(quiz.getId())) { // ERROR: getId should not be called before save!
             return ResponseEntity.badRequest().body("ID Taken!");
         }
-        if (!nullChecker(quiz)) {
+        if (nullChecker(quiz)) {
+            quiz.setOwnerId(getUsername());
+            return ResponseEntity.ok(quizMongoRepository.save(quiz));
+        } else {
             return ResponseEntity.noContent().build();
         }
 
-        quiz.setOwnerId(getUsername());
-        return ResponseEntity.ok(quizMongoRepository.save(quiz));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity putById(@PathVariable String id, @RequestBody Quiz quizToSave) {
-        if (!nullChecker(quizToSave)) {
-            return ResponseEntity.noContent().build();
-        }
-
+        if (!nullChecker(quizToSave)) return ResponseEntity.noContent().build();
         if (quizMongoRepository.existsById(id)) {
             Quiz retrieved = quizMongoRepository.getById(id);
 
@@ -87,7 +85,6 @@ public class QuizController {
     public ResponseEntity deleteById(@PathVariable String id) {
         if (quizMongoRepository.existsById(id)) {
             Quiz retrieved = quizMongoRepository.getById(id);
-
             if (retrieved.getOwnerId().equals(getUsername())) {
                 quizMongoRepository.deleteById(id);
                 return ResponseEntity.ok().build();
@@ -98,7 +95,7 @@ public class QuizController {
         return ResponseEntity.notFound().build();
     }
 
-    private Boolean nullChecker(Quiz quiz) {
+    private boolean nullChecker(Quiz quiz) {
         if (quiz.getTitle() == null || quiz.getDescription() == null || quiz.getCreatedAt() == null || quiz.getStartingTime() == null || quiz.getNotes() == null || quiz.getQuestions() == null) {
             return false;
         }
@@ -108,7 +105,6 @@ public class QuizController {
     private String getUsername() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
-        String username = authentication.getName();
-        return username;
+        return authentication.getName();
     }
 }

@@ -23,7 +23,7 @@ public class ResultController {
 
     @GetMapping("")
     public ResponseEntity getAll() {
-        List<QuizGame> collect = new ArrayList<QuizGame>();
+        List<QuizGame> collect = new ArrayList<>();
 
         for (QuizGame act : quizGameMongoRepository.findAll()) {
             if (act.getQuiz().getOwnerId().equals(getUsername())) {
@@ -64,7 +64,6 @@ public class ResultController {
     private String getUsername() {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
-        String username = authentication.getName();
-        return username;
+        return authentication.getName();
     }
 }

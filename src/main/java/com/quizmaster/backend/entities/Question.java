@@ -19,7 +19,6 @@ public class Question {
         this.model = model;
     }
 
-
     public Model getModel() {
         return model;
     }

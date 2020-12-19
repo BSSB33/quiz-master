@@ -55,39 +55,12 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         String timeZone = environment.getProperty("TimeZone");
         TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
 
-//        System.out.println("TIMEZONE " + timeZone);
-//
-//        String var_name = environment.getProperty("DisabledSec");
-//        System.out.println("IMPORTANT");
-//        System.out.println("------------------------------------------------------------------------------------");
-//        System.out.println(var_name);
-//
-//
-//
-//
         System.out.println("=============== Users: ===============");
         userMongoRepository.findAll().forEach(user -> System.out.println(user.getEmail() + " -> Google ID: " + user.getGoogleId() + " -> DB ID: " + user.getId()));
-//
 //        System.out.println("============== Quizzes: ==============");
 //        quizMongoRepository.findAll().forEach(qu -> System.out.println(qu.getTitle() + " -> " + qu.getId()));
-//
-//        LocalDateTime random = LocalDateTime.of(2020, Month.NOVEMBER, 29, 20, 00, 00);
-//        Model m1 = new MultipleChoicesModel("Which one is Letter C?", List.of("A", "B", "C", "D"), List.of(3));
-//        Model m2 = new MultipleChoicesModel("Which one is Letter A?", List.of("A", "B", "C", "D"), List.of(1));
-//        Model m3 = new MultipleChoicesModel("Which one is Letter BD?", List.of("A", "B", "C", "D"), List.of(2,4));
-//        Question q1 = new Question("qm.multiple_choice", m1);
-//        Question q2 = new Question("qm.multiple_choice", m2);
-//        Question q3 = new Question("qm.multiple_choice", m3);
-//
-//        for (Quiz act : quizMongoRepository.findAll()) {
-//            if (act.getTitle().equals("Testquiz")) {
-//                quizMongoRepository.deleteById(act.getId());
-//            }
-//        }
-//
-//        Quiz quiz = new Quiz("Testquiz", "d", LocalDateTime.now().plusSeconds(11), "Random Note", List.of(q1, q2, q3));
-//        quizMongoRepository.save(quiz);
 
+//        TestClient
 //        try {
 //            connect(quiz.getId()); //Very simple STOMPClient test
 //        } catch (Exception e) {
@@ -103,7 +76,7 @@ public class BackendApplication<data_type> implements CommandLineRunner {
         WebSocketClient transport = new SockJsClient(transports);
         WebSocketStompClient stompClient = new WebSocketStompClient(transport);
 
-        stompClient.setMessageConverter(new MappingJackson2MessageConverter()); //later if we want to use other classes than plaintext we should switch to MappingJackson2MessageConverter
+        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
         //stompClient.setMessageConverter(new StringMessageConverter());
 
 

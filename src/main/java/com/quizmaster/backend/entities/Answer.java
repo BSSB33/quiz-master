@@ -1,7 +1,7 @@
 package com.quizmaster.backend.entities;
 
 
-public enum Answer            // Enum-Type
+public enum Answer
 {
     CORRECT, INCORRECT, NOTANSWERED;
 }

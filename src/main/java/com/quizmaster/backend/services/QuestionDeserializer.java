@@ -23,7 +23,7 @@ public class QuestionDeserializer extends JsonDeserializer<Question> {
         ObjectMapper objectMapper = new ObjectMapper();
         Model model = null;
 
-        if (type.equals("qm.multiple_choice")) { //TODO Add different types
+        if (type.equals("qm.multiple_choice")) {
             model = objectMapper.readValue(node.get("model").toString(), MultipleChoicesModel.class);
         }
 

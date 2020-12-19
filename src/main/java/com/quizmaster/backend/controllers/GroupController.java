@@ -4,7 +4,7 @@ import com.quizmaster.backend.entities.*;
 import com.quizmaster.backend.repositories.QuizGameMongoRepository;
 import com.quizmaster.backend.repositories.QuizMongoRepository;
 import com.quizmaster.backend.repositories.UserMongoRepository;
-import com.quizmaster.services.GameIdGenerator;
+import com.quizmaster.backend.services.GameIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -54,8 +54,6 @@ public class GroupController {
 
     @Scheduled(fixedRate = SCHEDULERATE * 1000)
     public void createGame() {
-//        System.out.println("####################################################### New Iteration of checking for activeGames");
-
         for (Quiz act : quizMongoRepository.findAll()) {
 
             if (act.getStartingTime().isAfter(LocalDateTime.now()) && act.getStartingTime().minusSeconds(TIMEWINDOW).isBefore(LocalDateTime.now())) {
@@ -66,11 +64,7 @@ public class GroupController {
                         break;
                     }
                 }
-                if (!containsId) {
-                    // check if quiz time is after now() and before next iteration now()
-//                    System.out.println("Quiz added " + act.getId());
-                    activeGames.add(new QuizGame(act));
-                }
+                if (!containsId) activeGames.add(new QuizGame(act));
             }
         }
 
@@ -97,7 +91,7 @@ public class GroupController {
                         System.out.println("sent out--------------------------------------");
                         quizGameMongoRepository.save(act); // Save Results for Teacher
                         sendResults(act);
-                    } else { //game still has more questions
+                    } else {
                         System.out.println("Sending out question");
                         System.out.println("Sending out to room: results/room/" + act.getQuiz().getId());
                         System.out.println("Content of Questions is: " + act.getActQuestion().toString());
@@ -213,19 +207,5 @@ public class GroupController {
         GameIdGenerator tickets = new GameIdGenerator(6);
         return tickets.nextString();
     }
-
-//    private ResponseEntity generateNewGameId(){
-//            GameIdGenerator generator = new GameIdGenerator(6);
-//            String gameID = generator.nextString();
-//        while (usedCodes.contains(gameID)) {
-//            System.err.println("Game Id was already used, generating new one...");
-//            gameID = generator.nextString();
-//        }
-//        if (!usedCodes.contains(gameID)) {
-//            return ResponseEntity.ok(newGame);
-//        } else {
-//            return ResponseEntity.badRequest().body("Game ID generation was not successful. (You should never see this error)");
-//        }
-//    }
 
 }
