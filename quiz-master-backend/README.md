@@ -1,13 +1,17 @@
 # Quiz Master Back-end
 
-This API was created as a University Project for Software technologies subject. The project is an MVP (Minimal Viable Product) which was created to be flexible in order to make it easy to implement further improvements. (Like questions, where answers could be Images)
+This API was created as a University Project for Software technologies subject. The project is an MVP (Minimal Viable Product) which was created to be flexible in order to make it easy to implement further improvements. (Like questions, where answers could be Images) The repository serves as a storage for the final MVP, and was imported from Gitlab.com
 QuizMaster was a fun coding project with the goal of getting to know as many technologies as possible.
 
 The project was created by four Students:
+Back-end:
 ```
 Gábor Vitrai 
 Pascal Tippe
 Victor Schmit
+```
+Front-end:
+```
 Márk Dobó
 ```
 
